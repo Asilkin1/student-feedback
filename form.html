@@ -1,0 +1,119 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <form action="form.html">
+        
+            <fieldset class="form-group">
+                <div class="row">
+                    <legend class="col-form-label col-sm-2 pt-0">Mood</legend>
+
+                    <div class="col-sm-10">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="mood" id="excited"
+                                value="Excited">
+                            <label class="form-check-label" for="gridRadios1">
+                                Excited
+                            </label>
+                        </div>
+
+                        <!-- Normal  -->
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="mood" id="normal"
+                                value="Normal">
+                            <label class="form-check-label" for="normal">
+                                Normal
+                            </label>
+                        </div>
+
+                        <!-- Unclear topic concept -->
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="mood" id="unclear"
+                                value="unclear">
+                            <label class="form-check-label" for="unclear">
+                                Unclear topic/concept
+                            </label>
+                        </div>
+
+                        <!-- Nervous -->
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="mood" id="nervous"
+                                value="unclear">
+                            <label class="form-check-label" for="nervous">
+                                Nervous
+                            </label>
+                        </div>
+   
+                    </div>
+                </div>
+            </fieldset>
+
+            <!-- Elaborte part -->
+            <div class="form-group row">
+                <div class="col-sm-2">Elaborate your thoughts:</div>
+                <div class="col-sm-10">
+
+                    <!-- Instructor/Professor -->
+                    <div class="form-check">
+                        <input class="form-check-input" name="elaborate" type="radio" id="professor">
+                        <label class="form-check-label" for="gridCheck1">
+                            Instructor/Professor
+                        </label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="text">
+                        </div>
+                    </div>
+
+                    <!-- Teaching style -->
+                    <div class="form-check">
+                        <input class="form-check-input" name="elaborate" type="radio" id="teaching">
+                        <label class="form-check-label" for="teachingstyle">
+                            Teaching style
+                        </label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="text">
+                        </div>
+                    </div>
+
+                    <!-- Topic -->
+                    <div class="form-check">
+                        <input class="form-check-input" name="elaborate" type="radio" id="topic">
+                        <label class="form-check-label" for="teachingstyle">
+                            Topic
+                        </label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="text">
+                        </div>
+                    </div>
+
+                    <!-- Other -->
+                    <div class="form-check">
+                        <input class="form-check-input" name="elaborate" type="radio" id="other">
+                        <label class="form-check-label" for="teachingstyle">
+                            Other
+                        </label>
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="text">
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-sm-10">
+                    <button type="submit" class="btn btn-primary">Leave feedback</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+</body>
+
+</html>
