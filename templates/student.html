@@ -1,161 +1,135 @@
-<html>
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
 
-<head>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
-        integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
-</head>
+{% block content %}
 
-<body>
+<!-- Content for student page -->
+<div class="container">
 
-    <div class="wrapper">
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03"
-                aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <a class="navbar-brand" href="/">Feedback</a>
-    
-            <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
-                <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="#">For student<span class="sr-only">(current)</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">For Professor</a>
-                    </li>
-                </ul>
-    
+    <form action="student.html" method="post">
+
+        <fieldset class="form-group">
+            <div class="row">
+                <legend class="col-form-label col-sm-2 pt-0">
+                    <h4>Mood:</h4>
+                </legend>
+
+                <!-- Excited -->
+                <div class="col-sm-10 form-check-inline">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="mood" id="excited" value="5">
+                        <label class="form-check-label" for="gridRadios1">
+                            Excited
+                        </label>
+                        <i class="far fa-smile-beam"></i>
+
+                    </div>
+
+                    <!-- Normal  -->
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="mood" id="normal" value="4">
+                        <label class="form-check-label" for="normal">
+                            Normal
+                        </label>
+                        <i class="fas fa-meh"></i>
+                    </div>
+
+                    <!-- Unclear topic concept -->
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="mood" id="unclear" value="3">
+                        <label class="form-check-label" for="unclear">
+                            Unclear topic/concept
+                        </label>
+                        <i class="far fa-tired"></i>
+                    </div>
+
+                    <!-- Nervous -->
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="mood" id="nervous" value="2">
+                        <label class="form-check-label" for="nervous">
+                            Nervous
+                        </label>
+                        <i class="far fa-meh-rolling-eyes"></i>
+                    </div>
+
+                    <!-- Mad -->
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="mood" id="mad" value="1">
+                        <label class="form-check-label" for="mad">
+                            Mad
+                        </label>
+                        <i class="fas fa-sad-cry"></i>
+                    </div>
+
+                </div>
             </div>
-        </nav>
-   
-        <div class="container">
+        </fieldset>
 
-            <form action="student.html" method="post">
+        <!-- Elaborte part -->
+        <div class="form-group row">
+            <div class="col-sm-2">
+                <h4>Elaborate your thoughts:</h4>
+            </div>
+            <div class="col-md-10">
 
-                <fieldset class="form-group">
-                    <div class="row">
-                        <legend class="col-form-label col-sm-2 pt-0">
-                            <h4>Mood:</h4>
-                        </legend>
-
-                        <!-- Excited -->
-                        <div class="col-sm-10 form-check-inline">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="mood" id="excited" value="5">
-                                <label class="form-check-label" for="gridRadios1">
-                                    Excited
-                                </label>
-                                <i class="far fa-smile-beam"></i>
-
-                            </div>
-
-                            <!-- Normal  -->
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="mood" id="normal" value="4">
-                                <label class="form-check-label" for="normal">
-                                    Normal
-                                </label>
-                                <i class="fas fa-meh"></i>
-                            </div>
-
-                            <!-- Unclear topic concept -->
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="mood" id="unclear" value="3">
-                                <label class="form-check-label" for="unclear">
-                                    Unclear topic/concept
-                                </label>
-                                <i class="far fa-tired"></i>
-                            </div>
-
-                            <!-- Nervous -->
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="mood" id="nervous" value="2">
-                                <label class="form-check-label" for="nervous">
-                                    Nervous
-                                </label>
-                                <i class="far fa-meh-rolling-eyes"></i>
-                            </div>
-
-                            <!-- Mad -->
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="mood" id="mad" value="1">
-                                <label class="form-check-label" for="mad">
-                                    Mad
-                                </label>
-                                <i class="fas fa-sad-cry"></i>
-                            </div>
-
-                        </div>
-                    </div>
-                </fieldset>
-
-                <!-- Elaborte part -->
-                <div class="form-group row">
-                    <div class="col-sm-2">
-                        <h4>Elaborate your thoughts:</h4>
-                    </div>
-                    <div class="col-md-10">
-
-                        <!-- Instructor/Professor -->
-                        <div class="form-check">
-                            <input class="form-check-input" name="elaborate" type="radio" id="professor"
-                                value="Instructor/Professor">
-                            <label class="form-check-label" for="gridCheck1">
-                                Instructor/Professor
-                            </label>
-                            <div class="col-sm-4">
-                                <input type="text" class="form-control" id="text">
-                            </div>
-                        </div>
-
-                        <!-- Teaching style -->
-                        <div class="form-check">
-                            <input class="form-check-input" name="elaborate" type="radio" id="teaching"
-                                value="Teaching style">
-                            <label class="form-check-label" for="teachingstyle">
-                                Teaching style
-                            </label>
-                            <div class="col-sm-4">
-                                <input type="text" class="form-control" id="text">
-                            </div>
-                        </div>
-
-                        <!-- Topic -->
-                        <div class="form-check">
-                            <input class="form-check-input" name="elaborate" type="radio" id="topic" value="Topic">
-                            <label class="form-check-label" for="teachingstyle">
-                                Topic
-                            </label>
-                            <div class="col-sm-4">
-                                <input type="text" class="form-control" id="text">
-                            </div>
-                        </div>
-
-                        <!-- Other -->
-                        <div class="form-check">
-                            <input class="form-check-input" name="elaborate" type="radio" id="other" value="Other">
-                            <label class="form-check-label" for="teachingstyle">
-                                Other
-                            </label>
-                            <div class="col-sm-4">
-                                <input type="text" class="form-control" id="text">
-                            </div>
-                        </div>
-
+                <!-- Instructor/Professor -->
+                <div class="form-check">
+                    <input class="form-check-input" name="elaborate" type="radio" id="professor"
+                        value="Instructor/Professor">
+                    <label class="form-check-label" for="gridCheck1">
+                        Instructor/Professor
+                    </label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" id="text">
                     </div>
                 </div>
 
-                <!-- Submit button -->
-                <div class="form-group row">
-                    <div class="col-sm-10">
-                        <button type="submit" class="btn btn-primary">Leave feedback</button>
+                <!-- Teaching style -->
+                <div class="form-check">
+                    <input class="form-check-input" name="elaborate" type="radio" id="teaching" value="Teaching style">
+                    <label class="form-check-label" for="teachingstyle">
+                        Teaching style
+                    </label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" id="text">
                     </div>
                 </div>
-            </form>
+
+                <!-- Topic -->
+                <div class="form-check">
+                    <input class="form-check-input" name="elaborate" type="radio" id="topic" value="Topic">
+                    <label class="form-check-label" for="teachingstyle">
+                        Topic
+                    </label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" id="text">
+                    </div>
+                </div>
+
+                <!-- Other -->
+                <div class="form-check">
+                    <input class="form-check-input" name="elaborate" type="radio" id="other" value="Other">
+                    <label class="form-check-label" for="teachingstyle">
+                        Other
+                    </label>
+                    <div class="col-sm-4">
+                        <input type="text" class="form-control" id="text">
+                    </div>
+                </div>
+
+            </div>
         </div>
 
-    </div>
-</body>
+        <!-- Submit button -->
+        <div class="form-group row">
+            <div class="col-sm-10">
+                <button type="submit" class="btn btn-primary">Leave feedback</button>
+            </div>
+        </div>
+    </form>
+</div>
 
-</html>
+
+{% endblock %}
+
+<html>
