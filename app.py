@@ -5,13 +5,28 @@ app = Flask(__name__)
 
 @app.route('/', methods=["POST", "GET"])
 def index():
-    return render_template('submit.html', title='submit')
+    return render_template('index.html', title='submit')
 
-@app.route('/student', methods=["POST", "GET"])
+@app.route('/student.html', methods=["POST", "GET"])
 def student():
-    return render_template('student.html', title='student')
+    # If POST methods
+    if request.method == "POST":
+        
+        # Get mood from the form
+        mood = request.form['mood']
 
-@app.route('/instructor', methods=["POST", "GET"])
+        # Get elaborate stats
+        elaborate = request.form['elaborate']
+
+        # Let see what it will print
+        print(mood,elaborate)
+
+        return render_template('student.html', title='student')
+    
+    if request.method == "GET":
+        return render_template('student.html', title='student')
+
+@app.route('/professor.html', methods=["POST", "GET"])
 def instructor():
     return render_template('professor.html', title='instructor')
 
