@@ -9,11 +9,11 @@ def index():
 
 @app.route('/student', methods=["POST", "GET"])
 def student():
-    return render_template('studentPortal.html', title='student')
+    return render_template('student.html', title='student')
 
 @app.route('/instructor', methods=["POST", "GET"])
 def instructor():
-    return render_template('instructorPortal.html', title='instructor')
+    return render_template('professor.html', title='instructor')
 
 
 if __name__ == '__main__':
