@@ -18,8 +18,11 @@ def student():
         # Get elaborate stats
         elaborate = request.form['elaborate']
 
+        # Get desc
+        desc = request.form['desc'] # This doesn work
+
         # Let see what it will print
-        print(mood,elaborate)
+        print(mood,elaborate,desc)
 
         return render_template('student.html', title='student')
     
