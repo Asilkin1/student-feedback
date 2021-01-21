@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for
 from models import create_post, get_posts, delete_posts
 from datetime import date, datetime
 import time
+import random
 
 app = Flask(__name__)
 
@@ -45,9 +46,39 @@ def student():
 
     return render_template('student.html', title='student')
 
-@app.route('/professor.html', methods=["POST", "GET"])
-def instructor():
-    return render_template('professor.html', title='instructor')
+
+@app.route('/professor', methods=["POST", "GET"])
+def professor():
+    if request.method == 'POST':
+        #Professors unique class code
+        classCode = random.randrange(1,3000,1)
+        #Prints it out for debuggin purposes
+        print(random.randrange(1,3000,1))
+
+        #Professors Name
+        professorName = request.form.get('professorName')
+
+        #Schools Name
+        schoolName = request.form.get('schoolName')
+
+        #Departments Name
+        departmentName = request.form.get('departmentName')
+
+        #Class' Id
+        classId = request.form.get('classId')
+
+        #Sections Name
+        sectionName = request.form.get('sectionName')
+
+        #create data in database
+        #Todo
+        #(professorName, schoolName, departmentName, classId, sectionName, classCode)
+
+    return render_template('professor.html', title='professor')
+
+@app.route('/professor/0', methods=["POST", "GET"])
+def submission():
+    return render_template('professor.html', title='professor')
 
 if __name__ == '__main__':
     app.run(debug=True)
