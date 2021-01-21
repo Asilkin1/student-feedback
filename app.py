@@ -47,13 +47,45 @@ def student():
     return render_template('student.html', title='student')
 
 
+
+
+import sqlite3 as sl
+
+#Creates a database via SQLite to store Professor information
+con = sl.connect('output.db')
+with con:
+    con.execute("""
+        CREATE TABLE IF NOT EXISTS Prof (
+        ProfessorName TEXT,
+        SchoolName TEXT,
+        DepartmentName TEXT,
+        ClassID INTEGER NOT NULL,
+        SectionName TEXT,
+        ClassCode INTEGER NOT NULL
+        );
+    """)
+
+
 @app.route('/professor', methods=["POST", "GET"])
 def professor():
+    #Replace this later by instead searching through the professor database
+    codeList = []
+    #Keep this though
+    inList = True
     if request.method == 'POST':
-        #Professors unique class code
+        #Professors unique class code (Randomly generated)
         classCode = random.randrange(1,3000,1)
-        #Prints it out for debuggin purposes
-        print(random.randrange(1,3000,1))
+        #Checks the list of existing codes to make sure the one currently generated is unique
+        while inList:
+            for i in codeList:
+                if codeList[i] == classCode:
+                    inList = True
+                    print(inList)
+                break
+            classCode = random.randrange(1,20,1)
+        codeList.append(classCode)
+        #Prints it out for debuggin purposes, should always be unique
+        print(classCode)
 
         #Professors Name
         professorName = request.form.get('professorName')
