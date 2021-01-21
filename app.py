@@ -8,9 +8,9 @@ app = Flask(__name__)
 
 @app.route('/', methods=["POST", "GET"])
 def index():
-    return render_template('submit.html', title='submit')
+    return render_template('index.html', title='submit')
 
-@app.route('/student', methods=["POST", "GET"])
+@app.route('/student.html', methods=["POST", "GET"])
 def student():
     if request.method == 'GET':
         #Delete existing data in database (can change this later)
