@@ -3,6 +3,8 @@ from flask import Flask, render_template, request, redirect, url_for
 from models import create_post, get_posts, delete_posts
 from datetime import date, datetime
 import time
+import sqlite3 as sql
+import pandas as pd
 
 app = Flask(__name__)
 
@@ -47,7 +49,24 @@ def student():
 
 @app.route('/professor.html', methods=["POST", "GET"])
 def instructor():
+
     return render_template('professor.html', title='instructor')
+
+@app.route('/professorData.html', methods=["POST", "GET"])
+def data():
+    if request.method == 'GET':
+        Code = request.form.get('classCode') #Get the class code
+        ROOT = path.dirname(path.relpath((__file__))) #Filepath for database
+        con = sql.connect(path.join(ROOT, 'database.db')) #connect to the database
+
+        Frame = pd.read_sql_query("SELECT * from feedback", con) #Database to Pandas
+        Frame = Frame[Frame['classCode']== Code] #Filter Database by class code
+        if(Frame.empty):
+            #Return 'Class does not exist' message
+        else:
+            
+
+    return render_template('professorData.html', title='data')
 
 if __name__ == '__main__':
     app.run(debug=True)
