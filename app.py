@@ -5,6 +5,7 @@ from datetime import date, datetime
 import time
 import sqlite3 as sql
 import pandas as pd
+import matplotlib.pyplot as plt
 
 app = Flask(__name__)
 
@@ -53,13 +54,13 @@ def instructor():
     return render_template('professor.html', title='instructor')
 
 @app.route('/professorData/<classCode>', methods=["POST", "GET"])
-def data(classCode):
+def data(classCode, Category):
     if request.method == 'POST':
         ROOT = path.dirname(path.relpath((__file__))) #Filepath for database
         con = sql.connect(path.join(ROOT, 'database.db')) #connect to the database
 
         Frame = pd.read_sql_query("SELECT * from feedback", con) #Database to Pandas
-        Frame = Frame[Frame['classCode']== classCode] #Filter Database by class code
+        Frame = Frame[Frame['classCode'] == classCode] #Filter Database by class code
         if(Frame.empty):
             #Return 'Class does not exist' message
         elif(len(Frame.index)<10):
@@ -67,32 +68,48 @@ def data(classCode):
         else:
             #Category Graphs#
             #Professor
-            Frame = Frame[Frame['elaborateNumber']=="Instructor/Professor"]
-            if(len(Frame.index)<10):
-                #Return 'There is not sufficient data' and display table only
-            else:
-                hist = Frame.hist(bins = int(len(Frame.index)/2))
-                
+            if(Category=='Instructor/Professor'):
+                Frame = Frame[Frame['elaborateNumber']=="Instructor/Professor"]
+                if(len(Frame.index)<10):
+                    #Return 'There is not sufficient data' and display table only
+                else:
+                    Frame['emoji'].hist()
+                    plt.title(Category)
+                    plt.xlabel('Score')
+                    plt.show()
+
             #Teaching Style
-            Frame = Frame[Frame['elaborateNumber']=="Teaching Style"]
-            if(len(Frame.index)<10):
-                #Return 'There is not sufficient data' and display table only
-            else:
-                hist = Frame.hist(bins = int(len(Frame.index)/2))
+            elif(Category=='Teaching Style'):
+                Frame = Frame[Frame['elaborateNumber']=="Teaching Style"]
+                if(len(Frame.index)<10):
+                    #Return 'There is not sufficient data' and display table only
+                else:
+                    Frame['emoji'].hist()
+                    plt.title(Category)
+                    plt.xlabel('Score')
+                    plt.show()
 
             #Topic
-            Frame = Frame[Frame['elaborateNumber']=="Topic"]
-            if(len(Frame.index)<10):
-                #Return 'There is not sufficient data' and display table only
-            else:
-                hist = Frame.hist(bins = int(len(Frame.index)/2))
+            elif(Category=='Topic'):
+                Frame = Frame[Frame['elaborateNumber']=="Topic"]
+                if(len(Frame.index)<10):
+                    #Return 'There is not sufficient data' and display table only
+                else:
+                    Frame['emoji'].hist()
+                    plt.title(Category)
+                    plt.xlabel('Score')
+                    plt.show()
 
             #Other
-            Frame = Frame[Frame['elaborateNumber']=="Other"]
-            if(len(Frame.index)<10):
-                #Return 'There is not sufficient data' and display table only
-            else:
-                hist = Frame.hist(bins = int(len(Frame.index)/2))
+            else(Category=='Other'):
+                Frame = Frame[Frame['elaborateNumber']=="Other"]
+                if(len(Frame.index)<10):
+                    #Return 'There is not sufficient data' and display table only
+                else:
+                    Frame['emoji'].hist()
+                    plt.title(Category)
+                    plt.xlabel('Score')
+                    plt.show()
 
     return render_template('professorData.html', title='data')
 
