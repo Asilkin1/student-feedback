@@ -10,6 +10,10 @@ app = Flask(__name__)
 def index():
     return render_template('submit.html', title='submit')
 
+@app.route("/studentlogin", methods=["POST", "GET"])
+def studentLogin():
+    return render_template('studentLogin.html', title='login')
+
 @app.route('/student', methods=["POST", "GET"])
 def student():
     if request.method == 'GET':
@@ -45,7 +49,7 @@ def student():
 
     return render_template('student.html', title='student')
 
-@app.route('/professor.html', methods=["POST", "GET"])
+@app.route('/professor', methods=["POST", "GET"])
 def instructor():
     return render_template('professor.html', title='instructor')
 
