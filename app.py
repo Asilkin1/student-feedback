@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for
 from models import create_post, get_posts, delete_posts
 from datetime import date, datetime
 import time
+import random
 
 app = Flask(__name__)
 
