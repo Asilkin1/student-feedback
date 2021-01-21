@@ -58,6 +58,66 @@ def student():
 def instructor():
     return render_template('professor.html', title='instructor')
 
+@app.route('/professorData/<classCode>', methods=["POST", "GET"])
+def data(classCode, Category):
+    if request.method == 'POST':
+        ROOT = path.dirname(path.relpath((__file__))) #Filepath for database
+        con = sql.connect(path.join(ROOT, 'database.db')) #connect to the database
+
+        Frame = pd.read_sql_query("SELECT * from feedback", con) #Database to Pandas
+        Frame = Frame[Frame['classCode'] == classCode] #Filter Database by class code
+        if(Frame.empty):
+            #Return 'Class does not exist' message
+        elif(len(Frame.index)<10):
+            #Return 'There is not sufficient data' and display table only
+        else:
+            #Category Graphs#
+            #Professor
+            if(Category=='Instructor/Professor'):
+                Frame = Frame[Frame['elaborateNumber']=="Instructor/Professor"]
+                if(len(Frame.index)<10):
+                    #Return 'There is not sufficient data' and display table only
+                else:
+                    Frame['emoji'].hist()
+                    plt.title(Category)
+                    plt.xlabel('Score')
+                    plt.show()
+
+            #Teaching Style
+            elif(Category=='Teaching Style'):
+                Frame = Frame[Frame['elaborateNumber']=="Teaching Style"]
+                if(len(Frame.index)<10):
+                    #Return 'There is not sufficient data' and display table only
+                else:
+                    Frame['emoji'].hist()
+                    plt.title(Category)
+                    plt.xlabel('Score')
+                    plt.show()
+
+            #Topic
+            elif(Category=='Topic'):
+                Frame = Frame[Frame['elaborateNumber']=="Topic"]
+                if(len(Frame.index)<10):
+                    #Return 'There is not sufficient data' and display table only
+                else:
+                    Frame['emoji'].hist()
+                    plt.title(Category)
+                    plt.xlabel('Score')
+                    plt.show()
+
+            #Other
+            else(Category=='Other'):
+                Frame = Frame[Frame['elaborateNumber']=="Other"]
+                if(len(Frame.index)<10):
+                    #Return 'There is not sufficient data' and display table only
+                else:
+                    Frame['emoji'].hist()
+                    plt.title(Category)
+                    plt.xlabel('Score')
+                    plt.show()
+
+    return render_template('professorData.html', title='data')
+
 if __name__ == '__main__':
     app.run(debug=True)
 
