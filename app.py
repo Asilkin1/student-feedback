@@ -6,110 +6,127 @@ import time
 
 app = Flask(__name__)
 
+
 @app.route('/', methods=["POST", "GET"])
 def index():
     return render_template('index.html', title='submit')
 
-@app.route('/analytics', methods=["POST","GET"])
-def analytics():
-    return render_template('analytics.html',title='stats')
 
-@app.route('/signup', methods=["POST","GET"])
+@app.route('/analytics', methods=["POST", "GET"])
+def analytics():
+    return render_template('analytics.html', title='stats')
+
+
+@app.route('/signup', methods=["POST", "GET"])
 def signup():
-    return render_template('signup.html',title='signup')
+    return render_template('signup.html', title='signup')
+
 
 @app.route('/student', methods=["POST", "GET"])
 def student():
     if request.method == 'GET':
-        #Delete existing data in database (can change this later)
-        #delete_posts()
+        # Delete existing data in database (can change this later)
+        # delete_posts()
         pass
 
     if request.method == 'POST':
-        #Date
+        # Date
         dateNow = date.today()
 
-        #Time
+        # Time
         #timeNow = time.asctime().split(' ')[3]
         currentTime = datetime.now()
         timeNow = currentTime.strftime("%I:%M %p")
 
-        #Emoji number
+        # Emoji number
         emoji = request.form.get('emoji')
 
-        #class code
+        # class code
         classCode = request.form.get('classCode')
 
-        #Student code
+        # Student code
         studentCode = request.form.get('studentCode')
 
-        #Elaborate number
+        # Elaborate number
         elaborateNumber = request.form.get('elaborateNumber')
 
-        #Elaborate text
+        # Elaborate text
         elaborateText = request.form.get('elaborateText')
 
-        #create data in database
-        create_post(dateNow, timeNow, classCode, studentCode, emoji, elaborateNumber, elaborateText)
+        # create data in database
+        create_post(dateNow, timeNow, classCode, studentCode,
+                    emoji, elaborateNumber, elaborateText)
 
     return render_template('student.html', title='student')
+
 
 @app.route('/professor', methods=["POST", "GET"])
 def instructor():
     return render_template('professor.html', title='instructor')
 
+
 @app.route('/professorData/<classCode>', methods=["POST", "GET"])
 def data(classCode, Category):
     if request.method == 'POST':
-        ROOT = path.dirname(path.relpath((__file__))) #Filepath for database
-        con = sql.connect(path.join(ROOT, 'database.db')) #connect to the database
+        ROOT = path.dirname(path.relpath((__file__)))  # Filepath for database
+        con = sql.connect(path.join(ROOT, 'database.db')
+                          )  # connect to the database
 
-        Frame = pd.read_sql_query("SELECT * from feedback", con) #Database to Pandas
-        Frame = Frame[Frame['classCode'] == classCode] #Filter Database by class code
+        Frame = pd.read_sql_query(
+            "SELECT * from feedback", con)  # Database to Pandas
+        # Filter Database by class code
+        Frame = Frame[Frame['classCode'] == classCode]
         if(Frame.empty):
-            #Return 'Class does not exist' message
-        elif(len(Frame.index)<10):
-            #Return 'There is not sufficient data' and display table only
+            # Return 'Class does not exist' message
+            pass
+        elif(len(Frame.index) < 10):
+            # Return 'There is not sufficient data' and display table only
+            pass
         else:
             #Category Graphs#
-            #Professor
-            if(Category=='Instructor/Professor'):
-                Frame = Frame[Frame['elaborateNumber']=="Instructor/Professor"]
-                if(len(Frame.index)<10):
-                    #Return 'There is not sufficient data' and display table only
+            # Professor
+            if(Category == 'Instructor/Professor'):
+                Frame = Frame[Frame['elaborateNumber']
+                              == "Instructor/Professor"]
+                if(len(Frame.index) < 10):
+                    # Return 'There is not sufficient data' and display table only
+                    pass
                 else:
                     Frame['emoji'].hist()
                     plt.title(Category)
                     plt.xlabel('Score')
                     plt.show()
 
-            #Teaching Style
-            elif(Category=='Teaching Style'):
-                Frame = Frame[Frame['elaborateNumber']=="Teaching Style"]
-                if(len(Frame.index)<10):
-                    #Return 'There is not sufficient data' and display table only
+            # Teaching Style
+            elif(Category == 'Teaching Style'):
+                Frame = Frame[Frame['elaborateNumber'] == "Teaching Style"]
+                if(len(Frame.index) < 10):
+                    # Return 'There is not sufficient data' and display table only
+                    pass
                 else:
                     Frame['emoji'].hist()
                     plt.title(Category)
                     plt.xlabel('Score')
                     plt.show()
 
-            #Topic
-            elif(Category=='Topic'):
-                Frame = Frame[Frame['elaborateNumber']=="Topic"]
-                if(len(Frame.index)<10):
-                    #Return 'There is not sufficient data' and display table only
+            # Topic
+            elif(Category == 'Topic'):
+                Frame = Frame[Frame['elaborateNumber'] == "Topic"]
+                if(len(Frame.index) < 10):
+                    # Return 'There is not sufficient data' and display table only
+                    pass
                 else:
                     Frame['emoji'].hist()
                     plt.title(Category)
                     plt.xlabel('Score')
                     plt.show()
 
-            #Other
-            else(Category=='Other'):
-                Frame = Frame[Frame['elaborateNumber']=="Other"]
-                if(len(Frame.index)<10):
-                    #Return 'There is not sufficient data' and display table only
+            # Other
+            elif(Category == 'Other'):
+                Frame = Frame[Frame['elaborateNumber'] == "Other"]
+                if(len(Frame.index) < 10):
+                    # Return 'There is not sufficient data' and display table only
+                    pass
                 else:
                     Frame['emoji'].hist()
                     plt.title(Category)
@@ -117,6 +134,7 @@ def data(classCode, Category):
                     plt.show()
 
     return render_template('professorData.html', title='data')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
@@ -134,7 +152,7 @@ if __name__ == '__main__':
 # def student():
 #     # If POST methods
 #     if request.method == "POST":
-        
+
 #         # Get mood from the form
 #         mood = request.form['mood']
 
@@ -148,7 +166,7 @@ if __name__ == '__main__':
 #         print(mood,elaborate,desc)
 
 #         return render_template('student.html', title='student')
-    
+
 #     if request.method == "GET":
 #         return render_template('student.html', title='student')
 
