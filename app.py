@@ -74,7 +74,7 @@ def instructor():
 @app.route('/analytics/check',methods=["POST","GET"])
 def check():
     classCode = "AB123"
-    Category = 'Instructor/Professor'
+    Category = 'Other'
     
     con = sql.connect('database.db') # connect to the database
     Frame = pd.read_sql_query("SELECT * from feedback", con)  # Database to Pandas
@@ -95,30 +95,30 @@ def check():
         elif(Category == 'Teaching Style'):
             Frame = Frame[Frame['elaborateNumber'] == "Teaching Style"]
             if(len(Frame.index) < 10):
-                # Return 'There is not sufficient data' and display table only
+                return render_template('notEnoughData.html',title='NED')
                 pass
             else:
-                pass
+                return render_template('analytics.html',title='data')
         elif(Category == 'Topic'):
             Frame = Frame[Frame['elaborateNumber'] == "Topic"]
             if(len(Frame.index) < 10):
-                # Return 'There is not sufficient data' and display table only
+                return render_template('notEnoughData.html',title='NED')
                 pass
             else:
-                pass
+                return render_template('analytics.html',title='data')
         elif(Category == 'Other'):
             Frame = Frame[Frame['elaborateNumber'] == "Other"]
             if(len(Frame.index) < 10):
-                # Return 'There is not sufficient data' and display table only
+                return render_template('notEnoughData.html',title='NED')
                 pass
             else:
-                pass
+                return render_template('analytics.html',title='data')
 
 @app.route('/analytics/plot', methods=["POST", "GET"])
 def data():
     
     classCode = "AB123"
-    Category = 'Instructor/Professor'
+    Category = 'Other'
     con = sql.connect('database.db') # connect to the database
     Frame = pd.read_sql_query("SELECT * from feedback", con)  # Database to Pandas
     Frame = Frame[Frame['classCode'] == classCode]
