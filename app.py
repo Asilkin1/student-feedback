@@ -2,20 +2,50 @@
 from flask import Flask, render_template, request, redirect, url_for
 from models import create_post, get_posts, delete_posts
 from datetime import date, datetime
-from flask_login import LoginManager, login_required
+from flask_login import LoginManager, login_required, login_user, current_user, logout_user
 from flask_user import roles_required, current_user, UserManager,UserMixin
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, SubmitField
+
 import time
 
-app = Flask(__name__)
-# login_manager = LoginManager(app)
-# login_manager.login_view = 'login'
+import os
 
-# @login_manager.user_loader
+
+app = Flask(__name__)
+#CSRF thing
+SECRET_KEY = os.urandom(32)
+app.config['SECRET_KEY'] = SECRET_KEY
+
+login_manager = LoginManager(app)
+login_manager.login_view = 'login'
+
+@login_manager.user_loader
 @app.route('/', methods=["POST", "GET"])
 def index():
     return render_template('index.html', title='submit')
 
-# @login_manager.unauthorized_handler
+@app.route('/login', methods=['GET','POST'])
+def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = LoginForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(username=form.username.data).first()
+        if user is None or not user.check_password(form.password.data):
+            flash('Invalid username or password')
+            return redirect(url_for('login'))
+        login_user(user, remember=form.remember_me.data)
+        return redirect(url_for('index'))
+    return render_template('login.html', title='Sign In', form=form)
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
+
+@login_manager.unauthorized_handler
 @app.route('/signup',methods=['GET'])
 def unauthorized():
       if request.path == '/student':
@@ -24,8 +54,8 @@ def unauthorized():
           return render_template('professor_sign_up.html')
 
 @app.route('/analytics', methods=["POST","GET"])
-# @login_required
-# @roles_required('Professor')
+@login_required
+@roles_required('Professor')
 def analytics():
     return render_template('analytics.html',title='stats')
 
@@ -53,12 +83,11 @@ def registration():
 # New student signup
 @app.route('/newstudent', methods=['GET'])
 def newstudent():
-    
     return render_template('student_sign_up.html', scode=12003,ccode='Ab123')
 
 
 @app.route('/student', methods=["POST", "GET"])
-# @login_required
+@login_required
 def student():
     if request.method == 'GET':
         #Delete existing data in database (can change this later)
@@ -98,7 +127,7 @@ def student():
     return render_template('student.html', title='student')
 
 @app.route('/professor', methods=["POST", "GET"])
-# @login_required
+@login_required
 def instructor():
     return render_template('professor.html', title='instructor')
 

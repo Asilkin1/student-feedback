@@ -14,11 +14,17 @@
         <a class="navbar-brand" href="/"><i class="fas fa-graduation-cap fa-2x"></i></a>
 
         <ul class="navbar-nav mt-2 mt-lg-0">
+            {% if current_user.is_anonymous %}
             <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('signup')}}">Signin/Signup</a>
+                <a class="nav-link" href="{{ url_for('login')}}">Login</a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('logout')}}">Login</a>
             </li>
 
-            <li class="nav-item">Hi</li>
+            {% endif %}
+
         </ul>
 
         </div>
