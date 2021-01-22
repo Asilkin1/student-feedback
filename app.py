@@ -25,39 +25,38 @@ def index():
     
 @app.route("/student/login", methods=["GET", "POST"])
 def studentLogin():
-    if request.method == 'POST':    
-        classCode = request.form['classCode']
-        studentCode = request.form['studentCode']
+    # if request.method == 'GET':
+    #     # classCode = request.form['classCode']
+    #     # studentCode = request.form['studentCode']
 
-        cur = mysql.connection.cursor()
+    #     # cur = mysql.connection.cursor()
 
-        cur.execute("INSERT INTO users (classCode, studentCode) values (%s, %s)", (classCode, studentCode))
+    #     # cur.execute("INSERT IGNORE into users (classCode, studentCode) values (%s, %s)", (classCode, studentCode))
 
-        mysql.connection.commit()
-        cur.close()
-        print(classCode)
-        return render_template('student.html', title='student')
+    #     # mysql.connection.commit()
+    #     # cur.close()
+    #     # print(classCode)
+    #     return render_template('student.html', title='student')
 
     return render_template('studentLogin.html', title='login')
 
-@app.route('/student', methods=["POST", "GET"])
+@app.route('/student/', methods=["POST", "GET"])
 def student():
+    classCode = request.args.get('classCode')
+    studentCode = request.args.get('studentCode')
+
     if request.method == 'GET':
         #Delete existing data in database (can change this later)
-        delete_posts()
+        pass
 
     if request.method == 'POST':
         cur = mysql.connection.cursor()
 
-        cur.execute("select * from users order by uid desc limit 1")
-        content = cur.fetchone()
-        print(content)
+        cur.execute("INSERT into users (classCode, studentCode) values (%s, %s)", (classCode, studentCode))
 
-        #Get class and student codes
-        classCode = content[1]
-        studentCode = content[2]
+        mysql.connection.commit()
+        cur.close()
 
-        print(classCode)
         #Date
         dateNow = date.today()
 
