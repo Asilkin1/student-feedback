@@ -69,23 +69,29 @@ def student():
 
 @app.route('/professor', methods=["POST", "GET"])
 def instructor():
+    category = request.form.get('category')
     return render_template('professor.html', title='instructor')
 
 @app.route('/analytics/check',methods=["POST","GET"])
 def check():
-    classCode = "AB123"
-    Category = 'Other'
+    ccode = request.args.get('classCode')
+    Category = request.args.get('category')
+
+    # Draw image
+    image = drawGraph(ccode,Category)
     
     con = sql.connect('database.db') # connect to the database
     Frame = pd.read_sql_query("SELECT * from feedback", con)  # Database to Pandas
     # Filter Database by class code
-    Frame = Frame[Frame['classCode'] == classCode]
+    Frame = Frame[Frame['classCode'] == ccode]
     if(Frame.empty):
         # Return 'Class does not exist' message
+        return render_template('index.html')
         pass
     elif(len(Frame.index) < 10):
         return render_template('notEnoughData.html', title='NED')
     else:
+        #Instructor%2FProfessor
         if(Category == 'Instructor/Professor'):
             Frame = Frame[Frame['elaborateNumber']== "Instructor/Professor"]
             if(len(Frame.index) < 10):
@@ -114,11 +120,8 @@ def check():
             else:
                 return render_template('analytics.html',title='data')
 
-@app.route('/analytics/plot', methods=["POST", "GET"])
-def data():
-    
-    classCode = "AB123"
-    Category = 'Other'
+
+def drawGraph(classCode,Category):
     con = sql.connect('database.db') # connect to the database
     Frame = pd.read_sql_query("SELECT * from feedback", con)  # Database to Pandas
     Frame = Frame[Frame['classCode'] == classCode]
