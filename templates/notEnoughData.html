@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Not enough dta{% endblock %}
+
+{% block content %}
+
+<!-- Not enough data -->
+<div class="container-fluid">
+    <h1>There is not sufficient data</h1>
+</div>
+
+<div class="container">
+    <table class="table">
+        <!-- Top level row with headers -->
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Date</th>
+            <th scope="col">Time</th>
+            <th scope="col">Class Code</th>
+            <th scope="col">Student Code</th>
+            <th scope="col">Emoji</th>
+            <th scope="col">Elaborate number</th>
+            <th scope="col">Elaborate text</th>
+            <th scope="col">Section</th>
+          </tr>
+        </thead>
+        <tbody>
+            <!-- Add flask for loop somewhere here -->
+          <tr>
+            <th scope="row">1</th>
+            <td>1/22/2021</td>
+            <td>9:29</td>
+            <td>AB202</td>
+            <td>E111</td>
+            <td>&#128512;</td>
+            <td>5</td>
+            <td>Very good instructions</td>
+            <td>2</td>
+          </tr>
+         
+          <!-- End of for loop -->
+        </tbody>
+      </table>
+
+</div>
+{% endblock %}

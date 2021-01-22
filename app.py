@@ -7,15 +7,15 @@ from flask_user import roles_required, current_user, UserManager,UserMixin
 import time
 
 app = Flask(__name__)
-login_manager = LoginManager(app)
-login_manager.login_view = 'login'
+# login_manager = LoginManager(app)
+# login_manager.login_view = 'login'
 
-@login_manager.user_loader
+# @login_manager.user_loader
 @app.route('/', methods=["POST", "GET"])
 def index():
     return render_template('index.html', title='submit')
 
-@login_manager.unauthorized_handler
+# @login_manager.unauthorized_handler
 @app.route('/signup',methods=['GET'])
 def unauthorized():
       if 'student' in request.url_rule.rule:
@@ -24,10 +24,14 @@ def unauthorized():
           return render_template('professor_sign_up.html')
 
 @app.route('/analytics', methods=["POST","GET"])
-@login_required
-@roles_required('Professor')
+# @login_required
+# @roles_required('Professor')
 def analytics():
     return render_template('analytics.html',title='stats')
+
+@app.route('/notenoughdata',methods=["POST","GET"])
+def notenoughdata():
+    return render_template('notEnoughData.html',title='not enough data')
 
 @app.route('/signup', methods=["POST","GET"])
 def signup():
@@ -43,7 +47,7 @@ def registration():
         return redirect(url_for('index'))
 
 @app.route('/student', methods=["POST", "GET"])
-@login_required
+# @login_required
 def student():
     if request.method == 'GET':
         #Delete existing data in database (can change this later)
@@ -80,7 +84,7 @@ def student():
     return render_template('student.html', title='student')
 
 @app.route('/professor', methods=["POST", "GET"])
-@login_required
+# @login_required
 def instructor():
     return render_template('professor.html', title='instructor')
 
