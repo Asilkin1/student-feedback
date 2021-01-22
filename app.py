@@ -33,6 +33,10 @@ def analytics():
 def notenoughdata():
     return render_template('notEnoughData.html',title='not enough data')
 
+@app.route('/classerror',methods=["POST","GET"])
+def classerror():
+    return render_template('classError.html',title='class does not exist')
+
 @app.route('/signup', methods=["POST","GET"])
 def signup():
     return render_template('signup.html',title='signup')
