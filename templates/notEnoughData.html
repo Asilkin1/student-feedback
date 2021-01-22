@@ -1,11 +1,13 @@
-<!-- Analytics stats -->
+{% extends "base.html" %}
+{% block title %}Not enough dta{% endblock %}
+
 {% block content %}
-{% if '/analytics/check' == True %}
-    <img src="analytics/plot" alt="Image Placeholder" width = "49%">
-{% else %}
-    <div class="container-fluid">
+
+<!-- Not enough data -->
+<div class="container-fluid">
     <h1>There is not sufficient data</h1>
 </div>
+
 <div class="container">
     <table class="table">
         <!-- Top level row with headers -->
@@ -41,5 +43,4 @@
       </table>
 
 </div>
-{% endif %}
-{% endblock content %}
+{% endblock %}

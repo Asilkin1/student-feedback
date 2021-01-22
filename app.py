@@ -1,8 +1,15 @@
 # Flask barebones
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, make_response
 from models import create_post, get_posts, delete_posts
 from datetime import date, datetime
 import time
+import matplotlib.pyplot as plt
+import pandas as pd
+import sqlite3 as sql
+
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+from matplotlib.figure import Figure
+import io
 
 app = Flask(__name__)
 
@@ -64,76 +71,71 @@ def student():
 def instructor():
     return render_template('professor.html', title='instructor')
 
+@app.route('/analytics/check',methods=["POST","GET"])
+def check():
+    classCode = "AB123"
+    Category = 'Instructor/Professor'
+    
+    con = sql.connect('database.db') # connect to the database
 
-@app.route('/professorData/<classCode>', methods=["POST", "GET"])
-def data(classCode, Category):
-    if request.method == 'POST':
-        ROOT = path.dirname(path.relpath((__file__)))  # Filepath for database
-        con = sql.connect(path.join(ROOT, 'database.db')
-                          )  # connect to the database
+    Frame = pd.read_sql_query("SELECT * from feedback", con)  # Database to Pandas
+    # Filter Database by class code
+    Frame = Frame[Frame['classCode'] == classCode]
+    if(Frame.empty):
+        # Return 'Class does not exist' message
+        pass
+    elif(len(Frame.index) < 10):
+        return render_template('notEnoughData.html', title='NED')
+    else:
+        if(Category == 'Instructor/Professor'):
+            Frame = Frame[Frame['elaborateNumber']== "Instructor/Professor"]
+            if(len(Frame.index) < 10):
+                return False
+            else:
+                return True
+        elif(Category == 'Teaching Style'):
+            Frame = Frame[Frame['elaborateNumber'] == "Teaching Style"]
+            if(len(Frame.index) < 10):
+                # Return 'There is not sufficient data' and display table only
+                pass
+            else:
+                pass
+        elif(Category == 'Topic'):
+            Frame = Frame[Frame['elaborateNumber'] == "Topic"]
+            if(len(Frame.index) < 10):
+                # Return 'There is not sufficient data' and display table only
+                pass
+            else:
+                pass
+        elif(Category == 'Other'):
+            Frame = Frame[Frame['elaborateNumber'] == "Other"]
+            if(len(Frame.index) < 10):
+                # Return 'There is not sufficient data' and display table only
+                pass
+            else:
+                pass
 
-        Frame = pd.read_sql_query(
-            "SELECT * from feedback", con)  # Database to Pandas
-        # Filter Database by class code
-        Frame = Frame[Frame['classCode'] == classCode]
-        if(Frame.empty):
-            # Return 'Class does not exist' message
-            pass
-        elif(len(Frame.index) < 10):
-            # Return 'There is not sufficient data' and display table only
-            pass
-        else:
-            #Category Graphs#
-            # Professor
-            if(Category == 'Instructor/Professor'):
-                Frame = Frame[Frame['elaborateNumber']
-                              == "Instructor/Professor"]
-                if(len(Frame.index) < 10):
-                    # Return 'There is not sufficient data' and display table only
-                    pass
-                else:
-                    Frame['emoji'].hist()
-                    plt.title(Category)
-                    plt.xlabel('Score')
-                    plt.show()
+@app.route('/analytics/plot', methods=["POST", "GET"])
+def data():
+    
+    classCode = "AB123"
+    Category = 'Instructor/Professor'
+    con = sql.connect('database.db') # connect to the database
+    Frame = pd.read_sql_query("SELECT * from feedback", con)  # Database to Pandas
+    Frame = Frame[Frame['classCode'] == classCode]
+    Frame = Frame[Frame['elaborateNumber']== "Instructor/Professor"]
 
-            # Teaching Style
-            elif(Category == 'Teaching Style'):
-                Frame = Frame[Frame['elaborateNumber'] == "Teaching Style"]
-                if(len(Frame.index) < 10):
-                    # Return 'There is not sufficient data' and display table only
-                    pass
-                else:
-                    Frame['emoji'].hist()
-                    plt.title(Category)
-                    plt.xlabel('Score')
-                    plt.show()
-
-            # Topic
-            elif(Category == 'Topic'):
-                Frame = Frame[Frame['elaborateNumber'] == "Topic"]
-                if(len(Frame.index) < 10):
-                    # Return 'There is not sufficient data' and display table only
-                    pass
-                else:
-                    Frame['emoji'].hist()
-                    plt.title(Category)
-                    plt.xlabel('Score')
-                    plt.show()
-
-            # Other
-            elif(Category == 'Other'):
-                Frame = Frame[Frame['elaborateNumber'] == "Other"]
-                if(len(Frame.index) < 10):
-                    # Return 'There is not sufficient data' and display table only
-                    pass
-                else:
-                    Frame['emoji'].hist()
-                    plt.title(Category)
-                    plt.xlabel('Score')
-                    plt.show()
-
-    return render_template('professorData.html', title='data')
+    fig = Figure()
+    axis = fig.add_subplot(1,1,1)
+    axis.hist(Frame['emoji'])
+    axis.set_title(Category)
+    axis.set_xlabel('Score')
+    canvas = FigureCanvas(fig)
+    output = io.BytesIO()
+    canvas.print_png(output)
+    response = make_response(output.getvalue())
+    response.mimetype = 'image/png'
+    return response
 
 
 if __name__ == '__main__':
