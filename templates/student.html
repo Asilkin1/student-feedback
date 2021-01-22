@@ -6,20 +6,8 @@
 <!-- Content for student page -->
 <div class="container">
 
-    <form action="/student" method="post">
-        <label class="form-check-label" for="teachingstyle">
-            Class Code
-        </label>
-        <div class="col-sm-4">
-            <input type="text" class="form-control" id="text" name="classCode">
-        </div>
-        <label class="form-check-label" for="teachingstyle">
-            Student Code
-        </label>
-        <div class="col-sm-4">
-            <input type="text" class="form-control" id="text" name="studentCode">
-        </div>
-
+    <form action method="post">
+        
         <fieldset class="form-group">
             <div class="row">
                 <legend class="col-form-label col-sm-2 pt-0">
@@ -29,7 +17,7 @@
                 <!-- Excited -->
                 <div class="col-sm-10 form-check-inline">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="emoji" id="excited" value="5">
+                        <input class="form-check-input" type="radio" name="emoji" id="excited" value="5" required>
                         <label class="form-check-label" for="gridRadios1">
                             Excited
                         </label>
@@ -39,7 +27,7 @@
 
                     <!-- Normal  -->
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="emoji" id="normal" value="4">
+                        <input class="form-check-input" type="radio" name="emoji" id="normal" value="4" required>
                         <label class="form-check-label" for="normal">
                             Normal
                         </label>
@@ -48,7 +36,7 @@
 
                     <!-- Unclear topic concept -->
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="emoji" id="unclear" value="3">
+                        <input class="form-check-input" type="radio" name="emoji" id="unclear" value="3" required>
                         <label class="form-check-label" for="unclear">
                             Unclear topic/concept
                         </label>
@@ -57,7 +45,7 @@
 
                     <!-- Nervous -->
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="emoji" id="nervous" value="2">
+                        <input class="form-check-input" type="radio" name="emoji" id="nervous" value="2" required>
                         <label class="form-check-label" for="nervous">
                             Nervous
                         </label>
@@ -66,7 +54,7 @@
 
                     <!-- Mad -->
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="emoji" id="mad" value="1">
+                        <input class="form-check-input" type="radio" name="emoji" id="mad" value="1" required>
                         <label class="form-check-label" for="mad">
                             Mad
                         </label>
@@ -87,7 +75,7 @@
                 <!-- Instructor/Professor -->
                 <div class="form-check">
                     <input class="form-check-input" name="elaborateNumber" type="radio" id="professor"
-                        value="Instructor/Professor">
+                        value="Instructor/Professor" required>
                     <label class="form-check-label" for="gridCheck1">
                         Instructor/Professor
                     </label>
@@ -98,7 +86,7 @@
 
                 <!-- Teaching style -->
                 <div class="form-check">
-                    <input class="form-check-input" name="elaborateNumber" type="radio" id="teaching" value="Teaching style">
+                    <input class="form-check-input" name="elaborateNumber" type="radio" id="teaching" value="Teaching style" required>
                     <label class="form-check-label" for="teachingstyle">
                         Teaching style
                     </label>
@@ -109,7 +97,7 @@
 
                 <!-- Topic -->
                 <div class="form-check">
-                    <input class="form-check-input" name="elaborateNumber" type="radio" id="topic" value="Topic">
+                    <input class="form-check-input" name="elaborateNumber" type="radio" id="topic" value="Topic" required>
                     <label class="form-check-label" for="teachingstyle">
                         Topic
                     </label>
@@ -120,7 +108,7 @@
 
                 <!-- Other -->
                 <div class="form-check">
-                    <input class="form-check-input" name="elaborateNumber" type="radio" id="other" value="Other">
+                    <input class="form-check-input" name="elaborateNumber" type="radio" id="other" value="Other" required>
                     <label class="form-check-label" for="teachingstyle">
                         Other
                     </label>

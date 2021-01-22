@@ -1,10 +1,74 @@
+<!DOCTYPE html>
 <html>
+    <style>
+        .form-container {
+            margin: 100px;
+            margin-left: 500px;
+            width: 700px;
+            box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 7px 20px 0 rgba(0, 0, 0, 0.2);
+            position: fixed;
+            border-radius: 10px;
+            height: 590px;
+            display: flex;
+            background: linear-gradient(90deg, rgb(10, 28, 68) 0%, #010418 100%);
+        }
+        .form {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .button {
+            width: 400px;
+            height: 50px;
+            margin-top: 15px;
+            border-radius: 2px;
+            background: linear-gradient(
+                90deg,
+                rgb(12, 140, 214) 0%,
+                rgb(5, 141, 143) 100%
+            );
+            outline: none;
+            border: none;
+            color: #fff;
+            font-size: 1.5rem;
+            cursor: pointer;
+            position: relative;
+            max-width: 100%;
+        }
+        .form h1 {
+            font-size: 2rem;
+            text-align: center;
+            width: 100%;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+        .form h2 {
+            font-size: 1rem;
+            text-align: center;
+            width: 90%;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+    </style>
     <body>
-        <a href="/instructor">
-            <button type="submit" name="submitButton" value="instructor">Instructor</button>
-        </a>
-        <a href="/student">
-            <button type="submit" name="submitButton" value="student">Student</button>
-        </a>
+        <div class="form-container">
+            <div class="form">
+                <h1>Welcome to the feedback portal!</h1>
+                <h2>Select an option below to get started.</h2>
+                <a href="{{ url_for('instructor') }}">
+                    <button class="button" type="submit" name="submitButton" value="instructor">Instructor</button>
+                </a>
+                <a href="{{ url_for('studentLogin') }}">
+                    <button class="button" type="submit" name="submitButton" value="student">Student</button>
+                </a>
+            </div>
+        </div>
     </body>
 </html>

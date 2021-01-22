@@ -3,25 +3,64 @@ from flask import Flask, render_template, request, redirect, url_for
 from models import create_post, get_posts, delete_posts
 from datetime import date, datetime
 import time
+import random
+from wtforms import Form, validators, TextField
+
+from flask_mysqldb import MySQL
 
 app = Flask(__name__)
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_DB'] = 'studentfeedback'
+
+mysql = MySQL(app)
+
+classCode = ""
+studentCode = ""
 
 @app.route('/', methods=["POST", "GET"])
 def index():
     return render_template('submit.html', title='submit')
+    
+@app.route("/student/login", methods=["GET", "POST"])
+def studentLogin():
+    # if request.method == 'GET':
+    #     # classCode = request.form['classCode']
+    #     # studentCode = request.form['studentCode']
 
-@app.route('/student', methods=["POST", "GET"])
+    #     # cur = mysql.connection.cursor()
+
+    #     # cur.execute("INSERT IGNORE into users (classCode, studentCode) values (%s, %s)", (classCode, studentCode))
+
+    #     # mysql.connection.commit()
+    #     # cur.close()
+    #     # print(classCode)
+    #     return render_template('student.html', title='student')
+
+    return render_template('studentLogin.html', title='login')
+
+@app.route('/student/', methods=["POST", "GET"])
 def student():
+    classCode = request.args.get('classCode')
+    studentCode = request.args.get('studentCode')
+
     if request.method == 'GET':
         #Delete existing data in database (can change this later)
-        delete_posts()
+        pass
 
     if request.method == 'POST':
+        cur = mysql.connection.cursor()
+
+        cur.execute("INSERT into users (classCode, studentCode) values (%s, %s)", (classCode, studentCode))
+
+        mysql.connection.commit()
+        cur.close()
+
         #Date
         dateNow = date.today()
 
         #Time
-        #timeNow = time.asctime().split(' ')[3]
         currentTime = datetime.now()
         timeNow = currentTime.strftime("%I:%M %p")
 
@@ -29,10 +68,10 @@ def student():
         emoji = request.form.get('emoji')
 
         #class code
-        classCode = request.form.get('classCode')
+        #classCode = request.form.get('classCode')
 
         #Student code
-        studentCode = request.form.get('studentCode')
+        #studentCode = request.form.get('studentCode')
 
         #Elaborate number
         elaborateNumber = request.form.get('elaborateNumber')
@@ -45,7 +84,7 @@ def student():
 
     return render_template('student.html', title='student')
 
-@app.route('/professor.html', methods=["POST", "GET"])
+@app.route('/professor', methods=["POST", "GET"])
 def instructor():
     return render_template('professor.html', title='instructor')
 
