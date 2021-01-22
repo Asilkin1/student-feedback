@@ -1,51 +1,67 @@
 # Flask barebones
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for,session, abort,flash
 from models import create_post, get_posts, delete_posts
 from datetime import date, datetime
-from flask_login import LoginManager, login_required, login_user, current_user, logout_user
-from flask_user import roles_required, current_user, UserManager,UserMixin
-from werkzeug.security import generate_password_hash, check_password_hash
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
-
+from sqlalchemy.orm import sessionmaker
+from CreateUserDatabase import *
 import time
-
 import os
 
+# Login engine
+engine = create_engine('sqlite:///tutorial.db', echo=True)
 
 app = Flask(__name__)
-#CSRF thing
-SECRET_KEY = os.urandom(32)
-app.config['SECRET_KEY'] = SECRET_KEY
 
-login_manager = LoginManager(app)
-login_manager.login_view = 'login'
 
-@login_manager.user_loader
 @app.route('/', methods=["POST", "GET"])
 def index():
-    return render_template('index.html', title='submit')
+    if not session.get('logged_in'):
+        return render_template('login.html', title='submit')
+    else:
+        return render_template('index.html', title='submit')
 
+# -------------------------------------------------------------------- Log in
 @app.route('/login', methods=['GET','POST'])
 def login():
-    if current_user.is_authenticated:
-        return redirect(url_for('index'))
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
-        if user is None or not user.check_password(form.password.data):
-            flash('Invalid username or password')
-            return redirect(url_for('login'))
-        login_user(user, remember=form.remember_me.data)
-        return redirect(url_for('index'))
-    return render_template('login.html', title='Sign In', form=form)
+    send_username = str(request.form['username'])
+    send_password = str(request.form['password'])
 
+    Session = sessionmaker(bind=engine)
+    s = Session()
+
+    query = s.query(User).filter(User.username.in_([send_username]), User.password.in_([send_password]))
+    result = query.first()
+
+    if result:
+        session['logged_in'] = True
+        session['username'] = send_username
+        flash('Your are successfully logged in')
+    else:
+       session['logged_in'] = False  
+
+    return render_template('index.html')
+# --------------------------------------------------------------------- Log out
 @app.route('/logout')
 def logout():
-    logout_user()
-    return redirect(url_for('index'))
+    # User is logged out
+    session['logged_in'] = False
+    # User is removed from the session
+    session.pop('username', None)
+    return render_template('login.html')
 
-@login_manager.unauthorized_handler
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    form = RegistrationForm(request.form)
+    if request.method == 'POST' and form.validate():
+        user = User(form.username.data, form.email.data,
+                    form.password.data)
+        db_session.add(user)
+        flash('Thanks for registering')
+        return redirect(url_for('login'))
+    return render_template('register.html', form=form)
+
+
 @app.route('/signup',methods=['GET'])
 def unauthorized():
       if request.path == '/student':
@@ -54,8 +70,6 @@ def unauthorized():
           return render_template('professor_sign_up.html')
 
 @app.route('/analytics', methods=["POST","GET"])
-@login_required
-@roles_required('Professor')
 def analytics():
     return render_template('analytics.html',title='stats')
 
@@ -87,7 +101,6 @@ def newstudent():
 
 
 @app.route('/student', methods=["POST", "GET"])
-@login_required
 def student():
     if request.method == 'GET':
         #Delete existing data in database (can change this later)
@@ -96,7 +109,6 @@ def student():
         ccode = request.args.get('classCode')
         return render_template('student.html', studentcode=scode, classcode=ccode)
         
-
     if request.method == 'POST':
         #Date
         dateNow = date.today()
@@ -127,9 +139,10 @@ def student():
     return render_template('student.html', title='student')
 
 @app.route('/professor', methods=["POST", "GET"])
-@login_required
 def instructor():
+    category = request.args.get('category')
     return render_template('professor.html', title='instructor')
 
 if __name__ == '__main__':
+    app.secret_key = os.urandom(12)
     app.run(debug=True)
