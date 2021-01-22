@@ -4,46 +4,53 @@
 {% block content %}
 <!-- Analytics stats -->
 <div class="container">
-    <canvas id="myChart" width="400" height="300"></canvas>
+    <body>
+        
+        <!-- Analytics stats -->
+      
+        {% if "analytics/check" == False %}
+            <div class="container-fluid">
+            <h1>There is not sufficient data</h1>
+        </div>
+        <div class="container">
+            <table class="table">
+                <!-- Top level row with headers -->
+                <thead>
+                  <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Time</th>
+                    <th scope="col">Class Code</th>
+                    <th scope="col">Student Code</th>
+                    <th scope="col">Emoji</th>
+                    <th scope="col">Elaborate number</th>
+                    <th scope="col">Elaborate text</th>
+                    <th scope="col">Section</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    <!-- Add flask for loop somewhere here -->
+                  <tr>
+                    <th scope="row">1</th>
+                    <td>1/22/2021</td>
+                    <td>9:29</td>
+                    <td>AB202</td>
+                    <td>E111</td>
+                    <td>😀</td>
+                    <td>5</td>
+                    <td>Very good instructions</td>
+                    <td>2</td>
+                  </tr>
+                 
+                  <!-- End of for loop -->
+                </tbody>
+              </table>
+        
+        </div>
+        {% else %}
+            <img src="analytics/plot" alt="Image Placeholder" width="49%">
+        {% endif %}
+</body>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
-<script>
-    var ctx = document.getElementById('myChart').getContext('2d');
-    var myChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
-            datasets: [{
-                label: '# of Votes',
-                data: [12, 19, 3, 5, 2, 3],
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(54, 162, 235, 0.2)',
-                    'rgba(255, 206, 86, 0.2)',
-                    'rgba(75, 192, 192, 0.2)',
-                    'rgba(153, 102, 255, 0.2)',
-                    'rgba(255, 159, 64, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true
-                    }
-                }]
-            }
-        }
-    });
-    </script>
+
 {% endblock %}
