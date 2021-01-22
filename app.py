@@ -77,7 +77,6 @@ def check():
     Category = 'Instructor/Professor'
     
     con = sql.connect('database.db') # connect to the database
-
     Frame = pd.read_sql_query("SELECT * from feedback", con)  # Database to Pandas
     # Filter Database by class code
     Frame = Frame[Frame['classCode'] == classCode]
@@ -90,9 +89,9 @@ def check():
         if(Category == 'Instructor/Professor'):
             Frame = Frame[Frame['elaborateNumber']== "Instructor/Professor"]
             if(len(Frame.index) < 10):
-                return False
+                return render_template('notEnoughData.html',title='NED')
             else:
-                return True
+                return render_template('analytics.html',title='data')
         elif(Category == 'Teaching Style'):
             Frame = Frame[Frame['elaborateNumber'] == "Teaching Style"]
             if(len(Frame.index) < 10):
@@ -123,13 +122,16 @@ def data():
     con = sql.connect('database.db') # connect to the database
     Frame = pd.read_sql_query("SELECT * from feedback", con)  # Database to Pandas
     Frame = Frame[Frame['classCode'] == classCode]
-    Frame = Frame[Frame['elaborateNumber']== "Instructor/Professor"]
-
+    Frame = Frame[Frame['elaborateNumber']=="Instructor/Professor"]
     fig = Figure()
     axis = fig.add_subplot(1,1,1)
-    axis.hist(Frame['emoji'])
+    Frame = Frame['emoji']
+    x = [1,2,3,4,5]
+    y = [Frame[Frame==1].count(),Frame[Frame==2].count(),Frame[Frame==3].count(),Frame[Frame==4].count(),Frame[Frame==5].count()]
+    axis.bar(x,y)
     axis.set_title(Category)
     axis.set_xlabel('Score')
+    axis.set_ylabel('Count')
     canvas = FigureCanvas(fig)
     output = io.BytesIO()
     canvas.print_png(output)
