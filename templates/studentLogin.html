@@ -73,7 +73,7 @@
         <div class="form-container">
             <div class="form">
                 <h1>Fill out the information below to get started.</h1>
-                <form action="/student" method="get">
+                <form action="/student/login" method="post" >
                     <label class="form-check-label" for="teachingstyle">
                         Class Code
                     </label>
@@ -93,7 +93,7 @@
                             document.getElementById("number").value = "AB"+i++;
                         }
                     </script>
-                    <a href="/student">
+                    <a>
                         <button class="button" type="submit" name="submitButton" value="student">Login</button>
                     </a>
                 </form>

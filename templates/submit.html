@@ -62,10 +62,10 @@
             <div class="form">
                 <h1>Welcome to the feedback portal!</h1>
                 <h2>Select an option below to get started.</h2>
-                <a href="/instructor">
+                <a href="{{ url_for('instructor') }}">
                     <button class="button" type="submit" name="submitButton" value="instructor">Instructor</button>
                 </a>
-                <a href="/studentlogin">
+                <a href="{{ url_for('studentLogin') }}">
                     <button class="button" type="submit" name="submitButton" value="student">Student</button>
                 </a>
             </div>
