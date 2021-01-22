@@ -1,7 +1,8 @@
 # Flask barebones
 from flask import Flask, render_template, request, redirect, url_for
-from models import create_post, get_posts, delete_posts
+from models import create_post, get_posts, delete_posts, create_class, get_class, delete_class
 from datetime import date, datetime
+import sqlite3 as sl
 import time
 import random
 
@@ -47,45 +48,42 @@ def student():
     return render_template('student.html', title='student')
 
 
-
-
-import sqlite3 as sl
-
-#Creates a database via SQLite to store Professor information
-con = sl.connect('output.db')
+#creates a table for professor info
+con = sl.connect('prof.db')
 with con:
     con.execute("""
-        CREATE TABLE IF NOT EXISTS Prof (
-        ProfessorName TEXT,
-        SchoolName TEXT,
-        DepartmentName TEXT,
-        ClassID INTEGER NOT NULL,
-        SectionName TEXT,
-        ClassCode INTEGER NOT NULL
+        CREATE TABLE IF NOT EXISTS account (
+        professorName text not null ,
+        schoolName text not null,
+        departmentName text not null,
+        classId text not null,
+        sectionName text not null,
+        classCode integer PRIMARY KEY
         );
     """)
 
-
+#Right now this goes to the /professor part of the website. As this is a sign up page it should probably be changed to something like /professor/signup and go back to /professor when finished
 @app.route('/professor', methods=["POST", "GET"])
 def professor():
-    #Replace this later by instead searching through the professor database
-    codeList = []
-    #Keep this though
-    inList = True
+    con = sl.connect('prof.db')
+    inData = True
+    
+    if request.method == 'GET':
+        #Delete existing data in database (can change this later)
+        delete_posts()
+    
     if request.method == 'POST':
-        #Professors unique class code (Randomly generated)
+        #Professors unique class code (Randomly generated between x, and y with z being the amount generated)
         classCode = random.randrange(1,3000,1)
-        #Checks the list of existing codes to make sure the one currently generated is unique
-        while inList:
-            for i in codeList:
-                if codeList[i] == classCode:
-                    inList = True
-                    print(inList)
-                break
-            classCode = random.randrange(1,20,1)
-        codeList.append(classCode)
-        #Prints it out for debuggin purposes, should always be unique
-        print(classCode)
+
+        #While loops until a random number is generated that is not already in the database
+        while(inData):
+            #Creates a cursor that checks if classCodes value exists at all
+            cur = con.cursor()
+            #Note that the , after classCode is nessassary otherwise you get an unsuported type error (turns the int into a tuple containing an int)
+            cur.execute("""SELECT classCode FROM account WHERE classCode=?""", (classCode,))
+            if not cur.fetchone():
+                inData = False
 
         #Professors Name
         professorName = request.form.get('professorName')
@@ -102,9 +100,8 @@ def professor():
         #Sections Name
         sectionName = request.form.get('sectionName')
 
-        #create data in database
-        #Todo
-        #(professorName, schoolName, departmentName, classId, sectionName, classCode)
+        #adds data to database
+        create_class(professorName, schoolName, departmentName, classId, sectionName, int(classCode))
 
     return render_template('professor.html', title='professor')
 

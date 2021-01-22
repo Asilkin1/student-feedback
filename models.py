@@ -22,3 +22,27 @@ def delete_posts():
     cur = con.cursor()
     cur.execute('delete from feedback')
     con.commit()
+
+
+def create_class(professorName, schoolName, departmentName, classId, sectionName, classCode):
+    con = sql.connect(path.join(ROOT, 'prof.db'))
+    cur = con.cursor()
+    cur.execute('insert into account (professorName, schoolName, departmentName, classId, sectionName, classCode) values(?, ?, ?, ?, ?, ?)', (professorName, schoolName, departmentName, classId, sectionName, classCode))
+    con.commit()
+    con.close()
+
+def get_class():
+    con = sql.connect(path.join(ROOT, 'prof.db'))
+    cur = con.cursor()
+    cur.execute('select * from account')
+    posts = cur.fetchall()
+    return posts
+
+def delete_class():
+    con = sql.connect(path.join(ROOT, 'prof.db'))
+    cur = con.cursor()
+    cur.execute('delete from account')
+    con.commit()
+
+
+
