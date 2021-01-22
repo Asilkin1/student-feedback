@@ -74,7 +74,7 @@ def instructor():
 @app.route('/analytics/check',methods=["POST","GET"])
 def check():
     classCode = "AB123"
-    Category = 'Other'
+    Category = 'Instructor/Professor'
     
     con = sql.connect('database.db') # connect to the database
     Frame = pd.read_sql_query("SELECT * from feedback", con)  # Database to Pandas
@@ -91,34 +91,32 @@ def check():
             if(len(Frame.index) < 10):
                 return render_template('notEnoughData.html',title='NED')
             else:
-                return render_template('analytics.html',title='data')
+                return render_template('analytics.html',title='data',classCode = classCode,Category=Category)
+        
         elif(Category == 'Teaching Style'):
             Frame = Frame[Frame['elaborateNumber'] == "Teaching Style"]
             if(len(Frame.index) < 10):
                 return render_template('notEnoughData.html',title='NED')
-                pass
             else:
-                return render_template('analytics.html',title='data')
+                return render_template('analytics.html',title='data',classCode = classCode,Category=Category)
+        
         elif(Category == 'Topic'):
             Frame = Frame[Frame['elaborateNumber'] == "Topic"]
             if(len(Frame.index) < 10):
                 return render_template('notEnoughData.html',title='NED')
-                pass
             else:
-                return render_template('analytics.html',title='data')
+                return render_template('analytics.html',title='data',classCode = classCode,Category=Category)
+        
         elif(Category == 'Other'):
             Frame = Frame[Frame['elaborateNumber'] == "Other"]
             if(len(Frame.index) < 10):
                 return render_template('notEnoughData.html',title='NED')
-                pass
             else:
                 return render_template('analytics.html',title='data')
 
 @app.route('/analytics/plot', methods=["POST", "GET"])
-def data():
-    
-    classCode = "AB123"
-    Category = 'Other'
+def data(classCode,Category):
+
     con = sql.connect('database.db') # connect to the database
     Frame = pd.read_sql_query("SELECT * from feedback", con)  # Database to Pandas
     Frame = Frame[Frame['classCode'] == classCode]
