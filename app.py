@@ -34,6 +34,7 @@ def login():
 
     if result:
         session['logged_in'] = True
+        session['studentCode'] = "2479YH"
         session['username'] = send_username
         flash('Your are successfully logged in')
     else:
@@ -47,10 +48,11 @@ def logout():
     session['logged_in'] = False
     # User is removed from the session
     session.pop('username', None)
+    session.pop('studentCode', None)
     return render_template('login.html')
 
-
-@app.route('/register', methods=['GET', 'POST'])
+# --------------------------------------------------------------------- Registration
+@app.route('/register', methods=['GET','POST'])
 def register():
     form = RegistrationForm(request.form)
     if request.method == 'POST' and form.validate():
