@@ -1,117 +1,144 @@
 # Flask barebones
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, make_response
 from models import create_post, get_posts, delete_posts
 from datetime import date, datetime
 import time
-import sqlite3 as sql
-import pandas as pd
 import matplotlib.pyplot as plt
+import pandas as pd
+import sqlite3 as sql
+
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+from matplotlib.figure import Figure
+import io
 
 app = Flask(__name__)
 
+
 @app.route('/', methods=["POST", "GET"])
 def index():
-    return render_template('submit.html', title='submit')
+    return render_template('index.html', title='submit')
+
+
+@app.route('/analytics', methods=["POST", "GET"])
+def analytics():
+    return render_template('analytics.html', title='stats')
+
+
+@app.route('/signup', methods=["POST", "GET"])
+def signup():
+    return render_template('signup.html', title='signup')
+
 
 @app.route('/student', methods=["POST", "GET"])
 def student():
     if request.method == 'GET':
-        #Delete existing data in database (can change this later)
-        delete_posts()
+        # Delete existing data in database (can change this later)
+        # delete_posts()
+        pass
 
     if request.method == 'POST':
-        #Date
+        # Date
         dateNow = date.today()
 
-        #Time
+        # Time
         #timeNow = time.asctime().split(' ')[3]
         currentTime = datetime.now()
         timeNow = currentTime.strftime("%I:%M %p")
 
-        #Emoji number
+        # Emoji number
         emoji = request.form.get('emoji')
 
-        #class code
+        # class code
         classCode = request.form.get('classCode')
 
-        #Student code
+        # Student code
         studentCode = request.form.get('studentCode')
 
-        #Elaborate number
+        # Elaborate number
         elaborateNumber = request.form.get('elaborateNumber')
 
-        #Elaborate text
+        # Elaborate text
         elaborateText = request.form.get('elaborateText')
 
-        #create data in database
-        create_post(dateNow, timeNow, classCode, studentCode, emoji, elaborateNumber, elaborateText)
+        # create data in database
+        create_post(dateNow, timeNow, classCode, studentCode,
+                    emoji, elaborateNumber, elaborateText)
 
     return render_template('student.html', title='student')
 
-@app.route('/professor.html', methods=["POST", "GET"])
-def instructor():
 
+@app.route('/professor', methods=["POST", "GET"])
+def instructor():
     return render_template('professor.html', title='instructor')
 
-@app.route('/professorData/<classCode>', methods=["POST", "GET"])
-def data(classCode, Category):
-    if request.method == 'POST':
-        ROOT = path.dirname(path.relpath((__file__))) #Filepath for database
-        con = sql.connect(path.join(ROOT, 'database.db')) #connect to the database
+@app.route('/analytics/check',methods=["POST","GET"])
+def check():
+    classCode = "AB123"
+    Category = 'Other'
+    
+    con = sql.connect('database.db') # connect to the database
+    Frame = pd.read_sql_query("SELECT * from feedback", con)  # Database to Pandas
+    # Filter Database by class code
+    Frame = Frame[Frame['classCode'] == classCode]
+    if(Frame.empty):
+        # Return 'Class does not exist' message
+        pass
+    elif(len(Frame.index) < 10):
+        return render_template('notEnoughData.html', title='NED')
+    else:
+        if(Category == 'Instructor/Professor'):
+            Frame = Frame[Frame['elaborateNumber']== "Instructor/Professor"]
+            if(len(Frame.index) < 10):
+                return render_template('notEnoughData.html',title='NED')
+            else:
+                return render_template('analytics.html',title='data')
+        elif(Category == 'Teaching Style'):
+            Frame = Frame[Frame['elaborateNumber'] == "Teaching Style"]
+            if(len(Frame.index) < 10):
+                return render_template('notEnoughData.html',title='NED')
+                pass
+            else:
+                return render_template('analytics.html',title='data')
+        elif(Category == 'Topic'):
+            Frame = Frame[Frame['elaborateNumber'] == "Topic"]
+            if(len(Frame.index) < 10):
+                return render_template('notEnoughData.html',title='NED')
+                pass
+            else:
+                return render_template('analytics.html',title='data')
+        elif(Category == 'Other'):
+            Frame = Frame[Frame['elaborateNumber'] == "Other"]
+            if(len(Frame.index) < 10):
+                return render_template('notEnoughData.html',title='NED')
+                pass
+            else:
+                return render_template('analytics.html',title='data')
 
-        Frame = pd.read_sql_query("SELECT * from feedback", con) #Database to Pandas
-        Frame = Frame[Frame['classCode'] == classCode] #Filter Database by class code
-        if(Frame.empty):
-            #Return 'Class does not exist' message
-        elif(len(Frame.index)<10):
-            #Return 'There is not sufficient data' and display table only
-        else:
-            #Category Graphs#
-            #Professor
-            if(Category=='Instructor/Professor'):
-                Frame = Frame[Frame['elaborateNumber']=="Instructor/Professor"]
-                if(len(Frame.index)<10):
-                    #Return 'There is not sufficient data' and display table only
-                else:
-                    Frame['emoji'].hist()
-                    plt.title(Category)
-                    plt.xlabel('Score')
-                    plt.show()
+@app.route('/analytics/plot', methods=["POST", "GET"])
+def data():
+    
+    classCode = "AB123"
+    Category = 'Other'
+    con = sql.connect('database.db') # connect to the database
+    Frame = pd.read_sql_query("SELECT * from feedback", con)  # Database to Pandas
+    Frame = Frame[Frame['classCode'] == classCode]
+    Frame = Frame[Frame['elaborateNumber']=="Instructor/Professor"]
+    fig = Figure()
+    axis = fig.add_subplot(1,1,1)
+    Frame = Frame['emoji']
+    x = [1,2,3,4,5]
+    y = [Frame[Frame==1].count(),Frame[Frame==2].count(),Frame[Frame==3].count(),Frame[Frame==4].count(),Frame[Frame==5].count()]
+    axis.bar(x,y)
+    axis.set_title(Category)
+    axis.set_xlabel('Score')
+    axis.set_ylabel('Count')
+    canvas = FigureCanvas(fig)
+    output = io.BytesIO()
+    canvas.print_png(output)
+    response = make_response(output.getvalue())
+    response.mimetype = 'image/png'
+    return response
 
-            #Teaching Style
-            elif(Category=='Teaching Style'):
-                Frame = Frame[Frame['elaborateNumber']=="Teaching Style"]
-                if(len(Frame.index)<10):
-                    #Return 'There is not sufficient data' and display table only
-                else:
-                    Frame['emoji'].hist()
-                    plt.title(Category)
-                    plt.xlabel('Score')
-                    plt.show()
-
-            #Topic
-            elif(Category=='Topic'):
-                Frame = Frame[Frame['elaborateNumber']=="Topic"]
-                if(len(Frame.index)<10):
-                    #Return 'There is not sufficient data' and display table only
-                else:
-                    Frame['emoji'].hist()
-                    plt.title(Category)
-                    plt.xlabel('Score')
-                    plt.show()
-
-            #Other
-            else(Category=='Other'):
-                Frame = Frame[Frame['elaborateNumber']=="Other"]
-                if(len(Frame.index)<10):
-                    #Return 'There is not sufficient data' and display table only
-                else:
-                    Frame['emoji'].hist()
-                    plt.title(Category)
-                    plt.xlabel('Score')
-                    plt.show()
-
-    return render_template('professorData.html', title='data')
 
 if __name__ == '__main__':
     app.run(debug=True)
@@ -129,7 +156,7 @@ if __name__ == '__main__':
 # def student():
 #     # If POST methods
 #     if request.method == "POST":
-        
+
 #         # Get mood from the form
 #         mood = request.form['mood']
 
@@ -143,7 +170,7 @@ if __name__ == '__main__':
 #         print(mood,elaborate,desc)
 
 #         return render_template('student.html', title='student')
-    
+
 #     if request.method == "GET":
 #         return render_template('student.html', title='student')
 
