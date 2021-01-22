@@ -53,16 +53,9 @@ def registration():
 # New student signup
 @app.route('/newstudent', methods=['GET'])
 def newstudent():
-    #class code
-    classCode = request.form.get('classCode')
     
-    #student code
-    studentCode = request.form.get('studentCode')
+    return render_template('student_sign_up.html', scode=12003,ccode='Ab123')
 
-    return render_template('student_sign_up.html', scode=12003)
-
-
-    
 
 @app.route('/student', methods=["POST", "GET"])
 # @login_required
@@ -70,8 +63,9 @@ def student():
     if request.method == 'GET':
         #Delete existing data in database (can change this later)
         #delete_posts()
+        scode = request.args.get('studentCode')
         ccode = request.args.get('classCode')
-        return render_template('student.html', classcode=ccode)
+        return render_template('student.html', studentcode=scode, classcode=ccode)
         
 
     if request.method == 'POST':

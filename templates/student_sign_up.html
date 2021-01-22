@@ -14,7 +14,12 @@
 
                 <label for="scode">Your student code</label>
                 <div class="col">
-                    <input type="text" value="{{ scode }}" class="form-control" id="scode" name="classCode" aria-describedby="codeHint">
+                    <input type="text" value="{{ scode }}" class="form-control" id="scode" name="studentCode" aria-describedby="codeHint" readonly>
+                </div>
+
+                <label for="scode">Your class code</label>
+                <div class="col">
+                    <input type="text" value="{{ ccode }}" class="form-control" id="scode" name="classCode" aria-describedby="codeHint" readonly>
                 </div>
 
                 <div class="col"><input class="btn btn-primary" type="submit" value="generate"></input></div>
