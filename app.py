@@ -61,8 +61,7 @@ def student():
         elaborateText = request.form.get('elaborateText')
 
         # create data in database
-        create_post(dateNow, timeNow, classCode, studentCode,
-                    emoji, elaborateNumber, elaborateText)
+        create_post(dateNow, timeNow, classCode, studentCode, emoji, elaborateNumber, elaborateText)
 
     return render_template('student.html', title='student')
 
@@ -71,41 +70,45 @@ def student():
 def instructor():
     return render_template('professor.html', title='instructor')
 
+#Called by professor.html
 @app.route('/analytics/check',methods=["POST","GET"])
 def check():
-    classCode = "AB123"
-    Category = 'Instructor/Professor'
-    
+    ccode = request.form.get('classCode')
+    Category = request.form.get('category')
+
     con = sql.connect('database.db') # connect to the database
     Frame = pd.read_sql_query("SELECT * from feedback", con)  # Database to Pandas
     # Filter Database by class code
-    Frame = Frame[Frame['classCode'] == classCode]
+    Frame = Frame[Frame['classCode'] == ccode]
+
     if(Frame.empty):
         # Return 'Class does not exist' message
         pass
-    elif(len(Frame.index) < 10):
+    elif(len(Frame.index) < 10): #If the whole datatable is smaller than 10 values
         return render_template('notEnoughData.html', title='NED')
+    
+    #Checks the size of the data depending on what category
     else:
-        if(Category == 'Instructor/Professor'):
+        if(Category == 'Instructor'):
             Frame = Frame[Frame['elaborateNumber']== "Instructor/Professor"]
             if(len(Frame.index) < 10):
                 return render_template('notEnoughData.html',title='NED')
             else:
-                return render_template('analytics.html',title='data',classCode = classCode,Category=Category)
+                return render_template('analytics.html',title='data')
         
-        elif(Category == 'Teaching Style'):
+        elif(Category == 'Teaching-Style'):
             Frame = Frame[Frame['elaborateNumber'] == "Teaching Style"]
             if(len(Frame.index) < 10):
                 return render_template('notEnoughData.html',title='NED')
             else:
-                return render_template('analytics.html',title='data',classCode = classCode,Category=Category)
+                return render_template('analytics.html',title='data')
         
         elif(Category == 'Topic'):
             Frame = Frame[Frame['elaborateNumber'] == "Topic"]
             if(len(Frame.index) < 10):
                 return render_template('notEnoughData.html',title='NED')
             else:
-                return render_template('analytics.html',title='data',classCode = classCode,Category=Category)
+                return render_template('analytics.html',title='data')
         
         elif(Category == 'Other'):
             Frame = Frame[Frame['elaborateNumber'] == "Other"]
@@ -114,22 +117,38 @@ def check():
             else:
                 return render_template('analytics.html',title='data')
 
-@app.route('/analytics/plot', methods=["POST", "GET"])
-def data(classCode,Category):
+@app.route('/analytics/plot',methods=["POST","GET"])
+def draw():
+
+    classCode = request.form.get('classCode')
+    Category = request.form.get('category')
+
+    print(classCode)
+
+    if(Category=='Instructor'):
+        Category='Instructor/Professor'
+    elif(Category=='Teaching-Style'):
+        Category='Teaching Style'
 
     con = sql.connect('database.db') # connect to the database
     Frame = pd.read_sql_query("SELECT * from feedback", con)  # Database to Pandas
-    Frame = Frame[Frame['classCode'] == classCode]
-    Frame = Frame[Frame['elaborateNumber']=="Instructor/Professor"]
+    Frame = Frame[Frame['classCode'] == classCode] #filter by class
+    Frame = Frame[Frame['elaborateNumber']== Category] #filter by category
+    
     fig = Figure()
     axis = fig.add_subplot(1,1,1)
-    Frame = Frame['emoji']
-    x = [1,2,3,4,5]
-    y = [Frame[Frame==1].count(),Frame[Frame==2].count(),Frame[Frame==3].count(),Frame[Frame==4].count(),Frame[Frame==5].count()]
-    axis.bar(x,y)
-    axis.set_title(Category)
+    Frame = Frame['emoji'] #get just the scores
+    x = [1,2,3,4,5] #Array of scores
+    y = [Frame[Frame==1].count(),Frame[Frame==2].count(),Frame[Frame==3].count(),Frame[Frame==4].count(),Frame[Frame==5].count()] #Count of each score
+    axis.bar(x,y) #bar plot
+    if(Category==''):
+        axis.set_title('Test')
+    else:
+        axis.set_title('Ping')
     axis.set_xlabel('Score')
     axis.set_ylabel('Count')
+    
+    #Flask stuff to print plot
     canvas = FigureCanvas(fig)
     output = io.BytesIO()
     canvas.print_png(output)
