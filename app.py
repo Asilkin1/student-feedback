@@ -2,11 +2,18 @@
 from flask import Flask, render_template, request, redirect, url_for
 from models import create_post, get_posts, delete_posts, create_class, get_class, delete_class
 from datetime import date, datetime
+from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
 import sqlite3 as sl
 import time
 import random
 
 app = Flask(__name__)
+
+db = SQLAlchemy()
+login_manager = LoginManager()
+
+
 
 @app.route('/', methods=["POST", "GET"])
 def index():
@@ -63,7 +70,7 @@ with con:
     """)
 
 #Right now this goes to the /professor part of the website. As this is a sign up page it should probably be changed to something like /professor/signup and go back to /professor when finished
-@app.route('/professor', methods=["POST", "GET"])
+@app.route('/professor/create', methods=["POST", "GET"])
 def professor():
     con = sl.connect('prof.db')
     inData = True
