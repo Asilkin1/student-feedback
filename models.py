@@ -22,3 +22,4 @@ def delete_posts():
     cur = con.cursor()
     cur.execute('delete from feedback')
     con.commit()
+

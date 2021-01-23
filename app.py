@@ -7,6 +7,9 @@ from CreateUserDatabase import *
 import time
 import os
 
+# Helper functions from registration logic
+from registration_logic import register
+
 # Login engine
 engine = create_engine('sqlite:///tutorial.db', echo=True)
 
@@ -54,14 +57,23 @@ def logout():
 # --------------------------------------------------------------------- Registration
 @app.route('/register', methods=['GET','POST'])
 def register():
-    form = RegistrationForm(request.form)
-    if request.method == 'POST' and form.validate():
-        user = User(form.username.data, form.email.data,
-                    form.password.data)
-        db_session.add(user)
-        flash('Thanks for registering')
-        return redirect(url_for('login'))
-    return render_template('register.html', form=form)
+    Session = sessionmaker(bind=engine)
+    s = Session()
+
+    # Get username from the form
+    username = request.form.get('username')
+    password = request.form.get('password')
+    repassword = request.form.get('repassword')
+
+    # Passwords should match
+    if str(password) == str(repassword):
+        user = User(username,password)
+        s.add(user)
+        s.commit()
+    else:
+        flash("Password doesn't match")
+
+    return render_template('register.html')
 
 
 @app.route('/signup',methods=['GET'])
