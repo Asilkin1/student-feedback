@@ -1,0 +1,42 @@
+
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+<h2>Professor Dashboard</h2>
+
+<style>
+ 
+    td {
+           width: 150px;
+           text-align: center;
+           border: 1px solid black;
+           padding: 5px;
+         }
+   </style>
+   <p>Class Feedback List</p>
+   <table>
+     <thead>
+       <tr>
+           <th>Class ID</th>
+           <th>Section Name</th>
+           <th>Class Code</th>
+       </tr>
+       </thead>    
+       <tbody>
+        {% for row in data %}    
+               <tr>
+                   <td>{{row[3]}}</td>
+                   <td>{{row[4]}}</td>
+                   <td>{{row[5]}}</td>
+               </tr>
+           {% endfor %}
+       </tbody>
+   </table>
+
+<p align="center"><a href=professor/create ><button class=grey style="height:75px;width:150px">Create Class</button></a></p>
+<p class="lead"><a type="button" href="{{ url_for('instructor')}}" class="btn btn-light">Go to stats</a></p>
+
+
+{% endblock %}
