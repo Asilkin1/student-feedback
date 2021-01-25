@@ -1,0 +1,24 @@
+footer {
+    position: absolute;
+    bottom: 0;
+    background: #000;
+    height: 60px;
+    width: 100%;
+}
+
+html{
+    margin:auto;
+    background-color: black;
+}
+
+body{
+
+}
+
+header{
+    width:70%;
+}
+
+main{
+
+}

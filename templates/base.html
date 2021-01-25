@@ -1,22 +1,16 @@
-<html>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="static/css/style.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
         integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
-    <style>
-        .footer {
-            position: absolute;
-            bottom: 0;
-            background: #000;
-            height: 60px;
-            width: 100%;
-        }
-    </style>
+    
 </head>
-
-<body>
-            
+<header>
     <nav class="navbar navbar-expand-lg navbar-light bg-light mr-auto">
         <a class="navbar-brand" href="/"><i class="fas fa-graduation-cap fa-2x"></i></a>
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
@@ -39,17 +33,17 @@
             
         </ul>
     </nav>
+</header>
+<body>        
 
-    <!-- Render other templates inside this block -->
-    <main role="main" class="container-fluid" id="content">
-        <!-- Flash messages here -->
     {% include 'flash_messages.html'%}  
-        {% block content %}{% endblock %}
-    </main>
+    {% block content %}{% endblock %}
+
 
 </body>
+
 <!-- Footer -->
-<footer class="footer bg-light">
+<footer class="bg-light">
     <div class="container">
         <span class="text-muted">&copy; Copyright 2021 Student Feedback</span>
     </div>
