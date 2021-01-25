@@ -1,6 +1,20 @@
 {% extends "base.html" %}
+{% block content %}
+<style>
+    img{
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        width:40%;
+    }
+    object{
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
 
 <!-- Analytics stats -->
-{% block content %}
-    <img src={{ url_for('draw', classCode= request.args.get('classCode'), Category = request.args.get('category') ) }} alt="Image Placeholder" width = "49%">
+    <img src={{ url_for('drawbar', classCode= request.args.get('classCode'), Category = request.args.get('category') ) }} alt="Image Placeholder">
+    <object data={{ url_for('calc', classCode= request.args.get('classCode'), Category = request.args.get('category') ) }}></object>
 {% endblock content %}

@@ -115,7 +115,7 @@ def check():
 
 @app.route('/analytics/plot/<classCode>&<Category>', methods=["POST","GET"]) #vars to be passed in are <classcode> and <category>. & makes sure they are seperate!
 #Called by analytics.html
-def draw(classCode,Category):
+def drawbar(classCode,Category):
 
     #Match the category var to database names
     if(Category=='Instructor'):
@@ -146,6 +146,20 @@ def draw(classCode,Category):
     response.mimetype = 'image/png'
     return response
 
+#Not yet Implemented
+@app.route('/analytics/calc/<classCode>&<Category>', methods=["POST","GET"])
+def calc(classCode,Category):
+    if(Category=='Instructor'):
+        Category='Instructor/Professor'
+    elif(Category=='Teaching-Style'):
+        Category='Teaching Style'
+
+    con = sql.connect('database.db') # connect to the database
+    Frame = pd.read_sql_query("SELECT * from feedback", con)  # Database to Pandas
+    Frame = Frame[Frame['classCode'] == classCode] #filter by class
+    Frame = Frame[Frame['elaborateNumber']== Category] #filter by category
+    Frame = Frame['emoji'] #Get just the numbers
+    return f'Your average score was {round(Frame.mean(),2)}' #return the mean
 
 if __name__ == '__main__':
     app.run(debug=True)
