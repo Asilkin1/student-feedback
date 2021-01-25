@@ -1,52 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="static/css/style.css">
+    <link rel="stylesheet" href="{{url_for('static',filename='css/style.css') }}">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
         integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
-    
+
 </head>
-<header>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light mr-auto">
-        <a class="navbar-brand" href="/"><i class="fas fa-graduation-cap fa-2x"></i></a>
-        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-            {% if session['logged_in']%}
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('logout')}}">Logout</a>
-            </li>
-            <h2>Hello {{ session['username']}}</h2>
-            {% else %}
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('register')}}">Professor registration</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('login')}}">Professor login</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('newstudent')}}">Student signup</a>
-            </li>
-            {% endif %}
-            
-        </ul>
-    </nav>
-</header>
-<body>        
+<body>
+    <div class="container">
+        <header>
+            <nav class="navbar navbar-expand-lg mr-auto">
+                <a class="navbar-brand" href="/"><i class="fas fa-graduation-cap fa-2x"></i></a>
+                    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                        {% if session['logged_in']%}
+                            <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('logout')}}">Logout</a>
+                            </li>
+                        <h2>Hello {{ session['username']}}</h2>
+                         {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('register')}}">Professor registration</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('login')}}">Professor login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('newstudent')}}">Student signup</a>
+                </li>
+                {% endif %}
 
-    {% include 'flash_messages.html'%}  
-    {% block content %}{% endblock %}
+            </ul>
+        </nav>
+    </header>
 
+    <main class="container">
+        {% include 'flash_messages.html'%}
+        {% block content %}{% endblock %}
+    </main>
 
-</body>
-
+    
+</div>
 <!-- Footer -->
 <footer class="bg-light">
-    <div class="container">
+    <div>
         <span class="text-muted">&copy; Copyright 2021 Student Feedback</span>
     </div>
 </footer>
-
+</body>
 </html>
