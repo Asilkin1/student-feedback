@@ -18,12 +18,6 @@ app = Flask(__name__)
 def index():
     return render_template('index.html', title='submit')
 
-
-@app.route('/analytics', methods=["POST", "GET"])
-def analytics():
-    return render_template('analytics.html', title='stats')
-
-
 @app.route('/signup', methods=["POST", "GET"])
 def signup():
     return render_template('signup.html', title='signup')
@@ -73,13 +67,15 @@ def instructor():
 #Called by professor.html
 @app.route('/analytics/check',methods=["POST","GET"])
 def check():
-    ccode = request.form.get('classCode')
-    Category = request.form.get('category')
+    #Pull variables from professor form
+    ccode = request.args.get('classCode') 
+    Category = request.args.get('category')
 
     con = sql.connect('database.db') # connect to the database
     Frame = pd.read_sql_query("SELECT * from feedback", con)  # Database to Pandas
     # Filter Database by class code
     Frame = Frame[Frame['classCode'] == ccode]
+
 
     if(Frame.empty):
         # Return 'Class does not exist' message
@@ -117,14 +113,12 @@ def check():
             else:
                 return render_template('analytics.html',title='data')
 
-@app.route('/analytics/plot',methods=["POST","GET"])
-def draw():
 
-    classCode = request.form.get('classCode')
-    Category = request.form.get('category')
+@app.route('/analytics/plot/<classCode>&<Category>', methods=["POST","GET"]) #vars to be passed in are <classcode> and <category>. & makes sure they are seperate!
+#Called by analytics.html
+def draw(classCode,Category):
 
-    print(classCode)
-
+    #Match the category var to database names
     if(Category=='Instructor'):
         Category='Instructor/Professor'
     elif(Category=='Teaching-Style'):
@@ -141,10 +135,7 @@ def draw():
     x = [1,2,3,4,5] #Array of scores
     y = [Frame[Frame==1].count(),Frame[Frame==2].count(),Frame[Frame==3].count(),Frame[Frame==4].count(),Frame[Frame==5].count()] #Count of each score
     axis.bar(x,y) #bar plot
-    if(Category==''):
-        axis.set_title('Test')
-    else:
-        axis.set_title('Ping')
+    axis.set_title(Category)
     axis.set_xlabel('Score')
     axis.set_ylabel('Count')
     
