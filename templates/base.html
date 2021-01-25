@@ -12,19 +12,16 @@
             aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <a class="navbar-brand" href="/">Feedback</a>
+        <a class="navbar-brand" href="/"><i class="fas fa-graduation-cap fa-2x"></i></a>
 
-        <!-- <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
-            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-                <li class="nav-item active">
-                    <a class="nav-link" href="student.html">For student<span class="sr-only">(current)</span></a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="professor.html">For Professor</a>
-                </li>
-            </ul>
+        <ul class="navbar-nav mt-2 mt-lg-0">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('signup')}}">Signin/Signup</a>
+            </li>
+        </ul>
 
-        </div> -->
+        </div>
+
     </nav>
     <!-- Render other templates inside this block -->
     <main role="main" class="container" id="content">

@@ -22,8 +22,7 @@ def delete_posts():
     cur = con.cursor()
     cur.execute('delete from feedback')
     con.commit()
-
-
+    
 def create_class(professorName, schoolName, departmentName, classId, sectionName, classCode):
     con = sql.connect(path.join(ROOT, 'prof.db'))
     cur = con.cursor()
@@ -43,6 +42,4 @@ def delete_class():
     cur = con.cursor()
     cur.execute('delete from account')
     con.commit()
-
-
 
