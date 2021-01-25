@@ -75,10 +75,6 @@ def professor():
     con = sl.connect('prof.db')
     inData = True
     
-    if request.method == 'GET':
-        #Delete existing data in database (can change this later)
-        delete_posts()
-    
     if request.method == 'POST':
         #Professors unique class code (Randomly generated between x, and y with z being the amount generated)
         classCode = random.randrange(1,3000,1)
@@ -109,12 +105,18 @@ def professor():
 
         #adds data to database
         create_class(professorName, schoolName, departmentName, classId, sectionName, int(classCode))
+        return redirect(url_for('submission'))
 
     return render_template('professor.html', title='professor')
 
-@app.route('/professor/0', methods=["POST", "GET"])
+@app.route('/professor', methods=["POST", "GET"])
 def submission():
-    return render_template('professor.html', title='professor')
+    con = sl.connect('prof.db')
+    c = con.cursor()
+    result = c.execute("SELECT * FROM account").fetchall()
+    con.close()
+
+    return render_template('dashboard.html', title='dashboard', data = result)
 
 if __name__ == '__main__':
     app.run(debug=True)
