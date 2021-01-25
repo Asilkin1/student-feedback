@@ -23,12 +23,17 @@
             {% if session['logged_in']%}
             <li class="nav-item">
                 <a class="nav-link" href="{{ url_for('logout')}}">Logout</a>
-                <a class="nav-link" href="{{ url_for('dashboard')}}">Dashboard</a>
             </li>
             <h2>Hello {{ session['username']}}</h2>
             {% else %}
             <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('register')}}">Register</a>
+                <a class="nav-link" href="{{ url_for('register')}}">Professor registration</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('login')}}">Professor login</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('newstudent')}}">Student signup</a>
             </li>
             {% endif %}
             
@@ -36,7 +41,7 @@
     </nav>
 
     <!-- Render other templates inside this block -->
-    <main role="main" class="container" id="content">
+    <main role="main" class="container-fluid" id="content">
         <!-- Flash messages here -->
     {% include 'flash_messages.html'%}  
         {% block content %}{% endblock %}

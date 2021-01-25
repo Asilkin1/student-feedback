@@ -18,11 +18,12 @@ app = Flask(__name__)
 
 @app.route('/', methods=["POST", "GET"])
 def index():
-    if not session.get('logged_in'):
-        flash('Please log in to gain access to the website','info')
-        return render_template('login.html', title='submit')
-    else:
-        return render_template('index.html', title='submit')
+    # Go to student page, no need to be registered
+    if request.path == '/student':
+          return render_template('student_sign_up.html', title='student_page')
+    
+    return render_template('index.html', title='submit')
+   
 
 # -------------------------------------------------------------------- Log in
 @app.route('/login', methods=['GET','POST'])
@@ -95,14 +96,6 @@ def register():
 
     return render_template('register.html')
 
-
-@app.route('/signup',methods=['GET'])
-def unauthorized():
-      if request.path == '/student':
-          return render_template('student_sign_up.html', title='instructor')
-      else:
-          return render_template('professor_sign_up.html')
-
 @app.route('/analytics', methods=["POST","GET"])
 def analytics():
     return render_template('analytics.html',title='stats')
@@ -153,7 +146,7 @@ def student():
         dateNow = date.today()
 
         #Time
-        #timeNow = time.asctime().split(' ')[3]
+        timeNow = time.asctime().split(' ')[3]
         currentTime = datetime.now()
         timeNow = currentTime.strftime("%I:%M %p")
 
@@ -176,13 +169,17 @@ def student():
         create_post(dateNow, timeNow, classCode, studentCode, emoji, elaborateNumber, elaborateText)
         
         # Message
-        flash('Thank you for your feedback')
+        flash('Thank you for your feedback','info')
     return render_template('student.html', title='student')
 
 @app.route('/professor', methods=["POST", "GET"])
 def instructor():
-    category = request.args.get('category')
-    return render_template('professor.html', title='instructor')
+    if not session.get('logged_in'):
+            flash('Please log in to gain access to the website','info')
+            return render_template('login.html', title='submit')
+    else: 
+        category = request.args.get('category')
+        return render_template('professor.html', title='instructor')
 
 if __name__ == '__main__':
     app.secret_key = os.urandom(12)

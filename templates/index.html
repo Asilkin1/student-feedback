@@ -3,17 +3,20 @@
 
 {% block content %}
 
+{% if session['logged_in']%}
 <!-- Content for homepage -->
   <div class="d-md">
     <div class="container">
       <div class="bg-dark mr-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center text-white overflow-hidden">
         <div class="my-3 py-3">
-          <h2 class="display-5">For Educators</h2>
+          <h2 class="display-5">Classes performance</h2>
           <p class="lead"><a type="button" href="{{ url_for('instructor')}}" class="btn btn-light">check statistic</a></p>
+          <p class="lead"><a type="button" href="{{ url_for('dashboard')}}" class="btn btn-light">manage class codes</a></p>
         </div>
+        
       </div>
     </div>
-    
+{% else %}  
     <div class="container">
       <div class="bg-light mr-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden">
         <div class="my-3 p-3">
@@ -23,7 +26,7 @@
       </div>
     </div>
     
-
+{% endif %}
   </div>
 
 {% endblock %}
