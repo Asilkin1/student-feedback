@@ -1,4 +1,3 @@
-
 {% extends "base.html" %}
 {% block title %}Home{% endblock %}
 
@@ -8,7 +7,7 @@
 <div class="container mx-auto border col-md-6">
 
     <!-- Submit class code and a category -->
-    <form class="justify-content-md-center" action="/analytics/check" method="post">
+    <form class="justify-content-md-center" action="/analytics/check" method="get">
         <!-- Class code -->
         <div class="form-group ">
             <label for="ccode">Class Code</label>
@@ -20,10 +19,10 @@
         <!-- Pick a category -->
         <div class="form-group">
             <label for="category">Category</label>
-                <select id="category" class="form-control">
-                  <option selected>Select</option>
-                  <option>Instructor/Professor</option>
-                  <option>Teaching style</option>
+                <select name="category" id="category" class="form-control">
+                  <option>Select</option>
+                  <option>Instructor</option>
+                  <option>Teaching-style</option>
                   <option>Topic</option>
                   <option>Other</option>
                 </select>
