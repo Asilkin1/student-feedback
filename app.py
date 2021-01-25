@@ -133,7 +133,6 @@ def student():
         dateNow = date.today()
 
         #Time
-        timeNow = time.asctime().split(' ')[3]
         currentTime = datetime.now()
         timeNow = currentTime.strftime("%I:%M %p")
 
