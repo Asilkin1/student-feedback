@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+    h1{
+        font-family: sans-serif;
+        font-size: 35px;
+        text-align: center;
+    }
+    p{
+        font-family: sans-serif;
+        font-size: 20px;
+        text-align: center;  
+    }
+</style>
+<body>
+    <h1>Class not found!</h1>
+    <p>
+        Your class was not found in the database. Please confirm that you entered your class code correctly and try again!
+    </p>
+    <div style="text-align: center; font-size: 15px; font-family: sans-serif;">
+        <a href="/professor">Back to Class Selection</a>
+    </div>
+</body>
+{% endblock content %}
