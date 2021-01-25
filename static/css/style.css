@@ -23,8 +23,8 @@ body{
     margin-right:auto;
 }
 
-header{
-
+text-muted{
+    color:white;
 }
 
 nav{
@@ -39,7 +39,7 @@ main{
     max-width:50%;
 }
 
-#form,h1{
+#form,h1,tr,th{
     background-color:rgba(109, 218, 245, 0.521);
     color:white;
     padding:10px;
