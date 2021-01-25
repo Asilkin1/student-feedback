@@ -26,6 +26,8 @@ def signup():
 
 @app.route('/student', methods=["POST", "GET"])
 def student():
+    classCode = request.args.get('classCode')
+    studentCode = request.args.get('studentCode')
     if request.method == 'GET':
         # Delete existing data in database (can change this later)
         # delete_posts()
@@ -36,18 +38,11 @@ def student():
         dateNow = date.today()
 
         # Time
-        #timeNow = time.asctime().split(' ')[3]
         currentTime = datetime.now()
         timeNow = currentTime.strftime("%I:%M %p")
 
         # Emoji number
         emoji = request.form.get('emoji')
-
-        # class code
-        classCode = request.form.get('classCode')
-
-        # Student code
-        studentCode = request.form.get('studentCode')
 
         # Elaborate number
         elaborateNumber = request.form.get('elaborateNumber')
