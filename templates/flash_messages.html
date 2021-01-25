@@ -1,0 +1,34 @@
+<!-- Include this partial in every template where messages should appear -->
+<!-- Success message -->
+{% with messages = get_flashed_messages(category_filter=['success']) %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif%}
+{% endwith %}
+
+<!-- Error messsage -->
+{% with errors = get_flashed_messages(category_filter=['error']) %}
+    {% if errors %}
+        {% for error in errors %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{ error }}
+            </div>
+        {% endfor %}
+    {% endif%}
+{% endwith %}
+
+<!-- Info message -->
+{% with infos = get_flashed_messages(category_filter=['info']) %}
+    {% if infos %}
+        {% for info in infos %}
+            <div class="alert alert-info alert-dismissible fade show" role="alert">
+                {{ info }}
+                
+            </div>
+        {% endfor %}
+    {% endif%}
+{% endwith %}
