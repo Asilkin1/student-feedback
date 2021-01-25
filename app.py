@@ -78,8 +78,7 @@ def check():
 
 
     if(Frame.empty):
-        # Return 'Class does not exist' message
-        pass
+        return render_template('ClassNotFound.html',title='CNF')
     elif(len(Frame.index) < 10): #If the whole datatable is smaller than 10 values
         return render_template('notEnoughData.html', title='NED')
     
