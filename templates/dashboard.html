@@ -1,24 +1,38 @@
-{% extends "base.html" %}
-{% block title %}Home{% endblock %}
 
-{% block content %}
-<h4>My Classes</h4>
-<form method="post">
+<h4>{{ session['username'] }} Dashboard</h>
 
-    <div class="form-group">
-        <ul class="list-gorup">
-            {% for class in classes%}
-            <li class="list-group-item">
-                {{ class }}
-            </li>
+<style>
+ 
+    td {
+           width: 150px;
+           text-align: center;
+           border: 1px solid black;
+           padding: 5px;
+         }
+   </style>
+   <div class="container sm-10">
+    <p>Class Feedback List</p>
+    <table class="table">
+      <thead>
+        <tr>
+            <th scope="col">Class ID</th>
+            <th scope="col">Section Name</th>
+            <th scope="col">Class Code</th>
+        </tr>
+        </thead>    
+        <tbody>
+         {% for row in data %}    
+                <tr scope="row">
+                    <td>{{row[3]}}</td>
+                    <td>{{row[4]}}</td>
+                    <td>{{row[5]}}</td>
+                </tr>
             {% endfor %}
-            <input class="form-control" type="text" name="addClassCode" placeholder="enter code">
-            <button class="btn btn-primary">
-                Add
-            </button>
-        </ul>
-       
-    </div>
-</form>
+        </tbody>
+    </table>
+ 
+ <a href="{{ url_for('professor')}}" ><button class="btn btn-info btn-lg">Create Class</button></a>
+ <a type="button" href="{{ url_for('instructor')}}" class="btn btn-light btn-lg">Go to stats</a>
+   </div>
+ 
 
-{% endblock %}

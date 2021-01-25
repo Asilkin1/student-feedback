@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<style>
+    .form-check-label {
+        color: black;
+    }
+</style>
+<div class="container">
+    <form method="post">
+        <label class="form-check-label" for="professorname">
+            Name
+        </label>
+        <div class="col-sm-4">
+            <input type="text" class="form-control" id="text" name="professorName">
+        </div>
+        
+        <label class="form-check-label" for="schoolname">
+            School
+        </label>
+        <div class="col-sm-4">
+            <input type="text" class="form-control" id="text" name="schoolName">
+        </div>
+    
+        <label class="form-check-label" for="departmentname">
+            Department
+        </label>
+        <div class="col-sm-4">
+            <input type="text" class="form-control" id="text" name="departmentName">
+        </div>
+
+        <label class="form-check-label" for="classid">
+            Class
+        </label>
+        <div class="col-sm-4">
+            <input type="text" class="form-control" id="text" name="classId">
+        </div>
+
+        <label class="form-check-label" for="sectionname">
+            Section
+        </label>
+        <div class="col-sm-4">
+            <input type="text" class="form-control" id="text" name="sectionName">
+        </div>
+
+        <div class="col-sm4">
+            <a href="{{ url_for('instructorDashboard')}}">
+                <button class="btn btn-primary" type="submit" name="submitButton" value="dashboardSubmit">Finish and Generate Class Code</button>
+            </a>
+        </div>
+        
+        
+    </form>
+</div>
+
+{% endblock %}

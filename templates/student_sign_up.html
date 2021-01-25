@@ -3,32 +3,7 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<div class="row">
-    <!-- Left col student sign up for a code-->
-    <div class="col border">
-        <h4>Student signup</h4>
-        <form class="justify-content-md-center" action="{{ url_for('student')}}">
+<!-- Include Xi Xi login form -->
+{% include 'forms/studentLogin.html'%}
 
-            <!-- Generate student code -->
-            <div class="form-inline">
-
-                <label for="scode">Your student code</label>
-                <div class="col">
-                    <input type="text" value="{{ scode }}" class="form-control" id="scode" name="studentCode" aria-describedby="codeHint" readonly>
-                </div>
-
-                <label for="scode">Your class code</label>
-                <div class="col">
-                    <input type="text" value="{{ ccode }}" class="form-control" id="scode" name="classCode" aria-describedby="codeHint">
-                </div>
-
-                <div class="col"><input class="btn btn-primary" type="submit" value="generate"></input></div>
-
-                <small id="codeHint" class="form-text text-muted">Generate your student code</small>
-            </div>
-        </form>
-    </div>
-
-    
-</div>
 {% endblock %}

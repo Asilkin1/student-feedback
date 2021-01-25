@@ -12,7 +12,7 @@ html{
 
 body{
     background-color: black;
-    background-image: url('../images/bg.jpg');
+    /* background-image: url('../images/bg.jpg'); */
     background-size:cover;
     background-repeat:no-repeat;
     background-position: center;
@@ -40,8 +40,6 @@ main{
 }
 
 #form,h1,tr,th{
-    background-color:rgba(109, 218, 245, 0.521);
-    color:white;
     padding:10px;
 
 }

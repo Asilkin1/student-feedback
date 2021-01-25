@@ -1,0 +1,29 @@
+<div class="form-container">
+    <div class="form">
+        <h1>Fill out the information below to get started.</h1>
+        <form action="/student" method="get" >
+            <label class="form-check-label" for="teachingstyle">
+                Class Code
+            </label>
+            <div class="col-sm-4">
+                <input type="text" class="form-control" id="text" name="classCode" placeholder="Enter class code" required>
+            </div>
+            <label class="form-check-label" for="teachingstyle">
+                Student Code
+            </label>
+            <div class="col-sm-4">
+                <input type="text" id="number" value="" class="form-control" name="studentCode" placeholder="Enter student code" required>
+            </div>
+            <button class="button" type="button" onclick="increment();">Generate</button>
+            <script>
+                var i=1;
+                function increment(){
+                    document.getElementById("number").value = "AB"+i++;
+                }
+            </script>
+            <a>
+                <button class="button" type="submit" name="submitButton" value="student">Login</button>
+            </a>
+        </form>
+    </div>
+</div>
