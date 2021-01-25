@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<h4>My Classes</h4>
+<form method="post">
+
+    <div class="form-group">
+        <ul class="list-gorup">
+            {% for class in classes%}
+            <li class="list-group-item">
+                {{ class }}
+            </li>
+            {% endfor %}
+            <input class="form-control" type="text" name="addClassCode" placeholder="enter code">
+            <button class="btn btn-primary">
+                Add
+            </button>
+        </ul>
+       
+    </div>
+</form>
+
+{% endblock %}

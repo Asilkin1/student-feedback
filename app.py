@@ -19,6 +19,7 @@ app = Flask(__name__)
 @app.route('/', methods=["POST", "GET"])
 def index():
     if not session.get('logged_in'):
+        flash('Please log in to gain access to the website','info')
         return render_template('login.html', title='submit')
     else:
         return render_template('index.html', title='submit')
@@ -26,24 +27,35 @@ def index():
 # -------------------------------------------------------------------- Log in
 @app.route('/login', methods=['GET','POST'])
 def login():
-    send_username = str(request.form['username'])
-    send_password = str(request.form['password'])
+    if request.method == 'POST':
+        send_username = str(request.form['username'])
+        send_password = str(request.form['password'])
 
-    Session = sessionmaker(bind=engine)
-    s = Session()
+        # If the password and username is provided
+        if send_password and send_username:
+            Session = sessionmaker(bind=engine)
+            s = Session()
 
-    query = s.query(User).filter(User.username.in_([send_username]), User.password.in_([send_password]))
-    result = query.first()
+            query = s.query(User).filter(User.username.in_([send_username]), User.password.in_([send_password]))
+            result = query.first()
 
-    if result:
-        session['logged_in'] = True
-        session['studentCode'] = "2479YH"
-        session['username'] = send_username
-        flash('Your are successfully logged in')
-    else:
-       session['logged_in'] = False  
+            if result:
+                session['logged_in'] = True
+                session['studentCode'] = "2479YH"
+                session['username'] = send_username
+                flash('Your are successfully logged in','success')
 
-    return render_template('index.html')
+                return render_template('index.html')
+            
+            else:
+                flash('Wrong password or username','error')
+
+        else:
+            flash('Check your username and password','error')
+            session['logged_in'] = False 
+
+    return render_template('login.html')
+
 # --------------------------------------------------------------------- Log out
 @app.route('/logout')
 def logout():
@@ -52,26 +64,34 @@ def logout():
     # User is removed from the session
     session.pop('username', None)
     session.pop('studentCode', None)
+    # Feedback message
+    flash('You are successfully logged out','success')
     return render_template('login.html')
 
 # --------------------------------------------------------------------- Registration
 @app.route('/register', methods=['GET','POST'])
 def register():
-    Session = sessionmaker(bind=engine)
-    s = Session()
+    flash('Please register to gain access to the website','info')
+    if request.method == 'POST':
+        
+        # Get username from the form
+        username = request.form.get('username')
+        password = request.form.get('password')
+        repassword = request.form.get('repassword')
 
-    # Get username from the form
-    username = request.form.get('username')
-    password = request.form.get('password')
-    repassword = request.form.get('repassword')
-
-    # Passwords should match
-    if str(password) == str(repassword):
-        user = User(username,password)
-        s.add(user)
-        s.commit()
-    else:
-        flash("Password doesn't match")
+        if username and password and repassword:
+            # Passwords should match
+            if str(password) == str(repassword):
+                Session = sessionmaker(bind=engine)
+                s = Session()
+                user = User(username,password)
+                s.add(user)
+                s.commit()
+                flash('You are registered successfully','success')
+            else:
+                flash("Password doesn't match",'error')
+        else:
+            flash('Fields cannot be empty','error')
 
     return render_template('register.html')
 
@@ -89,36 +109,41 @@ def analytics():
 
 @app.route('/notenoughdata',methods=["POST","GET"])
 def notenoughdata():
+    flash('Not enough data to generate a graph','info')
     return render_template('notEnoughData.html',title='not enough data')
 
 @app.route('/classerror',methods=["POST","GET"])
 def classerror():
+    flash('Selected class cannot be found','error')
     return render_template('classError.html',title='class does not exist')
 
 @app.route('/signup', methods=["POST","GET"])
 def signup():
     return render_template('signup.html',title='signup')
 
-@app.route("/regisration",methods=["POST"])
-def registration():
-    email = request.form.get('email')
-    password = request.form.get('password')
-    repassword = request.form.get('repassword')
-
-    if password == repassword:
-        return redirect(url_for('index'))
-
 # New student signup
 @app.route('/newstudent', methods=['GET'])
 def newstudent():
     return render_template('student_sign_up.html', scode=12003,ccode='Ab123')
 
+@app.route('/dashboard', methods=['GET','POST'])
+def dashboard():
+
+    # Stub for testing
+    myClasses = ['CR123','CG234','TG445']
+    newClass = request.form.get('addClassCode')
+    # Add code to the database
+    if request.method == 'POST':
+        flash('Class added: ' + newClass,'info')
+        myClasses.append(newClass)
+
+    return render_template('dashboard.html', classes=myClasses)
 
 @app.route('/student', methods=["POST", "GET"])
 def student():
     if request.method == 'GET':
         #Delete existing data in database (can change this later)
-        #delete_posts()
+        delete_posts()
         scode = request.args.get('studentCode')
         ccode = request.args.get('classCode')
         return render_template('student.html', studentcode=scode, classcode=ccode)
@@ -149,7 +174,9 @@ def student():
 
         #create data in database
         create_post(dateNow, timeNow, classCode, studentCode, emoji, elaborateNumber, elaborateText)
-
+        
+        # Message
+        flash('Thank you for your feedback')
     return render_template('student.html', title='student')
 
 @app.route('/professor', methods=["POST", "GET"])
