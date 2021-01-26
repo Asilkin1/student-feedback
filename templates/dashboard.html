@@ -10,6 +10,13 @@
            padding: 5px;
          }
    </style>
+   {% with messages = get_flashed_messages()%}
+    {% if messages %}
+      {% for msg in messages %}
+        <p>{{msg}}</p>
+      {% endfor %}
+    {%endif%}
+   {% endwith %}
    <div class="container sm-10">
     <p>Class Feedback List</p>
     <table class="table">

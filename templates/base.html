@@ -11,6 +11,10 @@
     <link rel="stylesheet" href="{{url_for('static',filename='css/forms.css') }}">
     <!-- Footer styles -->
     <link rel="stylesheet" href="{{url_for('static',filename='css/footer.css') }}">
+    <!-- Emoji styles -->
+    <link rel="stylesheet" href="{{url_for('static',filename='css/mood.css') }}">
+    <!-- Fonts styles -->
+    <link rel="stylesheet" href="{{url_for('static',filename='css/fonts.css') }}">
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
@@ -22,7 +26,7 @@
     <div class="container">
         <header>
             <nav class="navbar navbar-expand-lg mr-auto">
-                <a class="navbar-brand" href="#"><i class="fas fa-graduation-cap fa-2x"></i></a>
+                <a class="navbar-brand" href="/"><p id="emoji">&#127891;</p></i></a>
                 <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
                     {% if session['logged_in']%}
                     <li class="nav-item">
@@ -38,7 +42,7 @@
             </nav>
         </header>
 
-        <main class="container-fluid">
+        <main>
             {% include 'flash_messages.html'%}
             {% block content %}{% endblock %}
         </main>
@@ -49,6 +53,9 @@
     <footer class="bg-light">
         <div class="container">
             <span class="text-muted">&copy; Copyright 2021 Student Feedback</span>
+            <!-- Add a bunch of emojis -->
+            <span id="emoji">&#9749;</span>
+
         </div>
     </footer>
 </body>

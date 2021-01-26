@@ -3,52 +3,77 @@
 
 {% block content %}
 <!-- Analytics stats -->
+<style>
+  p{
+        font-family: sans-serif;
+        font-size: 20px;
+        text-align: center;  
+  }
+  img{
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+  }
+  object{
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+  }
+  .column{
+      float: left;
+      width: 33%;
+      padding: 5px;
+  }
+  table, th, td{
+        border: 1px solid black;
+  }
+</style>
+
 <div class="container">
     <body>
-        
-        <!-- Analytics stats -->
-      
-        {% if "analytics/check" == False %}
-            <div class="container-fluid">
-            <h1>There is not sufficient data</h1>
-        </div>
-        <div class="container">
-            <table class="table">
-                <!-- Top level row with headers -->
-                <thead>
+          <img src={{ url_for('drawbar', classCode= request.args.get('classCode'), Category = request.args.get('category'), Frame=data) }} alt="Image Placeholder" width = 40%>
+          <object data={{ url_for('calc', classCode= request.args.get('classCode'), Category = request.args.get('category'), Frame=data ) }}></object>
+          <div class='row'>
+              <div class='column'>
+                  <img src={{ url_for('drawtimeweek', classCode= request.args.get('classCode'), Category = request.args.get('category'), Frame=data ) }} alt="Image Placeholder" style="width:100%;">
+              </div>
+              <div class='column'>
+                  <img src={{ url_for('drawtimeyest', classCode= request.args.get('classCode'), Category = request.args.get('category'), Frame=data ) }} alt="Image Placeholder" style="width:100%;">
+              </div>
+              <div class='column'>
+                  <img src={{ url_for('drawtimetoday', classCode= request.args.get('classCode'), Category = request.args.get('category') Frame=Data) }} alt="Image Placeholder" style="width:100%;">
+              </div>
+          </div>
+          <div style="text-align: center; font-size: 15px; font-family: sans-serif;">
+              <a href="/professor">Back to Class Selection</a>
+          </div>
+          <br>
+          <p>Data Table</p>
+          <table style="width:100%;">   
+              <tr>
+                  <th>id</th>
+                  <th>date</th>
+                  <th>time</th>
+                  <th>class code</th>
+                  <th>student code</th>
+                  <th>emoji</th>
+                  <th>category</th>
+                  <th>response</th>
+              </tr>
+              {% for item in data %}
                   <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Date</th>
-                    <th scope="col">Time</th>
-                    <th scope="col">Class Code</th>
-                    <th scope="col">Student Code</th>
-                    <th scope="col">Emoji</th>
-                    <th scope="col">Elaborate number</th>
-                    <th scope="col">Elaborate text</th>
-                    <th scope="col">Section</th>
+                      <td>{{item[0]}}</td>
+                      <td>{{item[1]}}</td>
+                      <td>{{item[2]}}</td>
+                      <td>{{item[3]}}</td>
+                      <td>{{item[4]}}</td>
+                      <td>{{item[5]}}</td>
+                      <td>{{item[6]}}</td>
+                      <td>{{item[7]}}</td>
                   </tr>
-                </thead>
-                <tbody>
-                    <!-- Add flask for loop somewhere here -->
-                  <tr>
-                    <th scope="row">1</th>
-                    <td>1/22/2021</td>
-                    <td>9:29</td>
-                    <td>AB202</td>
-                    <td>E111</td>
-                    <td>😀</td>
-                    <td>5</td>
-                    <td>Very good instructions</td>
-                    <td>2</td>
-                  </tr>
-                 
-                  <!-- End of for loop -->
-                </tbody>
-              </table>
-        
-        </div>
-        {% else %}
-            <img src="analytics/plot" alt="Image Placeholder" width="49%">
+              {% endfor %}
+          </table> 
+          <br>
         {% endif %}
 </body>
 </div>

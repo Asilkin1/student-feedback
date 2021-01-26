@@ -4,31 +4,6 @@ html{
     height:100%;
 }
 
-body{
-    background-color: black;
-    /* background-image: url('../images/bg.jpg'); */ */
-    background-size:cover;
-    background-repeat:no-repeat;
-    background-position: center;
-}
-
-.container{
-    margin-left:auto;
-    margin-right:auto;
-}
-
-text-muted{
-    color:white;
-}
-
-nav{
-    background-color:rgba(253, 253, 253, 0.658);
-    
-}
-a{
-    color:white;
-}
-
 
 #form,h1,tr,th{
     padding:10px;

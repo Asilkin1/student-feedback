@@ -1,0 +1,26 @@
+/* Hide radio button */
+input[type="radio"]{
+display: none;
+}
+
+/* Show that current radio button is selected */
+input[type="radio"]:checked + label{
+    font-size: 2rem;
+}
+
+#emoji{
+    font-size:4vw;
+}
+
+#emojiaction{
+    font-size:2vw;
+}
+
+#emoji:checked{
+    font-size:5vw;
+}
+
+#feedback-form{
+    width:auto;
+    background-color: rgba(85, 141, 190, 0.808);
+}

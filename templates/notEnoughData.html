@@ -8,39 +8,31 @@
     <h1>There is not sufficient data</h1>
 </div>
 
-<div  id="form" class="container">
-    <table class="table">
-        <!-- Top level row with headers -->
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Date</th>
-            <th scope="col">Time</th>
-            <th scope="col">Class Code</th>
-            <th scope="col">Student Code</th>
-            <th scope="col">Emoji</th>
-            <th scope="col">Elaborate number</th>
-            <th scope="col">Elaborate text</th>
-            <th scope="col">Section</th>
-          </tr>
-        </thead>
-        <tbody>
-            <!-- Add flask for loop somewhere here -->
-          <tr>
-            <th scope="row">1</th>
-            <td>1/22/2021</td>
-            <td>9:29</td>
-            <td>AB202</td>
-            <td>E111</td>
-            <td>&#128512;</td>
-            <td>5</td>
-            <td>Very good instructions</td>
-            <td>2</td>
-          </tr>
-         
-          <!-- End of for loop -->
-        </tbody>
-      </table>
-
-</div>
+  <br>
+  <p>Data Table</p>
+  <table style="width:100%;">   
+    <tr>
+      <th>id</th>
+      <th>date</th>
+      <th>time</th>
+      <th>class code</th>
+      <th>student code</th>
+      <th>emoji</th>
+      <th>category</th>
+      <th>response</th>
+    </tr>
+    {% for item in data %}
+      <tr>
+        <td>{{item[0]}}</td>
+        <td>{{item[1]}}</td>
+        <td>{{item[2]}}</td>
+        <td>{{item[3]}}</td>
+        <td>{{item[4]}}</td>
+        <td>{{item[5]}}</td>
+        <td>{{item[6]}}</td>
+        <td>{{item[7]}}</td>
+      </tr>
+    {% endfor %}
+  </table> 
+  <br>
 {% endblock %}
