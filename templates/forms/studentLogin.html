@@ -1,0 +1,31 @@
+<div class="form-container container">
+    <div class="form">
+        <h1>Fill out the information below to get started.</h1>
+        <form action="/student" method="get" >
+            
+            <div class="form-group">
+                <label class="form-check-label" for="teachingstyle">
+                    Class Code
+                </label>
+                <input type="text" class="form-control" id="text" name="classCode" placeholder="Enter class code" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-check-label" for="teachingstyle">
+                    Student Code
+                </label>
+                <input type="text" id="number" value="" class="form-control" name="studentCode" placeholder="Enter student code" required>
+                <button class="button" type="button" onclick="increment();">Generate</button>
+            </div>
+            
+            <script>
+                var i=1;
+                function increment(){
+                    document.getElementById("number").value = "AB"+i++;
+                }
+            </script>
+            <!-- No need to put within a tag since the button is within the form -->
+                <button class="button" type="submit" name="submitButton" value="student">Login</button>
+        </form>
+    </div>
+</div>

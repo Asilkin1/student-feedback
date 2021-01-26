@@ -4,45 +4,6 @@
 {% block content %}
 <!-- Sign up page -->
 <div class="container">
-    <div class="row">
-        <!-- Left col student sign up for a code-->
-        <div class="col border">
-            <h4>Student signup</h4>
-            <form class="justify-content-md-center" action="signup.html">
-
-                <!-- Generate student code -->
-                <div class="form-inline">
-
-                    <label for="scode">Your student code</label>
-                    <div class="col">
-                        <input type="text" class="form-control" id="scode" name="classCode" aria-describedby="codeHint"
-                            readonly>
-                    </div>
-
-                    <div class="col"><input class="btn btn-primary" type="button" value="generate"></input></div>
-
-                    <small id="codeHint" class="form-text text-muted">Generate your student code</small>
-                </div>
-            </form>
-        </div>
-
-        <!-- Right col professor sign up for a class-->
-        <div class="col border">
-            <h4>Professor signup</h4>
-            <form class="justify-content-md-center" action="signup.html">
-                <div class="form-inline">
-                    <label for="scode">Your class code</label>
-                    <div class="col">
-                        <input type="text" class="form-control" id="scode" name="classCode" aria-describedby="codeHint"
-                            readonly>
-                    </div>
-
-                    <div class="col"><input class="btn btn-primary" type="button" value="generate"></input></div>
-
-                    <small id="codeHint" class="form-text text-muted">Generate your class code</small>
-                </div>
-            </form>
-        </div>
-    </div>
+    
 </div>
 {% endblock %}

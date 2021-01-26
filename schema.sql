@@ -6,6 +6,6 @@ drop table if exists feedback;
         classCode text not null,
         studentCode text not null,
         emoji integer not null,
-        elaborateNumber text not null,
+        elaborateNumber integer not null,
         elaborateText text not null
     );

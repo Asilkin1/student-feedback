@@ -1,0 +1,12 @@
+footer {
+    position: absolute;
+    bottom: 0;
+    background: #000;
+    height: 60px;
+    width: 100%;
+}
+
+footer p,h1,h2,h3,h4,h5,h6{
+    color: white;
+    font-size:0.4rem;
+}

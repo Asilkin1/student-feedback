@@ -42,4 +42,3 @@ def delete_class():
     cur = con.cursor()
     cur.execute('delete from account')
     con.commit()
-

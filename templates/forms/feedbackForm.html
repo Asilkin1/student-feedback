@@ -1,0 +1,124 @@
+
+<div class="container">
+
+    <form class="needs-validation" action="/student" method="post" novalidate>
+
+        <!-- Mood section -->
+        <div class="form-group">
+            <legend>
+                <h4>Mood:</h4>
+            </legend>
+
+            <!-- Excited -->
+            <div class="form-check-inline container flex">
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="emoji" id="excited" value="5" required>
+                    <label class="form-check-label" for="excited">
+                        Excited
+                    </label>
+                    <p style="font-size:100px">&#128512;</p>
+                </div>
+
+            <!-- Normal  -->
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="emoji" id="normal" value="4" required>
+                <label class="form-check-label" for="normal">
+                    Normal
+                </label>
+                <p style="font-size:100px">&#128528;</p>
+            </div>
+
+            <!-- Unclear topic concept -->
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="emoji" id="unclear" value="3" required>
+                <label class="form-check-label" for="unclear">
+                    Unclear
+                </label>
+                <p style="font-size:100px">&#128530;</p>
+                </div>
+
+                <!-- Nervous -->
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="emoji" id="nervous" value="2" required>
+                    <label class="form-check-label" for="nervous">
+                        Nervous
+                    </label>
+                    <p style="font-size:100px">&#128533;</p>
+                </div>
+
+                <!-- Mad -->
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="emoji" id="mad" value="1" required>
+                    <label class="form-check-label" for="mad">
+                        Mad
+                    </label>
+                    <p style="font-size:100px">&#128545;</p>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Elaborte part -->
+        <div class="form-group">
+            <div>
+                <h4>Elaborate your thoughts:</h4>
+            </div>
+            <div>
+
+                <!-- Instructor/Professor -->
+                <div class="form-check">
+                    <input class="form-check-input" name="elaborateNumber" type="radio" id="professor"
+                        value="Instructor/Professor" required>
+                    <label class="form-check-label" for="professor">
+                        Instructor/Professor
+                    </label>
+                    <div>
+                        <input type="text" name="elaborateText" class="form-control" id="text">
+                    </div>
+                </div>
+
+                <!-- Teaching style -->
+                <div class="form-check">
+                    <input class="form-check-input" name="elaborateNumber" type="radio" id="teaching"
+                        value="Teaching style" required>
+                    <label class="form-check-label" for="teaching">
+                        Teaching style
+                    </label>
+                    <div>
+                        <input type="text" name="elaborateText" class="form-control" id="text">
+                    </div>
+                </div>
+
+                <!-- Topic -->
+                <div class="form-check">
+                    <input class="form-check-input" name="elaborateNumber" type="radio" id="topic" value="Topic" required>
+                    <label class="form-check-label" for="topic">
+                        Topic
+                    </label>
+                    <div>
+                        <input type="text" name="elaborateText" class="form-control" id="text">
+                    </div>
+                </div>
+
+                <!-- Other -->
+                <div class="form-check">
+                    <input class="form-check-input" name="elaborateNumber" type="radio" id="other" value="Other" required>
+                    <label class="form-check-label" for="other">
+                        Other
+                    </label>
+                    <div>
+                        <input type="text" name="elaborateText" class="form-control" id="text">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Submit button -->
+        <div class="form-group">
+            <div>
+                <button type="submit" class="btn btn-primary btn-block">Leave feedback</button>
+            </div>
+        </div>
+    </form>
+</div>

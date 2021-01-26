@@ -1,10 +1,5 @@
 
-{% extends "base.html" %}
-{% block title %}Home{% endblock %}
-
-{% block content %}
-
-<h2>Professor Dashboard</h2>
+<h4>{{ session['username'] }} Dashboard</h>
 
 <style>
  
@@ -15,28 +10,29 @@
            padding: 5px;
          }
    </style>
-   <p>Class Feedback List</p>
-   <table>
-     <thead>
-       <tr>
-           <th>Class ID</th>
-           <th>Section Name</th>
-           <th>Class Code</th>
-       </tr>
-       </thead>    
-       <tbody>
-        {% for row in data %}    
-               <tr>
-                   <td>{{row[3]}}</td>
-                   <td>{{row[4]}}</td>
-                   <td>{{row[5]}}</td>
-               </tr>
-           {% endfor %}
-       </tbody>
-   </table>
+   <div class="container sm-10">
+    <p>Class Feedback List</p>
+    <table class="table">
+      <thead>
+        <tr>
+            <th scope="col">Class ID</th>
+            <th scope="col">Section Name</th>
+            <th scope="col">Class Code</th>
+        </tr>
+        </thead>    
+        <tbody>
+         {% for row in data %}    
+                <tr scope="row">
+                    <td>{{row[3]}}</td>
+                    <td>{{row[4]}}</td>
+                    <td>{{row[5]}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+ 
+ <a href="{{ url_for('professor')}}" ><button class="btn btn-info btn-lg">Create Class</button></a>
+ <a type="button" href="{{ url_for('instructor')}}" class="btn btn-light btn-lg">Go to stats</a>
+   </div>
+ 
 
-<p align="center"><a href=professor/create ><button class=grey style="height:75px;width:150px">Create Class</button></a></p>
-<p class="lead"><a type="button" href="{{ url_for('instructor')}}" class="btn btn-light">Go to stats</a></p>
-
-
-{% endblock %}
