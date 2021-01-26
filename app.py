@@ -1,7 +1,7 @@
 # Flask barebones
 from flask import Flask, render_template, request, redirect, url_for,session, abort,flash, make_response #Flask Stuff
 from models import create_post, get_posts, delete_posts,create_class
-from datetime import date, datetime #get date and time
+from datetime import date, datetime, timedelta #get date and time
 from sqlalchemy.orm import sessionmaker #Making Sessions and login
 from CreateUserDatabase import *    # Table for Users
 import time #date and time
@@ -91,9 +91,14 @@ def logout():
     session['logged_in'] = False
     # User is removed from the session
     session.pop('username', None)
+
+    # Remove student codes and class code
+    session.pop('classCode', None)
+    session.pop('studentCode',None)
+
     # Feedback message
-    flash('You are successfully logged out','success')
-    return render_template('login.html')
+    flash('You have successfully logged out','success')
+    return render_template('index.html')
 
 # --------------------------------------------------------------------- Registration
 @app.route('/register', methods=['GET','POST'])
@@ -141,15 +146,26 @@ def signup():
     return render_template('signup.html',title='signup')
 
 # New student signup
-@app.route('/newstudent', methods=['GET'])
+@app.route('/newstudent', methods=['POST', 'GET'])
 def newstudent():
     # Pass global var classCode and studentCode
-    return render_template('student_sign_up.html', scode=studentCode,ccode=classCode)
+
+    if request.method == "POST":
+        # Get class code 
+        classCode = request.form.get('classCode')
+        studentCode = request.form.get('studentCode')
+        
+        session['classCode'] = classCode
+        session['studentCode'] = studentCode
+        session['logged_in'] = True
+
+        return render_template('student.html')
+
+    return render_template('student_sign_up.html')
 
 @app.route('/student/', methods=["POST", "GET"])
 def student():
-    classCode = request.args.get('classCode')
-    studentCode = request.args.get('studentCode')
+    
     if request.method == 'GET':
         #Delete existing data in database (can change this later)
         #delete_posts()
@@ -177,14 +193,14 @@ def student():
         elaborateText = mysql_aes_encrypt(elaborateText, random_key)
 
         #create data in database
-        create_post(dateNow, timeNow, classCode, studentCode, emoji, elaborateNumber, elaborateText)
+        create_post(dateNow, timeNow, session['classCode'], session['studentCode'], emoji, elaborateNumber, elaborateText)
 
         #Decryption test
         #elaborateText = mysql_aes_decrypt(elaborateText, random_key)
         #create_post(dateNow, timeNow, classCode, studentCode, emoji, elaborateNumber, elaborateText)
         
         # Message
-        #flash('Thank you for your feedback','info')
+        flash('Thank you for your feedback','info')
     return render_template('student.html', title='student')
 
 #Encryption
@@ -297,6 +313,22 @@ def instructorDashboard():
     con.close()
     return render_template('index.html', title='dashboard', data = result)
 
+
+# --------------------------------------------------------------------------------------------- Analytics
+def decryption(classCode, Category):
+    con = sql.connect('database.db')
+    c = con.cursor()
+    c.execute('''SELECT * FROM feedback WHERE classCode=?'''(classCode,))
+    
+    Frame = pd.read_sql_query("SELECT * from feedback", con)
+
+    for row in range(0,len(Frame.index)):
+        Frame.at[row,'emoji'] = mysql_aes_decrypt(Frame.at[row,'emoji'],random_key)
+        Frame.at[row,'elaborateNumber'] = mysql_aes_decrypt(Frame.at[row,'elaborateNumber'],random_key)
+        Frame.at[row,'elaborateText'] = mysql_aes_decrypt(Frame.at[row,'elaborateText'],random_key)
+    
+    return Frame
+
 #Called by professor.html
 @app.route('/analytics/check',methods=["POST","GET"])
 def check():
@@ -304,69 +336,65 @@ def check():
     ccode = request.args.get('classCode') 
     Category = request.args.get('category')
 
-    con = sql.connect('database.db') # connect to the database
-    Frame = pd.read_sql_query("SELECT * from feedback", con)  # Database to Pandas
-    # Filter Database by class code
-    Frame = Frame[Frame['classCode'] == ccode]
+    Frame = decryption(ccode,Category) #Get the pd dataframe that has been decrypted
 
     if(Frame.empty): #if the frame is empty, no class exists
         return render_template('ClassNotFound.html',title='CNF')
 
     elif(len(Frame.index) < 10): #If the whole datatable is smaller than 10 values
-        return render_template('notEnoughData.html', title='NED')
+        PassFrame = Frame
+        return render_template('notEnoughData.html', title='NED',data=PassFrame)
     
     #Checks the size of the data depending on what category
     else:
         if(Category == 'Instructor'):
             Frame = Frame[Frame['elaborateNumber']== "Instructor/Professor"]
+            PassFrame = Frame
             if(len(Frame.index) < 10):
-                return render_template('notEnoughData.html',title='NED')
+                return render_template('notEnoughData.html',title='NED', data=PassFrame)
             else:
-                return render_template('analytics.html',title='data')
+                return render_template('analytics.html',title='data', data=PassFrame)
         
-        elif(Category == 'Teaching-Style'):
+        elif(Category == 'Teaching-style'):
             Frame = Frame[Frame['elaborateNumber'] == "Teaching Style"]
+            PassFrame = Frame
             if(len(Frame.index) < 10):
-                return render_template('notEnoughData.html',title='NED')
+                return render_template('notEnoughData.html',title='NED', data=PassFrame)
             else:
-                return render_template('analytics.html',title='data')
+                return render_template('analytics.html',title='data', data=PassFrame)
         
         elif(Category == 'Topic'):
             Frame = Frame[Frame['elaborateNumber'] == "Topic"]
+            PassFrame = Frame
             if(len(Frame.index) < 10):
-                return render_template('notEnoughData.html',title='NED')
+                return render_template('notEnoughData.html',title='NED',data=PassFrame)
             else:
-                return render_template('analytics.html',title='data')
+                return render_template('analytics.html',title='data',data=PassFrame)
         
         elif(Category == 'Other'):
             Frame = Frame[Frame['elaborateNumber'] == "Other"]
+            PassFrame = Frame
             if(len(Frame.index) < 10):
-                return render_template('notEnoughData.html',title='NED')
+                return render_template('notEnoughData.html',title='NED',data=PassFrame)
             else:
-                return render_template('analytics.html',title='data')
+                return render_template('analytics.html',title='data',data=PassFrame)
 
 
 @app.route('/analytics/plot/<classCode>&<Category>', methods=["POST","GET"]) #vars to be passed in are <classcode> and <category>. & makes sure they are seperate!
 #Called by analytics.html
-def drawbar(classCode,Category):
+def drawbar(classCode,Category,Frame):
 
     #Match the category var to database names
     if(Category=='Instructor'):
         Category='Instructor/Professor'
-    elif(Category=='Teaching-Style'):
+    elif(Category=='Teaching-style'):
         Category='Teaching Style'
-
-    con = sql.connect('database.db') # connect to the database
-    Frame = pd.read_sql_query("SELECT * from feedback", con)  # Database to Pandas
-    Frame = Frame[Frame['classCode'] == classCode] #filter by class
-    Frame = Frame[Frame['elaborateNumber']== Category] #filter by category
     
     fig = Figure()
     axis = fig.add_subplot(1,1,1)
     Frame = Frame['emoji'] #get just the scores
-    x = [1,2,3,4,5] #Array of scores
     y = [Frame[Frame==1].count(),Frame[Frame==2].count(),Frame[Frame==3].count(),Frame[Frame==4].count(),Frame[Frame==5].count()] #Count of each score
-    axis.bar(x,y) #bar plot
+    axis.bar([1,2,3,4,5],y) #bar plot
     axis.set_title(Category)
     axis.set_xlabel('Score')
     axis.set_ylabel('Count')
@@ -381,18 +409,111 @@ def drawbar(classCode,Category):
 
 @app.route('/analytics/calc/<classCode>&<Category>', methods=["POST","GET"])
 #Called by Analytics.html 
-def calc(classCode,Category):
+def calc(classCode,Category,Frame):
+    if(Category=='Instructor'):
+        Category='Instructor/Professor'
+    elif(Category=='Teaching-style'):
+        Category='Teaching Style'
+
+    Frame = Frame['emoji'] #Get just the numbers
+    return f'Your average score was {round(Frame.mean(),2)}' #return the mean
+
+@app.route('/analytics/plottime/today/<classCode>&<Category>', methods=["POST","GET"])
+#Called by Analytics.html 
+def drawtimetoday(classCode,Category,Frame):
+    
+    #Match the category var to database names
+    if(Category=='Instructor'):
+        Category='Instructor/Professor'
+    elif(Category=='Teaching-style'):
+        Category='Teaching Style'
+
+    dateNow = date.today() #Get today's date
+
+    Frame = Frame[Frame['date'] == f'{dateNow}'] #Filter the frame to pull data for today
+
+    Frame = Frame['emoji'] #Get just the numbers
+    
+    fig = Figure()
+    axis = fig.add_subplot(1,1,1)
+    y = [Frame[Frame==1].count(),Frame[Frame==2].count(),Frame[Frame==3].count(),Frame[Frame==4].count(),Frame[Frame==5].count()] #Count of each score
+    axis.bar([1,2,3,4,5],y) #bar plot
+    axis.set_title(f'{Category} for Today')
+    axis.set_xlabel('Score')
+    axis.set_ylabel('Count')
+
+    canvas = FigureCanvas(fig)
+    output = io.BytesIO()
+    canvas.print_png(output)
+    response = make_response(output.getvalue())
+    response.mimetype = 'image/png'
+    return response
+
+@app.route('/analytics/plottime/yesterday/<classCode>&<Category>', methods=["POST","GET"])
+#Called by Analytics.html 
+def drawtimeyest(classCode,Category,Frame):
+    
+    #Match the category var to database names
+    if(Category=='Instructor'):
+        Category='Instructor/Professor'
+    elif(Category=='Teaching-style'):
+        Category='Teaching Style'
+
+    dateNow = date.today() #Get today's date
+    Yest = timedelta(days=-1) #One day ago
+    dateYest = dateNow + Yest #Get the date for yesterday
+
+    Frame = Frame[Frame['date'] == f'{dateYest}'] #Filter frame based on dates from yesterday
+
+    Frame = Frame['emoji'] #Get just the numbers
+    
+    fig = Figure()
+    axis = fig.add_subplot(1,1,1)
+    y = [Frame[Frame==1].count(),Frame[Frame==2].count(),Frame[Frame==3].count(),Frame[Frame==4].count(),Frame[Frame==5].count()] #Count of each score
+    axis.bar([1,2,3,4,5],y) #bar plot
+    axis.set_title(f'{Category} for Yesterday')
+    axis.set_xlabel('Score')
+    axis.set_ylabel('Count')
+
+    canvas = FigureCanvas(fig)
+    output = io.BytesIO()
+    canvas.print_png(output)
+    response = make_response(output.getvalue())
+    response.mimetype = 'image/png'
+    return response
+
+@app.route('/analytics/plottime/week/<classCode>&<Category>', methods=["POST","GET"])
+#Called by Analytics.html 
+def drawtimeweek(classCode,Category,Frame):
+    
+    #Match the category var to database names
     if(Category=='Instructor'):
         Category='Instructor/Professor'
     elif(Category=='Teaching-Style'):
         Category='Teaching Style'
 
-    con = sql.connect('database.db') # connect to the database
-    Frame = pd.read_sql_query("SELECT * from feedback", con)  # Database to Pandas
-    Frame = Frame[Frame['classCode'] == classCode] #filter by class
-    Frame = Frame[Frame['elaborateNumber']== Category] #filter by category
+    dateNow = date.today() #Get today's date
+    Week = timedelta(days=-7) #Seven days earlier
+    dateWeek = dateNow + Week #Get the date for 1 week ago
+
+    Frame = Frame[Frame['date'] >= f'{dateWeek}'] #Filter the frame based on dates within the last week
+
     Frame = Frame['emoji'] #Get just the numbers
-    return f'Your average score was {round(Frame.mean(),2)}' #return the mean
+    
+    fig = Figure()
+    axis = fig.add_subplot(1,1,1)
+    y = [Frame[Frame==1].count(),Frame[Frame==2].count(),Frame[Frame==3].count(),Frame[Frame==4].count(),Frame[Frame==5].count()] #Count of each score
+    axis.bar([1,2,3,4,5],y) #bar plot
+    axis.set_title(f'{Category} for the Last Week')
+    axis.set_xlabel('Score')
+    axis.set_ylabel('Count')
+
+    canvas = FigureCanvas(fig)
+    output = io.BytesIO()
+    canvas.print_png(output)
+    response = make_response(output.getvalue())
+    response.mimetype = 'image/png'
+    return response
 
 if __name__ == '__main__':
     app.secret_key = os.urandom(12)

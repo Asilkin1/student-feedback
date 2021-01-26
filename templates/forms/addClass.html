@@ -7,20 +7,27 @@
         color: black;
     }
 </style>
+{% with messages = get_flashed_messages()%}
+    {% if messages %}
+        
+    <p>{{msg}}</p>
+        
+    {%endif%}
+{% endwith %}
 <div class="container">
     <form method="post">
         <label class="form-check-label" for="professorname">
             Name
         </label>
         <div class="col-sm-4">
-            <input type="text" class="form-control" id="text" name="professorName">
+            <input type="text" class="form-control" id="text" name="professorName" required> 
         </div>
         
         <label class="form-check-label" for="schoolname">
             School
         </label>
         <div class="col-sm-4">
-            <input type="text" class="form-control" id="text" name="schoolName">
+            <input type="text" class="form-control" id="text" name="schoolName" required>
         </div>
     
         <label class="form-check-label" for="departmentname">
@@ -34,14 +41,14 @@
             Class
         </label>
         <div class="col-sm-4">
-            <input type="text" class="form-control" id="text" name="classId">
+            <input type="text" class="form-control" id="text" name="classId" required>
         </div>
 
         <label class="form-check-label" for="sectionname">
             Section
         </label>
         <div class="col-sm-4">
-            <input type="text" class="form-control" id="text" name="sectionName">
+            <input type="text" class="form-control" id="text" name="sectionName" required>
         </div>
 
         <div class="col-sm4">

@@ -1,23 +1,54 @@
 <!-- Registration form -->
-<div>
-    <h4>Register</h4>
-    <form class="justify-content-md-center" action="{{ url_for('register')}}" method="POST">
-        <div class="form-group-inline form-check">
+<div class="form-container container">
+    <div class="form">
+        <h1>Register</h1>
+        <form action="{{ url_for('register')}}" method="POST">
 
-            <div class="col">
-                <label for="username">Username</label>
+            <div class="form-group">
+                <label class="form-check-label" for="username">Username</label>
                 <input type="text" class="form-control" name="username">
+            </div>
 
-                <label for="password">Password</label>
+            <div class="form-group">
+                <label class="form-check-label" for="password">Password</label>
                 <input type="password" class="form-control" id="password" name="password">
-                
-                <label for="password">Repeat Password</label>
+            </div>
+
+            <div class="form-group">
+                <label class="form-check-label" for="password">Repeat Password</label>
                 <input type="password" class="form-control" id="password" name="repassword">
             </div>
 
-            <div class="col">
-                <button type="submit" class="btn btn-primary btn-block">register</button>
-            </div>
-        </div>
-    </form>
+            <button type="submit" class="button">register</button>
+
+        </form>
+    </div>
 </div>
+
+<!-- <div class="form-container container" style="
+    background-color: pink;
+    border-radius: 8px;
+    padding: 40px;
+">
+    <h1>Register</h1>
+    <form class="form" action="/register" method="POST">
+
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" class="form-control" name="username">
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" id="password" name="password">
+        </div>
+
+        <div class="form-group">
+            <label for="password">Repeat Password</label>
+            <input type="password" class="form-control" id="password" name="repassword">
+        </div>
+
+        <button type="submit" class="button btn-primary btn-block">register</button>
+
+    </form>
+</div> -->
