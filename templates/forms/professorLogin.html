@@ -1,20 +1,48 @@
-<div class="form-container container">
-    <div class="form">
+<div class="form-container">
+    <div class="container">
         <h1>Professor login</h1>
-        <form action="{{ url_for('instructorDashboard')}}" method="POST" >
-            
-            <!-- Username field group -->
+        <form action="{{ url_for('instructorDashboard')}}" method="POST">
+
             <div class="form-group">
                 <label class="form-check-label" for="username">
                     Username
                 </label>
-                <input type="text" class="form-control" id="username" name="username" placeholder="Enter username" required>
+                <input type="text" class="form-control" id="username" name="username" placeholder="Enter username"
+                    required>
             </div>
-            <!-- End username field group -->
-            
-           
-            <!-- Password field group-->
+
             <div class="form-group">
+                <label class="form-check-label" for="password">
+                    Password
+                </label>
+                <input type="password" id="password" value="" class="form-control" name="password"
+                    placeholder="Enter password" required>
+            </div>
+            <button type="submit" class="button btn-block">login</button>
+            <a href="{{ url_for('register') }}">
+                <h6>Or signup</h6>
+            </a>
+        </form>
+
+    </div>
+</div>
+<!-- <div class="form-container container">
+    <div class="form">
+        <h1>Professor login</h1>
+        <form action="{{ url_for('instructorDashboard')}}" method="POST" >
+             -->
+<!-- Username field group -->
+<!-- <div class="form-group">
+                <label class="form-check-label" for="username">
+                    Username
+                </label>
+                <input type="text" class="form-control" id="username" name="username" placeholder="Enter username" required>
+            </div> -->
+<!-- End username field group -->
+
+
+<!-- Password field group-->
+<!-- <div class="form-group">
                 <label class="form-check-label" for="password">
                     Password
                 </label>
@@ -27,5 +55,4 @@
         </form>
         
     </div>
-</div>
-
+</div> -->

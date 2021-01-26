@@ -39,7 +39,8 @@ classCode = ""
 studentCode = ""
 
 #Encryption Key
-random_key = os.urandom(16)
+#random_key = os.urandom(16)
+random_key = b"J3FTV1PL1jDFeMh01I9r+A=="
 random_key = b64encode(random_key).decode('utf-8')
 
 
@@ -318,7 +319,7 @@ def instructorDashboard():
 def decryption(classCode, Category):
     con = sql.connect('database.db')
     c = con.cursor()
-    c.execute('''SELECT * FROM feedback WHERE classCode=?'''(classCode,))
+    c.execute('''SELECT * FROM feedback WHERE classCode=?'''(classCode))
     
     Frame = pd.read_sql_query("SELECT * from feedback", con)
 

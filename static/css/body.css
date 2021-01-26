@@ -1,0 +1,11 @@
+#styledform{
+
+    background-color: rgb(213, 228, 241);
+
+    border-radius: 9px;
+    padding:20px;
+}
+
+#styledform p,h1,h2,h3,h4,h5,h6,label{
+    color:rgba(0, 0, 0, 0.849);
+}

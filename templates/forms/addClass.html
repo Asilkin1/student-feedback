@@ -2,11 +2,7 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<style>
-    .form-check-label {
-        color: black;
-    }
-</style>
+
 {% with messages = get_flashed_messages()%}
     {% if messages %}
         
@@ -14,51 +10,57 @@
         
     {%endif%}
 {% endwith %}
-<div class="container">
-    <form method="post">
-        <label class="form-check-label" for="professorname">
-            Name
-        </label>
-        <div class="col-sm-4">
+
+<!-- Typical approach to create any form with bootstrap  -->
+<div id="styledform" class="container col-md-6">
+    <h3>Add class here</h3>
+    <!-- When submit button is clicked then the action should bring to previous page -->
+    <form method="post" action="{{ url_for('instructorDashboard')}}">
+
+        <!-- Unite label and the field into a group -->
+        <div class="form-group">
+            <label class="form-check-label" for="professorname">
+                Name
+            </label>
             <input type="text" class="form-control" id="text" name="professorName" required> 
         </div>
-        
-        <label class="form-check-label" for="schoolname">
-            School
-        </label>
-        <div class="col-sm-4">
+       
+        <div class="form-group">
+            <label class="form-check-label" for="schoolname">
+                School
+            </label>
             <input type="text" class="form-control" id="text" name="schoolName" required>
         </div>
-    
-        <label class="form-check-label" for="departmentname">
-            Department
-        </label>
-        <div class="col-sm-4">
+        
+        <!-- Department name field -->
+        <div class="form-group">
+            <label class="form-check-label" for="departmentname">
+                Department
+            </label>
             <input type="text" class="form-control" id="text" name="departmentName">
         </div>
-
-        <label class="form-check-label" for="classid">
-            Class
-        </label>
-        <div class="col-sm-4">
+    
+        <!-- Class ID field -->
+        <div class="form-group">
+            <label class="form-check-label" for="classid">
+                Class
+            </label>
             <input type="text" class="form-control" id="text" name="classId" required>
         </div>
 
-        <label class="form-check-label" for="sectionname">
-            Section
-        </label>
-        <div class="col-sm-4">
+        <!-- Section name field -->
+        <div class="form-group">
+            <label class="form-check-label" for="sectionname">
+                Section
+            </label>
             <input type="text" class="form-control" id="text" name="sectionName" required>
         </div>
 
-        <div class="col-sm4">
-            <a href="{{ url_for('instructorDashboard')}}">
-                <button class="btn btn-primary" type="submit" name="submitButton" value="dashboardSubmit">Finish and Generate Class Code</button>
-            </a>
+        <!-- Submit button -->
+        <div class="form-group">
+                <button class="button" type="submit" name="submitButton" value="dashboardSubmit">Generate Class Code</button>
         </div>
-        
-        
+
     </form>
 </div>
-
 {% endblock %}

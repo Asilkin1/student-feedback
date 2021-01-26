@@ -15,6 +15,8 @@
     <link rel="stylesheet" href="{{url_for('static',filename='css/mood.css') }}">
     <!-- Fonts styles -->
     <link rel="stylesheet" href="{{url_for('static',filename='css/fonts.css') }}">
+    <!-- Body styles -->
+    <link rel="stylesheet" href="{{url_for('static',filename='css/body.css') }}">
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
@@ -24,8 +26,9 @@
 
 <body>
     <div class="container">
-        <header>
-            <nav class="navbar navbar-expand-lg mr-auto">
+        <header class="container col-md-12">
+
+            <nav class="navbar navbar-expand-lg mr-auto bg-dark">
                 <a class="navbar-brand" href="/"><p id="emoji">&#127891;</p></i></a>
                 <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
                     {% if session['logged_in']%}
