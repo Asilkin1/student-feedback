@@ -1,58 +1,35 @@
-<style>
-.form h1 {
-    font-size: 2rem;
-    text-align: center;
-    width: 100%;
-    margin-bottom: 1rem;
-    color: white;
-}
-.form h2 {
-    font-size: 1rem;
-    text-align: center;
-    width: 90%;
-    margin-bottom: 1rem;
-    color: white;
-}
-.form-check-label {
-    display: inline-block;
-    font-size: 1.5rem;
-    margin-bottom: 6px;
-    color: white;
-}
-.btn-primary{
-    margin-top: 10px;
-}
-</style>
-<div class="form-container">
+
+<div class="form-container container">
     <div class="form">
         <h1>Professor login</h1>
-        <form class="justify-content-md-center" action="{{ url_for('instructorDashboard')}}" method="POST" >
+        <form action="{{ url_for('instructorDashboard')}}" method="POST" >
             
-            <label class="form-check-label" for="username">
-                Username
-            </label>
-
-            <!-- Username field -->
-            <div>
+            <!-- Username field group -->
+            <div class="form-group">
+                <label class="form-check-label" for="username">
+                    Username
+                </label>
                 <input type="text" class="form-control" id="username" name="username" placeholder="Enter username" required>
             </div>
+            <!-- End username field group -->
             
-            <label class="form-check-label" for="password">
-                Password
-            </label>
-
-            <!-- Password -->
-            <div>
+           
+            <!-- Password field group-->
+            <div class="form-group">
+                <label class="form-check-label" for="password">
+                    Password
+                </label>
                 <input type="password" id="password" value="" class="form-control" name="password" placeholder="Enter student code" required>
             </div>
            
-            
-            <div class="col">
-                <button type="submit" class="btn btn-primary btn-block">login</button>
+            <div class="form-group center">
+                <button type="submit" class="button btn-block">login</button>
+                <a href="{{ url_for('register') }}">
+                    <h6>Or signup</h6>
+                    </a>
             </div>
         </form>
-        <a href="{{ url_for('register') }}">
-        <h3>Or signup</h3>
-        </a>
+        
     </div>
 </div>
+

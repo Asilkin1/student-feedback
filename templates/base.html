@@ -9,43 +9,48 @@
     <link rel="stylesheet" href="{{url_for('static',filename='css/style.css') }}">
     <!-- Our own css for forms: student login, professor login, etc. -->
     <link rel="stylesheet" href="{{url_for('static',filename='css/forms.css') }}">
+    <!-- Footer styles -->
+    <link rel="stylesheet" href="{{url_for('static',filename='css/footer.css') }}">
+
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
         integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
 
 </head>
+
 <body>
     <div class="container">
         <header>
             <nav class="navbar navbar-expand-lg mr-auto">
                 <a class="navbar-brand" href="#"><i class="fas fa-graduation-cap fa-2x"></i></a>
-                    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-                        {% if session['logged_in']%}
-                            <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('logout')}}">Logout</a>
-                            </li>
-                        <h2>Hello {{ session['username']}}</h2>
-                         {% else %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('index')}}">Home</a>
-                </li>
-                {% endif %}
-            </ul>
-        </nav>
-    </header>
+                <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+                    {% if session['logged_in']%}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout')}}">Logout</a>
+                    </li>
+                    <h2>Hello {{ session['username']}}</h2>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('index')}}">Home</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </header>
 
-    <main class="container">
-        {% include 'flash_messages.html'%}
-        {% block content %}{% endblock %}
-    </main>
+        <main class="container-fluid">
+            {% include 'flash_messages.html'%}
+            {% block content %}{% endblock %}
+        </main>
 
-    
-</div>
-<!-- Footer -->
-<footer class="bg-light">
-    <div>
-        <span class="text-muted">&copy; Copyright 2021 Student Feedback</span>
+
     </div>
-</footer>
+    <!-- Footer -->
+    <footer class="bg-light">
+        <div class="container">
+            <span class="text-muted">&copy; Copyright 2021 Student Feedback</span>
+        </div>
+    </footer>
 </body>
+
 </html>

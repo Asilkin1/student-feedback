@@ -1,10 +1,4 @@
-footer {
-    position: absolute;
-    bottom: 0;
-    background: #000;
-    height: 60px;
-    width: 100%;
-}
+
 
 html{
     height:100%;
@@ -12,7 +6,7 @@ html{
 
 body{
     background-color: black;
-    /* background-image: url('../images/bg.jpg'); */
+    /* background-image: url('../images/bg.jpg'); */ */
     background-size:cover;
     background-repeat:no-repeat;
     background-position: center;
@@ -35,9 +29,6 @@ a{
     color:white;
 }
 
-main{
-    max-width:50%;
-}
 
 #form,h1,tr,th{
     padding:10px;

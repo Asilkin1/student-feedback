@@ -143,20 +143,8 @@ def signup():
 # New student signup
 @app.route('/newstudent', methods=['GET'])
 def newstudent():
-    return render_template('student_sign_up.html', scode=12003,ccode='Ab123')
-
-@app.route('/dashboard', methods=['GET','POST'])
-def dashboard():
-
-    # Stub for testing
-    myClasses = ['CR123','CG234','TG445']
-    newClass = request.form.get('addClassCode')
-    # Add code to the database
-    if request.method == 'POST':
-        flash('Class added: ' + newClass,'info')
-        myClasses.append(newClass)
-
-    return render_template('dashboard.html', classes=myClasses)
+    # Pass global var classCode and studentCode
+    return render_template('student_sign_up.html', scode=studentCode,ccode=classCode)
 
 @app.route('/student/', methods=["POST", "GET"])
 def student():
