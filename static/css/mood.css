@@ -3,24 +3,57 @@ input[type="radio"]{
 display: none;
 }
 
+.feedmoji:active{
+    font-size:20px;
+}
+
 /* Show that current radio button is selected */
 input[type="radio"]:checked + label{
-    font-size: 2rem;
+   padding: 10px;
+   box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 7px 20px 0 rgba(0, 0, 0, 0.2);
+   border-radius: 8px;
+   /* border: 4px dashed #0074D9; */
+  
+}
+label{
+    text-align: center;
+
 }
 
 #emoji{
-    font-size:4vw;
+    font-size:40px;
+}
+
+#face_row{
+    margin:11px;
+}
+
+#emojifield{
+    font-size:30px;
+    border:none;
+    margin:11px;
 }
 
 #emojiaction{
-    font-size:2vw;
+    font-size:40px;
+    padding: 5px;
 }
 
-#emoji:checked{
-    font-size:5vw;
+#feedback-form p{
+    /* background-color: rgba(226, 228, 241, 0.836); */
+    border-radius: 5px;
+    color:white;
 }
 
-#feedback-form{
-    width:auto;
-    background-color: rgba(85, 141, 190, 0.808);
+/* #feedback-form{
+    background-color:aliceblue;
+    border-radius: 5px;
+} */
+
+.form-check{
+    text-align: center;
+}
+
+#feedback_button{
+    font-size:20px;
 }

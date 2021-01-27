@@ -1,15 +1,5 @@
 
 <h4>{{ session['username'] }} Dashboard</h>
-
-<style>
- 
-    td {
-           width: 150px;
-           text-align: center;
-           border: 1px solid black;
-           padding: 5px;
-         }
-   </style>
    {% with messages = get_flashed_messages()%}
     {% if messages %}
       {% for msg in messages %}
@@ -17,7 +7,7 @@
       {% endfor %}
     {%endif%}
    {% endwith %}
-   <div class="container sm-10">
+   <div class="container">
     <p>Class Feedback List</p>
     <table class="table">
       <thead>

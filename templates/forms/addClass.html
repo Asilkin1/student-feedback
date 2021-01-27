@@ -12,7 +12,7 @@
 {% endwith %}
 
 <!-- Typical approach to create any form with bootstrap  -->
-<div id="styledform" class="container col-md-6">
+<div id="styledform" class="container col-md-4">
     <h3>Add class here</h3>
     <!-- When submit button is clicked then the action should bring to previous page -->
     <form method="post" action="{{ url_for('instructorDashboard')}}">
@@ -58,7 +58,7 @@
 
         <!-- Submit button -->
         <div class="form-group">
-                <button class="button" type="submit" name="submitButton" value="dashboardSubmit">Generate Class Code</button>
+                <button class="button btn-block" type="submit" name="submitButton" value="dashboardSubmit">Generate Class Code</button>
         </div>
 
     </form>

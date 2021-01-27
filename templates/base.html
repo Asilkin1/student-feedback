@@ -8,7 +8,7 @@
     <!-- Our own css for everything -->
     <link rel="stylesheet" href="{{url_for('static',filename='css/style.css') }}">
     <!-- Our own css for forms: student login, professor login, etc. -->
-    <link rel="stylesheet" href="{{url_for('static',filename='css/forms.css') }}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/forms.css') }}">
     <!-- Footer styles -->
     <link rel="stylesheet" href="{{url_for('static',filename='css/footer.css') }}">
     <!-- Emoji styles -->
@@ -17,50 +17,94 @@
     <link rel="stylesheet" href="{{url_for('static',filename='css/fonts.css') }}">
     <!-- Body styles -->
     <link rel="stylesheet" href="{{url_for('static',filename='css/body.css') }}">
+    <!-- Tables -->
+    <link rel="stylesheet" href="{{url_for('static',filename='css/table.css') }}">
+    <!-- Header -->
+    <link rel="stylesheet" href="{{url_for('static',filename='css/header.css') }}">
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
         integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
 
 </head>
+<header>
+    <nav class="navbar navbar-expand-sm bg-light">
+        <a class="navbar-brand" href="/">
+            <p id="icon">&#127891;</p></i>
+        </a>
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+            {% if session['logged_in']%}
+            <li class="nav-item">
+                <a class="nav-link btn btn-outline-danger" href="{{ url_for('logout')}}">Logout</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link">
+                    <p>Hello {{ session['username']}}</p>
+                </a>
+            </li>
+
+            {% else %}
+            <li class="nav-item">
+                <a class="nav-link btn btn-outline-dark" href="{{ url_for('index')}}">Home</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</header>
 
 <body>
-    <div class="container">
-        <header class="container col-md-12">
-
-            <nav class="navbar navbar-expand-lg mr-auto bg-dark">
-                <a class="navbar-brand" href="/"><p id="emoji">&#127891;</p></i></a>
-                <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-                    {% if session['logged_in']%}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('logout')}}">Logout</a>
-                    </li>
-                    <h2>Hello {{ session['username']}}</h2>
-                    {% else %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('index')}}">Home</a>
-                    </li>
-                    {% endif %}
-                </ul>
-            </nav>
-        </header>
-
-        <main>
-            {% include 'flash_messages.html'%}
-            {% block content %}{% endblock %}
-        </main>
-
-
-    </div>
-    <!-- Footer -->
-    <footer class="bg-light">
-        <div class="container">
-            <span class="text-muted">&copy; Copyright 2021 Student Feedback</span>
-            <!-- Add a bunch of emojis -->
-            <span id="emoji">&#9749;</span>
+    {% include 'flash_messages.html'%}
+    <div class="row-md-4">
+        <div class="col-md-3">
 
         </div>
-    </footer>
+        <div class="col">
+            
+        </div>
+        <div class="col-md-3">
+            
+        </div>
+    </div>
+    <div class="row-md-4">
+        <div class="col-md-3">
+        </div>
+        <div class="col">
+            <div class="row">
+                {% block content %}{% endblock %}
+            </div>
+            
+        </div>
+        <div class="col-md-3">
+            
+        </div>
+    </div>
+
+    <div class="row-md-4">
+        <div class="col-md-3">
+
+        </div>
+        <div class="col">
+            
+        </div>
+        <div class="col-md-3">
+            
+        </div>
+    </div>
+        
+        
+
 </body>
+
+<footer class="bg-light">
+    <div class="container">
+        <span class="text-muted">&copy; Copyright 2021 Student Feedback</span>
+        <span>&#9749;</span> 
+        <span>&#9749;</span> 
+         <span>&#9749;</span> 
+        <span>&#9749;</span> 
+        <span>&#9749;</span> 
+    </div> 
+</footer>
+
 
 </html>

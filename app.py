@@ -26,8 +26,6 @@ import hashlib
 import random
 import sqlite3 as sl
 
-# Helper functions from registration logic
-from registration_logic import register
 
 # Login engine
 engine = create_engine('sqlite:///tutorial.db', echo=True)  # Connect to Users database
