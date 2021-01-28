@@ -29,6 +29,25 @@
 <body>
     <div id="wrapper">
     <header>
+        <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
+            <a class="navbar-brand" href="/">
+                <p id="icon">&#127891;</p></i>
+            </a>
+            <h5 class="my-0 mr-md-auto font-weight-normal">Student's feedback</h5>
+            {% if session['logged_in']%}
+            <a class="btn btn-outline-danger" href="{{ url_for('logout')}}">Logout</a>
+            {% else %}
+            <a class="btn btn-outline-success" href="{{ url_for('index')}}">Home</a>
+            {% endif %}
+            
+            <nav class="my-2 my-md-0 mr-md-3">
+              <a class="p-2 text-dark" href="#">Features</a>
+              <a class="p-2 text-dark" href="#">Enterprise</a>
+              <a class="p-2 text-dark" href="#">Support</a>
+              <a class="p-2 text-dark" href="#">Pricing</a>
+            </nav>
+            
+          </div>
         <nav class="navbar navbar-expand-sm bg-light">
             <a class="navbar-brand" href="/">
                 <p id="icon">&#127891;</p></i>
@@ -60,14 +79,15 @@
 </div>
 </body>
 <!-- Footer as it should be  -->
-<footer class="footer">
+<footer class="footer border-top">
     <div class="container">
-        <span class="text-muted">Place sticky footer content here.</span>
+        <span class="text-muted">@copyright 2021-present</span>
         <span>&#9749;</span>
         <span>&#9749;</span>
         <span>&#9749;</span>
         <span>&#9749;</span>
         <span>&#9749;</span>
     </div>
+    
 </footer>
 </html>
