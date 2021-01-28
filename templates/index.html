@@ -4,9 +4,13 @@
 {% block content %}
 
 <!-- If logged in show professor dashboard -->
-{% if session['logged_in']%}
+{% if session['logged_in'] and not session['studentCode']%}
   
 {% include 'dashboard.html'%}
+
+{% elif session['studentCode']%}
+ 
+{% include 'forms/feedbackForm.html'%}
 
 {% else %}
 <!-- Show welcome form -->

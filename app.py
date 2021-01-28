@@ -28,9 +28,12 @@ import sqlite3 as sl
 
 
 # Login engine
-engine = create_engine('sqlite:///tutorial.db', echo=True)  # Connect to Users database
+engine = create_engine('sqlite:///united.db', echo=True)  # Connect to Users database
 
 app = Flask(__name__)
+
+# Key for sessions
+app.config['SECRET_KEY'] = 'oh_so_secret'
 
 #Class and student codes
 classCode = ""
@@ -159,8 +162,8 @@ def newstudent():
         session['logged_in'] = True
 
         return render_template('student.html')
-
-    return render_template('student_sign_up.html')
+    elif request.method == "GET":
+        return render_template('student_sign_up.html')
 
 @app.route('/student/', methods=["POST", "GET"])
 def student():
@@ -515,5 +518,5 @@ def drawtimeweek(classCode,Category,Frame):
     return response
 
 if __name__ == '__main__':
-    app.secret_key = os.urandom(12)
+    # app.secret_key = os.urandom(12)
     app.run(debug=True)

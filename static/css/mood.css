@@ -13,8 +13,11 @@ input[type="radio"]:checked + label{
    box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 7px 20px 0 rgba(0, 0, 0, 0.2);
    border-radius: 8px;
    /* border: 4px dashed #0074D9; */
-  
 }
+input:focus{
+    color:red;
+}
+
 label{
     text-align: center;
 

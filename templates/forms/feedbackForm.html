@@ -3,10 +3,10 @@
     <form class="needs-validation"  action="{{ url_for('student')}}" method="post">
         <!-- Mood section -->
 
-        <div class="container-md-5">
+        <div class="container">
             <div class="row justify-content-center" id="face_row">
                 <!-- Excited -->
-                <div class="col-1 feedmoji">
+                <div class="col-2 feedmoji">
                     <div class="form-check justify-content-center">
                         <input class="form-check-input" type="radio" name="emoji" id="excited" value="5" required>
                         <label class="form-check-label" for="excited">
@@ -15,7 +15,7 @@
                         </label>
                     </div>
                 </div>
-                <div class="col-1 feedmoji">
+                <div class="col-2 feedmoji">
                     <!-- Normal -->
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="emoji" id="normal" value="4" required>
@@ -25,7 +25,7 @@
                         </label>
                     </div>
                 </div>
-                <div class="col-1 feedmoji">
+                <div class="col-2 feedmoji">
                     <!-- unclear -->
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="emoji" id="unclear" value="3" required>
@@ -35,7 +35,7 @@
                         </label>
                     </div>
                 </div>
-                <div class="col-1 feedmoji">
+                <div class="col-2 feedmoji">
                     <!-- Nervous -->
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="emoji" id="nervous" value="2" required>
@@ -59,64 +59,53 @@
     
             <div class="row justify-content-center">
                 <!-- Finger emoji -->
-                <div class="col-sm-1">
+                <div class="col-sm-6">
                     <input class="form-check-input" name="elaborateNumber" type="radio" id="professor"
                         value="Instructor/Professor" required>
+                        
                     <label class="form-check-label" for="professor">
                         <span id="emojiaction">&#128073;</span>
+                        <input type="text" placeholder="Instructor/Professor" name="elaborateText" class="form-control" id="emojifield" required>
                     </label>
                 </div>
-                <!-- Field with text -->
-                <div class="col-sm-4">
-                    <input type="text" placeholder="Instructor/Professor" name="elaborateText" class="form-control" id="emojifield">
-                </div>
+    
             </div>
 
             <div class="row justify-content-center">
                 <!-- Finger emoji -->
-                <div class="col-sm-1">
+                <div class="col-sm-6">
                     <input class="form-check-input" name="elaborateNumber" type="radio" id="teaching"
                     value="Teaching style" required>
                 <label class="form-check-label" for="teaching">
                     <span id="emojiaction">&#128073;</span>
+                        <input type="text" placeholder="Teaching style" name="elaborateText" class="form-control" id="emojifield" required>
                 </label>
-                </div>
-
-                <div class="col-sm-4">
-                    <input type="text" placeholder="Teaching style" name="elaborateText" class="form-control" id="emojifield">
                 </div>
             </div>
 
             <div class="row justify-content-center">
                 <!-- Finger emoji -->
-                <div class="col-sm-1">
-                   
+                <div class="col-sm-6">
                     <input class="form-check-input" name="elaborateNumber" type="radio" id="topic" value="Topic"
                     required>
                 <label class="form-check-label" for="topic">
                     <span id="emojiaction">&#128073;</span>
+                    <input type="text" placeholder="Topic" name="elaborateText" class="form-control" id="emojifield" required>
                 </label>
-                </div>
-
-                <div class="col-sm-4">
-                    <input type="text" placeholder="Topic" name="elaborateText" class="form-control" id="emojifield">
                 </div>
             </div>
 
             <div class="row justify-content-center form-group">
                 <!-- Finger emoji -->
-                <div class="col-sm-1">
+                <div class="col-sm-6">
                     <input class="form-check-input block" name="elaborateNumber" type="radio" id="other" value="Other"
                     required>
                 <label class="form-check-label" for="other">
                     <span id="emojiaction">&#128073;</span>
+                    <input type="text" placeholder="Other" name="elaborateText" class="form-control" id="emojifield" required>
                 </label>
-    
                 </div>
-
-                <div class="col-sm-4">
-                    <input type="text" placeholder="Other" name="elaborateText" class="form-control" id="emojifield">
-                </div>
+                
             </div>
             <div class="row justify-content-center">
                 <div class="col-sm-3">

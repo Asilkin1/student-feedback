@@ -30,9 +30,23 @@
     <div id="wrapper">
     <header>
         <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
-            <a class="navbar-brand" href="/">
+            <!-- Conditional rendering of the  -->
+            {% if session['logged_in'] and not session['studentCode']%}
+            <a class="navbar-brand" href="{{url_for('instructorDashboard')}}">
                 <p id="icon">&#127891;</p></i>
+                <p >Home</p>
             </a>
+            {% elif session['studentCode'] %}
+            <a class="navbar-brand" href="{{url_for('student')}}">
+                <p id="icon">&#127891;</p></i>
+                <p >Home</p>
+            </a>
+            {% else %}
+            <a class="navbar-brand" href="{{url_for('index')}}">
+                <p id="icon">&#127891;</p></i>
+                <p >Home</p>
+            </a>
+            {% endif %}
             <h5 class="my-0 mr-md-auto font-weight-normal">Student's feedback</h5>
             {% if session['logged_in']%}
             <a class="btn btn-outline-danger" href="{{ url_for('logout')}}">Logout</a>
@@ -41,35 +55,11 @@
             {% endif %}
             
             <nav class="my-2 my-md-0 mr-md-3">
-              <a class="p-2 text-dark" href="#">Features</a>
-              <a class="p-2 text-dark" href="#">Enterprise</a>
-              <a class="p-2 text-dark" href="#">Support</a>
-              <a class="p-2 text-dark" href="#">Pricing</a>
+         
             </nav>
             
           </div>
-        <nav class="navbar navbar-expand-sm bg-light">
-            <a class="navbar-brand" href="/">
-                <p id="icon">&#127891;</p></i>
-            </a>
-            <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-                {% if session['logged_in']%}
-                <li class="nav-item">
-                    <a class="nav-link btn btn-outline-danger" href="{{ url_for('logout')}}">Logout</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link">
-                        <p>Hello {{ session['username']}}</p>
-                    </a>
-                </li>
     
-                {% else %}
-                <li class="nav-item">
-                    <a class="nav-link btn btn-outline-dark" href="{{ url_for('index')}}">Home</a>
-                </li>
-                {% endif %}
-            </ul>
-        </nav>
     </header>
     <main role="main" class="container">
         {% include 'flash_messages.html'%}

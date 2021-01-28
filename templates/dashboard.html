@@ -1,58 +1,47 @@
-   {% with messages = get_flashed_messages()%}
-    {% if messages %}
-      {% for msg in messages %}
-        <p>{{msg}}</p>
-      {% endfor %}
-    {%endif%}
-   {% endwith %}
+{% with messages = get_flashed_messages()%}
+{% if messages %}
+{% for msg in messages %}
+<p>{{msg}}</p>
+{% endfor %}
+{%endif%}
+{% endwith %}
 
-      <a href="{{ url_for('professor')}}" ><button class="btn btn-info btn-lg">Create Class</button></a>
-      <p class="display-4">Classes statistic</p>
-      <p class="lead">see your class performance</p>
-      <table class="table table-striped table-bordered table-hover table-sm">
-          <thead class="thead-dark lead">
-            <!-- Table top rows -->
-              <tr>
-                <th scope="col">Class ID</th>
-                <th scope="col">Section Name</th>
-                <th scope="col">Class Code</th>
-                <th scope="col">Category</th>
-              </tr>
-          </thead>
-          <tbody>
-              
-            <tr scope="row">
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-        
-              {% for row in data %}  
-              <tr class="table-success">
-                  <form action="/analytics/check" method="GET">
-                      <th scope="row">{{row[3]}}</th>
-                      <td class="lead">{{row[4]}}</td>
-                      <!-- Get class code into the form  -->
-                      <td name="ccode">{{row[5]}}</td>
-                      <td>
-                          <div class="form-group">
-                              <select name="category" id="category" class="form-control" required>
-                                  <option>Instructor</option>
-                                  <option>Teaching-style</option>
-                                  <option>Topic</option>
-                                  <option>Other</option>
-                              </select>
-                          </div>
-                          <button class="btn btn-block btn-success" type="submit">Check</button>
+<a href="{{ url_for('professor')}}"><button class="btn btn-info btn-lg">Create Class</button></a>
+<p class="display-4">Classes statistic</p>
+<p class="lead">see your class performance</p>
+<table class="table table-striped table-bordered table-hover table-sm" cellspacing="0" width="100%">
+  <thead class="thead-dark lead">
+    <!-- Table top rows -->
+    <tr>
+      <th scope="col">Class ID</th>
+      <th scope="col">Section Name</th>
+      <th scope="col">Class Code</th>
+      <th scope="col">Category</th>
+    </tr>
+  </thead>
+  <tbody>
 
-                      </td>
-                  </form>
-              </tr>
-              {% endfor %}
-          </tbody>
-      </table>
+    {% for row in data %}
+    <tr class="">
+      <form action="/analytics/check" method="GET">
+        <th scope="row">{{row[3]}}</th>
+        <td>{{row[4]}}</td>
+        <!-- Get class code into the form  -->
+        <td name="ccode">{{row[5]}}</td>
+        <td>
+          <div class="form-group">
+            <select name="category" id="category" class="form-control" required>
+              <option>Instructor</option>
+              <option>Teaching-style</option>
+              <option>Topic</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <button class="btn btn-block btn-dark" type="submit">Check</button>
 
-
-
- 
-
+        </td>
+      </form>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
