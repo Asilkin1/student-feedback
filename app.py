@@ -1,8 +1,9 @@
 # Flask barebones
-from flask import Flask, render_template, request, redirect, url_for,session, abort,flash, make_response #Flask Stuff
+from flask import Flask, render_template, request, redirect, url_for,session, abort,flash, make_response, Response, render_template_string
 from models import create_post, get_posts, delete_posts,create_class
 from datetime import date, datetime, timedelta #get date and time
 from sqlalchemy.orm import sessionmaker #Making Sessions and login
+from sqlalchemy import insert,delete
 from CreateUserDatabase import *    # Table for Users
 import time #date and time
 import os #filepath
@@ -24,6 +25,9 @@ import hashlib
 
 import random
 import sqlite3 as sl
+
+#random code
+import bcrypt
 
 # Login engine
 engine = create_engine('sqlite:///united.db', echo=True)  # Connect to Users database
@@ -79,7 +83,7 @@ def login():
                 con = sl.connect('united.db')
                 c = con.cursor()
                 result = c.execute("SELECT * FROM account where username==?", (send_username,))
-            
+                
                 return render_template('index.html', data = result)
             
             else:
@@ -100,7 +104,6 @@ def logout():
     session['logged_in'] = False
     # User is removed from the session
     session.pop('username', None)
-
     # Remove student codes and class code
     session.pop('classCode', None)
     session.pop('studentCode',None)
@@ -157,8 +160,6 @@ def signup():
 # New student signup
 @app.route('/newstudent', methods=['POST', 'GET'])
 def newstudent():
-    # Pass global var classCode and studentCode
-
     if request.method == "POST":
         # Get class code 
         classCode = request.form.get('classCode')
@@ -166,11 +167,39 @@ def newstudent():
         # Generate a unique code here
         studentCode = request.form.get('studentCode')
         
-        session['classCode'] = classCode
-        session['studentCode'] = studentCode
-        session['logged_in'] = True
-
-        return render_template('student.html')
+         ## hash student code
+        myCode = studentCode.encode('ascii')   ## Convert code to binary
+        salt = b'$2b$16$MTSQ7iU1kQ/bz6tdBgjrqu' #bcrypt.gensalt(rounds=16)   # used for hashing
+        print(salt)
+        hashed = bcrypt.hashpw(myCode,salt)    ## hashing the code
+        
+        print('Hashed code', myCode.decode())
+        # Connect to the database
+        con = sl.connect('united.db')
+        cur = con.cursor()
+        # Searching for the code
+        print(hashed.decode())
+        result = cur.execute("""SELECT code FROM studentcodes WHERE code=?""", (hashed.decode(),)) #$2b$12$tBLwfHbLv5vnk1bEELhNwe2cNbz.wDJ9F9b3.1L/eRtCw8fMZHqGu
+                                                                                            #$2b$12$vzkT7u/AyN7qioysWhDZw.5XGvGhl9pGbIRnPbn.GxS7kgS03pIye
+                                                                                            #$2b$16$MTSQ7iU1kQ/bz6tdBgjrqubWuW9WRzXOt/Dpm4BnwmyiOPZ5ykH1i
+                                                                                            #$2b$16$MTSQ7iU1kQ/bz6tdBgjrqubWuW9WRzXOt/Dpm4BnwmyiOPZ5ykH1i
+                                                                                            #Hashed code AB1
+#$2b$16$MTSQ7iU1kQ/bz6tdBgjrqubWuW9WRzXOt/Dpm4BnwmyiOPZ5ykH1i
+#[('$2b$16$MTSQ7iU1kQ/bz6tdBgjrqubWuW9WRzXOt/Dpm4BnwmyiOPZ5ykH1i',)] 
+# b'AB2' $2b$16$MTSQ7iU1kQ/bz6tdBgjrqull/Ube0R8NpIh7Ajc11XFqW28.bm.nW
+    #if bcrypt.checkpw(studentCode.encode('ascii'), hashed):
+        if result == None:
+            flash('The code is already in use ','error')
+            return redirect(url_for('newstudent'))
+#AB2 -> $2b$16$MTSQ7iU1kQ/bz6tdBgjrqull/Ube0R8NpIh7Ajc11XFqW28.bm.nW
+        else:
+            session['classCode'] = classCode
+            session['studentCode'] = studentCode
+            session['logged_in'] = True
+            #insert into the database
+            cur.execute('''Insert into studentcodes code values(?)''', (hashed.decode()))
+            con.commit()
+            return render_template('student.html')
     elif request.method == "GET":
         return render_template('student_sign_up.html')
 
@@ -193,15 +222,15 @@ def student():
 
         #Emoji number
         emoji = request.form.get('emoji')
-        emoji = mysql_aes_encrypt(emoji, random_key)
+        #emoji = mysql_aes_encrypt(emoji, random_key)
 
         #Elaborate number
         elaborateNumber = request.form.get('elaborateNumber')
-        elaborateNumber = mysql_aes_encrypt(elaborateNumber, random_key)
+        #elaborateNumber = mysql_aes_encrypt(elaborateNumber, random_key)
 
         #Elaborate text
         elaborateText = request.form.get('elaborateText')
-        elaborateText = mysql_aes_encrypt(elaborateText, random_key)
+        #elaborateText = mysql_aes_encrypt(elaborateText, random_key)
 
         #create data in database
         create_post(dateNow, timeNow, session['classCode'], session['studentCode'], emoji, elaborateNumber, elaborateText)
@@ -317,8 +346,6 @@ def instructor():
 @app.route('/professor/dashboard', methods=["POST", "GET"])
 def instructorDashboard():
     session['logged_in'] = True
-    # session['username'] = 'Vasya'
-    category = request.args.get('category')
     con = sl.connect('united.db')
     c = con.cursor()
     print(session['username'])
@@ -398,21 +425,28 @@ def check():
                 return render_template('analytics.html',title='data',data=PassFrame)
 
 
-@app.route('/analytics/plot/<classCode>&<Category>&<Frame>', methods=["POST","GET"]) #vars to be passed in are <classcode> and <category>. & makes sure they are seperate!
+@app.route('/analytics/plot/<classCode>&<Category>', methods=["POST","GET"]) #vars to be passed in are <classcode> and <category>. & makes sure they are seperate!
 #Called by analytics.html
-def drawbar(classCode,Category,Frame):
+def drawbar(classCode,Category):
 
     #Match the category var to database names
     if(Category=='Instructor'):
         Category='Instructor/Professor'
     elif(Category=='Teaching-style'):
         Category='Teaching Style'
+
+    con = sql.connect('united.db')
+    c = con.cursor()
+    Frame = pd.read_sql_query("SELECT * from feedback", con)
+    Frame = Frame[Frame['classCode']==classCode]
+    Frame = Frame[Frame['elaborateNumber']==Category]
+
     
     fig = Figure()
     axis = fig.add_subplot(1,1,1)
     Frame = Frame['emoji'] #get just the scores
     y = [Frame[Frame==1].count(),Frame[Frame==2].count(),Frame[Frame==3].count(),Frame[Frame==4].count(),Frame[Frame==5].count()] #Count of each score
-    axis.bar([1,2,3,4,5],y) #bar plot
+    axis.bar([1,2,3,4,5], y) #bar plot
     axis.set_title(Category)
     axis.set_xlabel('Score')
     axis.set_ylabel('Count')
@@ -425,21 +459,27 @@ def drawbar(classCode,Category,Frame):
     response.mimetype = 'image/png'
     return response
 
-@app.route('/analytics/calc/<classCode>&<Category>&<Frame>', methods=["POST","GET"])
+@app.route('/analytics/calc/<classCode>&<Category>', methods=["POST","GET"])
 #Called by Analytics.html 
-def calc(classCode,Category,Frame):
+def calc(classCode,Category):
     if(Category=='Instructor'):
         Category='Instructor/Professor'
     elif(Category=='Teaching-style'):
         Category='Teaching Style'
 
+    con = sql.connect('united.db')
+    c = con.cursor()
+    Frame = pd.read_sql_query("SELECT * from feedback", con)
+    Frame = Frame[Frame['classCode']==classCode]
+    Frame = Frame[Frame['elaborateNumber']==Category]
+
     Frame = Frame['emoji'] #Get just the numbers
     print(Frame)
     return 'hi' #f'Your average score was {round(Frame.mean(),2)}' #return the mean
 
-@app.route('/analytics/plottime/today/<classCode>&<Category>&<Frame>', methods=["POST","GET"])
+@app.route('/analytics/plottime/today/<classCode>&<Category>', methods=["POST","GET"])
 #Called by Analytics.html 
-def drawtimetoday(classCode,Category,Frame):
+def drawtimetoday(classCode,Category):
     
     #Match the category var to database names
     if(Category=='Instructor'):
@@ -447,7 +487,14 @@ def drawtimetoday(classCode,Category,Frame):
     elif(Category=='Teaching-style'):
         Category='Teaching Style'
 
+    con = sql.connect('united.db')
+    c = con.cursor()
+    Frame = pd.read_sql_query("SELECT * from feedback", con)
+    Frame = Frame[Frame['classCode']==classCode]
+    Frame = Frame[Frame['elaborateNumber']==Category]
+
     dateNow = date.today() #Get today's date
+
 
     Frame = Frame[Frame['date'] == f'{dateNow}'] #Filter the frame to pull data for today
 
@@ -468,15 +515,21 @@ def drawtimetoday(classCode,Category,Frame):
     response.mimetype = 'image/png'
     return response
 
-@app.route('/analytics/plottime/yesterday/<classCode>&<Category>&<Frame>', methods=["POST","GET"])
+@app.route('/analytics/plottime/yesterday/<classCode>&<Category>', methods=["POST","GET"])
 #Called by Analytics.html 
-def drawtimeyest(classCode,Category,Frame):
+def drawtimeyest(classCode,Category):
     
     #Match the category var to database names
     if(Category=='Instructor'):
         Category='Instructor/Professor'
     elif(Category=='Teaching-style'):
         Category='Teaching Style'
+
+    con = sql.connect('united.db')
+    c = con.cursor()
+    Frame = pd.read_sql_query("SELECT * from feedback", con)
+    Frame = Frame[Frame['classCode']==classCode]
+    Frame = Frame[Frame['elaborateNumber']==Category]
 
     dateNow = date.today() #Get today's date
     Yest = timedelta(days=-1) #One day ago
@@ -503,13 +556,19 @@ def drawtimeyest(classCode,Category,Frame):
 
 @app.route('/analytics/plottime/week/<classCode>&<Category>', methods=["POST","GET"])
 #Called by Analytics.html 
-def drawtimeweek(classCode,Category,Frame):
+def drawtimeweek(classCode,Category):
     
     #Match the category var to database names
     if(Category=='Instructor'):
         Category='Instructor/Professor'
     elif(Category=='Teaching-Style'):
         Category='Teaching Style'
+
+    con = sql.connect('united.db')
+    c = con.cursor()
+    Frame = pd.read_sql_query("SELECT * from feedback", con)
+    Frame = Frame[Frame['classCode']==classCode]
+    Frame = Frame[Frame['elaborateNumber']==Category]
 
     dateNow = date.today() #Get today's date
     Week = timedelta(days=-7) #Seven days earlier

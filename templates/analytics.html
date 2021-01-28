@@ -27,11 +27,28 @@
   table, th, td{
         border: 1px solid black;
   }
+  .row::after {
+  content: "";
+  clear: both;
+  display: table;
+  }
 </style>
 
 <div class="container">
     <body>
-          <object src={{ url_for('calc', classCode= request.args.get('ccode'), Category = request.args.get('category'), Frame= data) }}></object>
+        <img src={{url_for('drawbar', classCode=request.args.get('ccode'), Category=request.args.get('category') )}} alt="Image Placeholder" width="40%">  
+        <object src={{ url_for('calc', classCode= request.args.get('ccode'), Category = request.args.get('category') )}}></object>
+        <div class="row">
+            <div class="column">
+                <img src={{url_for('drawtimeweek', classCode=request.args.get('ccode'), Category=request.args.get('category') )}} alt="Image Placeholder" style="width:100%">
+            </div>
+            <div class="column">
+                <img src={{url_for('drawtimeyest', classCode=request.args.get('ccode'), Category=request.args.get('category') )}} alt="Image Placeholder" style="width:100%">
+            </div>
+            <div class="column">
+                <img src={{url_for('drawtimetoday', classCode=request.args.get('ccode'), Category=request.args.get('category') )}} alt="Image Placeholder" style="width:100%">
+            </div>
+        </div>
           
           <div style="text-align: center; font-size: 15px; font-family: sans-serif;">
               <a href="/professor">Back to Class Selection</a>
