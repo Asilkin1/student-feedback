@@ -36,6 +36,13 @@
                 <p id="icon">&#127891;</p></i>
                 <p >Home</p>
             </a>
+
+            {% if session['username']%}
+            <h1>{{ session['username']}}</h1>
+            {% endif %}
+
+            <!-- Hello {{ session['username'] }} -->
+            
             {% elif session['studentCode'] %}
             <a class="navbar-brand" href="{{url_for('student')}}">
                 <p id="icon">&#127891;</p></i>

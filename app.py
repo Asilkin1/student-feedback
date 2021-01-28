@@ -30,6 +30,7 @@ import sqlite3 as sl
 # Login engine
 engine = create_engine('sqlite:///united.db', echo=True)  # Connect to Users database
 
+
 app = Flask(__name__)
 
 # Key for sessions
@@ -54,11 +55,16 @@ def index():
 @app.route('/login', methods=['GET','POST'])
 def login():
     if request.method == 'POST':
-        send_username = str(request.form['username'])
-        send_password = str(request.form['password'])
+        send_username = request.form.get('username')
+        send_password = request.form.get('password')
 
+        print('########################################')
+        print(send_password)
+        print(send_username)
         # If the password and username is provided
         if send_password and send_username:
+            session['logged_in'] = True
+            session['username'] = send_username
             Session = sessionmaker(bind=engine)
             s = Session()
 
@@ -66,15 +72,16 @@ def login():
             result = query.first()
 
             if result:
+                print('Checking for account in the database')
                 session['logged_in'] = True
                 session['username'] = send_username
                 flash('You have successfully logged in.','success')
             
                 category = request.args.get('category')
-                con = sl.connect('prof.db')
+                con = sl.connect('united.db')
                 c = con.cursor()
-                result = c.execute("SELECT * FROM account").fetchall()
-                con.close()
+                result = c.execute("SELECT * FROM account where username==?", (send_username,))
+            
                 return render_template('index.html', data = result)
             
             else:
@@ -83,8 +90,10 @@ def login():
         else:
             flash('Check your username and password','error')
             session['logged_in'] = False 
-
-    return render_template('login.html')
+    elif request.method == 'GET':
+        return render_template('login.html')
+    else:
+        return render_template('login.html')
 
 # --------------------------------------------------------------------- Log out
 @app.route('/logout')
@@ -243,23 +252,23 @@ def mysql_aes_decrypt(val,key):
     return v
 
 #creates a table for professor info
-con = sl.connect('prof.db')
-with con:
-    con.execute("""
-        CREATE TABLE IF NOT EXISTS account (
-        professorName text not null ,
-        schoolName text not null,
-        departmentName text not null,
-        classId text not null,
-        sectionName text not null,
-        classCode integer not null,
-        entryId integer PRIMARY KEY AUTOINCREMENT
-        );
-    """)
+# con = sl.connect('united.db')
+# with con:
+#     con.execute("""
+#         CREATE TABLE IF NOT EXISTS account (
+#         professorName text not null ,
+#         schoolName text not null,
+#         departmentName text not null,
+#         classId text not null,
+#         sectionName text not null,
+#         classCode integer not null,
+#         entryId integer PRIMARY KEY AUTOINCREMENT
+#         );
+#     """)
 
 @app.route('/professor/create', methods=["POST", "GET"])
 def professor():
-    con = sl.connect('prof.db')
+    con = sl.connect('united.db')
     inData = True
     
     if request.method == 'POST':
@@ -308,19 +317,20 @@ def instructor():
 @app.route('/professor/dashboard', methods=["POST", "GET"])
 def instructorDashboard():
     session['logged_in'] = True
+    # session['username'] = 'Vasya'
     category = request.args.get('category')
-    con = sl.connect('prof.db')
+    con = sl.connect('united.db')
     c = con.cursor()
-    result = c.execute("SELECT * FROM account").fetchall()
-    con.close()
+    print(session['username'])
+    result = c.execute("SELECT * FROM account where username=? ", (session['username'],))  
     return render_template('index.html', title='dashboard', data = result)
 
 
 # --------------------------------------------------------------------------------------------- Analytics
 def decryption(classCode, Category):
-    con = sql.connect('database.db')
+    con = sql.connect('united.db.db')
     c = con.cursor()
-    c.execute('''SELECT * FROM feedback WHERE classCode=?'''(classCode))
+    c.execute('''SELECT * FROM feedback WHERE classCode=?''', (classCode))
     
     Frame = pd.read_sql_query("SELECT * from feedback", con)
 
@@ -332,13 +342,21 @@ def decryption(classCode, Category):
     return Frame
 
 #Called by professor.html
-@app.route('/analytics/check',methods=["POST","GET"])
+@app.route('/analytics/check/',methods=["POST","GET"])
 def check():
     #Pull variables from professor form
-    ccode = request.args.get('classCode') 
+    ccode = request.args.get('ccode') 
     Category = request.args.get('category')
 
-    Frame = decryption(ccode,Category) #Get the pd dataframe that has been decrypted
+    print(ccode)
+
+    #Frame = decryption(ccode,Category) #Get the pd dataframe that has been decrypted
+
+    con = sql.connect('united.db')
+    c = con.cursor()
+    c.execute('''SELECT * FROM feedback WHERE classCode=?''', (ccode,))
+    
+    Frame = pd.read_sql_query("SELECT * from feedback", con)
 
     if(Frame.empty): #if the frame is empty, no class exists
         return render_template('ClassNotFound.html',title='CNF')
@@ -385,6 +403,8 @@ def check():
 @app.route('/analytics/plot/<classCode>&<Category>', methods=["POST","GET"]) #vars to be passed in are <classcode> and <category>. & makes sure they are seperate!
 #Called by analytics.html
 def drawbar(classCode,Category,Frame):
+
+    print(Frame)
 
     #Match the category var to database names
     if(Category=='Instructor'):

@@ -4,12 +4,12 @@ from sqlalchemy import Column, Date, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
 
-engine = create_engine('sqlite:///tutorial.db', echo=True)
+engine = create_engine('sqlite:///united.db', echo=True)
 Base = declarative_base()
 
 ########################################################################
 class User(Base):
-    __tablename__ = "users"
+    __tablename__ = "professor_login"
 
     id = Column(Integer, primary_key=True)
     username = Column(String)

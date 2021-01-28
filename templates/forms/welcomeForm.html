@@ -1,13 +1,8 @@
-<style>
-    .form-group {
-        display: contents;
-    }
-    </style>
 <div class="form-container container">
     <div class="form">
         <h1>Welcome to the feedback portal!</h1>
         <h2>Select an option below to get started.</h2>
-        <a href="{{ url_for('instructor') }}">
+        <a href="{{ url_for('login') }}">
             <button class="button" type="submit" name="submitButton" value="instructor">Instructor</button>
         </a>
         <a href="{{ url_for('newstudent') }}">

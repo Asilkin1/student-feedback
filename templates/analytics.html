@@ -31,17 +31,17 @@
 
 <div class="container">
     <body>
-          <img src={{ url_for('drawbar', classCode= request.args.get('classCode'), Category = request.args.get('category'), Frame=data) }} alt="Image Placeholder" width = 40%>
-          <object data={{ url_for('calc', classCode= request.args.get('classCode'), Category = request.args.get('category'), Frame=data ) }}></object>
+          <img src={{ url_for('drawbar', classCode= request.args.get('ccode'), Category = request.args.get('category'), Frame=data) }} alt="Image Placeholder" width = 40%>
+          <object src={{ url_for('drawbar', classCode= request.args.get('ccode'), Category = request.args.get('category'), Frame=data) }}></object>
           <div class='row'>
               <div class='column'>
-                  <img src={{ url_for('drawtimeweek', classCode= request.args.get('classCode'), Category = request.args.get('category'), Frame=data ) }} alt="Image Placeholder" style="width:100%;">
+                  <img src={{ url_for('drawtimeweek', classCode= request.args.get('ccode'), Category = request.args.get('category'), Frame=data ) }} alt="Image Placeholder" style="width:100%;">
               </div>
               <div class='column'>
-                  <img src={{ url_for('drawtimeyest', classCode= request.args.get('classCode'), Category = request.args.get('category'), Frame=data ) }} alt="Image Placeholder" style="width:100%;">
+                  <img src={{ url_for('drawtimeyest', classCode= request.args.get('ccode'), Category = request.args.get('category'), Frame=data ) }} alt="Image Placeholder" style="width:100%;">
               </div>
               <div class='column'>
-                  <img src={{ url_for('drawtimetoday', classCode= request.args.get('classCode'), Category = request.args.get('category') Frame=Data) }} alt="Image Placeholder" style="width:100%;">
+                  <img src={{ url_for('drawtimetoday', classCode= request.args.get('ccode'), Category = request.args.get('category'), Frame=Data) }} alt="Image Placeholder" style="width:100%;">
               </div>
           </div>
           <div style="text-align: center; font-size: 15px; font-family: sans-serif;">
@@ -74,7 +74,6 @@
               {% endfor %}
           </table> 
           <br>
-        {% endif %}
 </body>
 </div>
 
