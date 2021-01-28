@@ -157,7 +157,7 @@ def classerror():
 def signup():
     return render_template('signup.html',title='signup')
 
-# New student signup
+# New student signup ! Need to have a separate route for student login, same as for professor
 @app.route('/newstudent', methods=['POST', 'GET'])
 def newstudent():
     if request.method == "POST":
@@ -179,27 +179,27 @@ def newstudent():
         cur = con.cursor()
         # Searching for the code
         print(hashed.decode())
-        result = cur.execute("""SELECT code FROM studentcodes WHERE code=?""", (hashed.decode(),)) #$2b$12$tBLwfHbLv5vnk1bEELhNwe2cNbz.wDJ9F9b3.1L/eRtCw8fMZHqGu
-                                                                                            #$2b$12$vzkT7u/AyN7qioysWhDZw.5XGvGhl9pGbIRnPbn.GxS7kgS03pIye
-                                                                                            #$2b$16$MTSQ7iU1kQ/bz6tdBgjrqubWuW9WRzXOt/Dpm4BnwmyiOPZ5ykH1i
-                                                                                            #$2b$16$MTSQ7iU1kQ/bz6tdBgjrqubWuW9WRzXOt/Dpm4BnwmyiOPZ5ykH1i
-                                                                                            #Hashed code AB1
-#$2b$16$MTSQ7iU1kQ/bz6tdBgjrqubWuW9WRzXOt/Dpm4BnwmyiOPZ5ykH1i
-#[('$2b$16$MTSQ7iU1kQ/bz6tdBgjrqubWuW9WRzXOt/Dpm4BnwmyiOPZ5ykH1i',)] 
-# b'AB2' $2b$16$MTSQ7iU1kQ/bz6tdBgjrqull/Ube0R8NpIh7Ajc11XFqW28.bm.nW
-    #if bcrypt.checkpw(studentCode.encode('ascii'), hashed):
-        if result == None:
-            flash('The code is already in use ','error')
-            return redirect(url_for('newstudent'))
-#AB2 -> $2b$16$MTSQ7iU1kQ/bz6tdBgjrqull/Ube0R8NpIh7Ajc11XFqW28.bm.nW
-        else:
+        result = cur.execute("""SELECT code FROM studentcodes WHERE code=?""", (hashed.decode(),))
+        print('RESULT------------------',result)
+        
+        # No records found
+        if result.fetchone() == None:
+            flash('Welcome! Remember your code for the future use','success')
+            flash(myCode.decode(),'info')
             session['classCode'] = classCode
             session['studentCode'] = studentCode
             session['logged_in'] = True
             #insert into the database
-            cur.execute('''Insert into studentcodes code values(?)''', (hashed.decode()))
+            #insert into feedback (date, time, classCode, studentCode, emoji, elaborateNumber, elaborateText) values(?, ?, ?, ?, ?, ?, ?)', (date, time, classCode, studentCode, emoji, elaborateNumber, elaborateText)
+            cur.execute('''Insert into studentcodes (code) values(?)''', (hashed.decode(),))
             con.commit()
             return render_template('student.html')
+
+        # Returning user
+        else:
+            flash('The code is already in use ','error')
+            return redirect(url_for('newstudent'))
+                 
     elif request.method == "GET":
         return render_template('student_sign_up.html')
 
