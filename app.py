@@ -22,14 +22,11 @@ import Padding
 import binascii
 import hashlib
 
-
 import random
 import sqlite3 as sl
 
-
 # Login engine
 engine = create_engine('sqlite:///united.db', echo=True)  # Connect to Users database
-
 
 app = Flask(__name__)
 
@@ -47,7 +44,8 @@ random_key = b64encode(random_key).decode('utf-8')
 
 
 @app.route('/', methods=["POST", "GET"])
-def index():    
+def index():
+    print('Session ID')
     return render_template('index.html', title='submit')
    
 
@@ -164,6 +162,8 @@ def newstudent():
     if request.method == "POST":
         # Get class code 
         classCode = request.form.get('classCode')
+
+        # Generate a unique code here
         studentCode = request.form.get('studentCode')
         
         session['classCode'] = classCode
@@ -328,7 +328,7 @@ def instructorDashboard():
 
 # --------------------------------------------------------------------------------------------- Analytics
 def decryption(classCode, Category):
-    con = sql.connect('united.db.db')
+    con = sql.connect('united.db')
     c = con.cursor()
     c.execute('''SELECT * FROM feedback WHERE classCode=?''', (classCode))
     
@@ -348,15 +348,13 @@ def check():
     ccode = request.args.get('ccode') 
     Category = request.args.get('category')
 
-    print(ccode)
 
     #Frame = decryption(ccode,Category) #Get the pd dataframe that has been decrypted
 
     con = sql.connect('united.db')
     c = con.cursor()
-    c.execute('''SELECT * FROM feedback WHERE classCode=?''', (ccode,))
-    
     Frame = pd.read_sql_query("SELECT * from feedback", con)
+    Frame = Frame[Frame['classCode']==ccode]
 
     if(Frame.empty): #if the frame is empty, no class exists
         return render_template('ClassNotFound.html',title='CNF')
@@ -379,7 +377,7 @@ def check():
             Frame = Frame[Frame['elaborateNumber'] == "Teaching Style"]
             PassFrame = Frame
             if(len(Frame.index) < 10):
-                return render_template('notEnoughData.html',title='NED', data=PassFrame)
+                return render_template('notEnoughData.html',title='NED', data=PassFrame['id'])
             else:
                 return render_template('analytics.html',title='data', data=PassFrame)
         
@@ -400,11 +398,9 @@ def check():
                 return render_template('analytics.html',title='data',data=PassFrame)
 
 
-@app.route('/analytics/plot/<classCode>&<Category>', methods=["POST","GET"]) #vars to be passed in are <classcode> and <category>. & makes sure they are seperate!
+@app.route('/analytics/plot/<classCode>&<Category>&<Frame>', methods=["POST","GET"]) #vars to be passed in are <classcode> and <category>. & makes sure they are seperate!
 #Called by analytics.html
 def drawbar(classCode,Category,Frame):
-
-    print(Frame)
 
     #Match the category var to database names
     if(Category=='Instructor'):
@@ -429,7 +425,7 @@ def drawbar(classCode,Category,Frame):
     response.mimetype = 'image/png'
     return response
 
-@app.route('/analytics/calc/<classCode>&<Category>', methods=["POST","GET"])
+@app.route('/analytics/calc/<classCode>&<Category>&<Frame>', methods=["POST","GET"])
 #Called by Analytics.html 
 def calc(classCode,Category,Frame):
     if(Category=='Instructor'):
@@ -438,9 +434,10 @@ def calc(classCode,Category,Frame):
         Category='Teaching Style'
 
     Frame = Frame['emoji'] #Get just the numbers
-    return f'Your average score was {round(Frame.mean(),2)}' #return the mean
+    print(Frame)
+    return 'hi' #f'Your average score was {round(Frame.mean(),2)}' #return the mean
 
-@app.route('/analytics/plottime/today/<classCode>&<Category>', methods=["POST","GET"])
+@app.route('/analytics/plottime/today/<classCode>&<Category>&<Frame>', methods=["POST","GET"])
 #Called by Analytics.html 
 def drawtimetoday(classCode,Category,Frame):
     
@@ -471,7 +468,7 @@ def drawtimetoday(classCode,Category,Frame):
     response.mimetype = 'image/png'
     return response
 
-@app.route('/analytics/plottime/yesterday/<classCode>&<Category>', methods=["POST","GET"])
+@app.route('/analytics/plottime/yesterday/<classCode>&<Category>&<Frame>', methods=["POST","GET"])
 #Called by Analytics.html 
 def drawtimeyest(classCode,Category,Frame):
     

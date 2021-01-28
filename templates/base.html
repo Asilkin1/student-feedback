@@ -40,7 +40,8 @@
             {% if session['username']%}
             <h1>{{ session['username']}}</h1>
             {% endif %}
-
+            
+            {{ session['_id'] }}
             <!-- Hello {{ session['username'] }} -->
             
             {% elif session['studentCode'] %}

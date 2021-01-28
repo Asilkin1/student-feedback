@@ -31,19 +31,8 @@
 
 <div class="container">
     <body>
-          <img src={{ url_for('drawbar', classCode= request.args.get('ccode'), Category = request.args.get('category'), Frame=data) }} alt="Image Placeholder" width = 40%>
-          <object src={{ url_for('drawbar', classCode= request.args.get('ccode'), Category = request.args.get('category'), Frame=data) }}></object>
-          <div class='row'>
-              <div class='column'>
-                  <img src={{ url_for('drawtimeweek', classCode= request.args.get('ccode'), Category = request.args.get('category'), Frame=data ) }} alt="Image Placeholder" style="width:100%;">
-              </div>
-              <div class='column'>
-                  <img src={{ url_for('drawtimeyest', classCode= request.args.get('ccode'), Category = request.args.get('category'), Frame=data ) }} alt="Image Placeholder" style="width:100%;">
-              </div>
-              <div class='column'>
-                  <img src={{ url_for('drawtimetoday', classCode= request.args.get('ccode'), Category = request.args.get('category'), Frame=Data) }} alt="Image Placeholder" style="width:100%;">
-              </div>
-          </div>
+          <object src={{ url_for('calc', classCode= request.args.get('ccode'), Category = request.args.get('category'), Frame= data) }}></object>
+          
           <div style="text-align: center; font-size: 15px; font-family: sans-serif;">
               <a href="/professor">Back to Class Selection</a>
           </div>
@@ -60,18 +49,18 @@
                   <th>category</th>
                   <th>response</th>
               </tr>
-              {% for item in data %}
-                  <tr>
-                      <td>{{item[0]}}</td>
-                      <td>{{item[1]}}</td>
-                      <td>{{item[2]}}</td>
-                      <td>{{item[3]}}</td>
-                      <td>{{item[4]}}</td>
-                      <td>{{item[5]}}</td>
-                      <td>{{item[6]}}</td>
-                      <td>{{item[7]}}</td>
-                  </tr>
-              {% endfor %}
+                {% for row in data.index %}
+                    <tr>
+                        <td>{{data.at[row,'id']}}</td>
+                        <td>{{data.at[row,'date']}}</td>
+                        <td>{{data.at[row,'time']}}</td>
+                        <td>{{data.at[row,'classCode']}}</td>
+                        <td>{{data.at[row,'studentCode']}}</td>
+                        <td>{{data.at[row,'emoji']}}</td>
+                        <td>{{data.at[row,'elaborateNumber']}}</td>
+                        <td>{{data.at[row,'elaborateText']}}</td>
+                    </tr>
+                {% endfor %}
           </table> 
           <br>
 </body>
