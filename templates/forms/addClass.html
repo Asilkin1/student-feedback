@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+{% with messages = get_flashed_messages()%}
+    {% if messages %}
+        
+    <p>{{msg}}</p>
+        
+    {%endif%}
+{% endwith %}
+
+<!-- Typical approach to create any form with bootstrap  -->
+<div id="styledform" class="container col-md-4">
+    <h3>Add class here</h3>
+    <!-- When submit button is clicked then the action should bring to previous page -->
+    <form  action="{{ url_for('professor')}}" method="post">
+
+        <!-- Unite label and the field into a group -->
+        <div class="form-group">
+            <label class="form-check-label" for="professorName">
+                Name
+            </label>
+            <input type="text" class="form-control" id="text" name="professorName" required> 
+        </div>
+       
+        <div class="form-group">
+            <label class="form-check-label" for="schoolName">
+                School
+            </label>
+            <input type="text" class="form-control" id="text" name="schoolName" required>
+        </div>
+        
+        <!-- Department name field -->
+        <div class="form-group">
+            <label class="form-check-label" for="departmentName">
+                Department
+            </label>
+            <input type="text" class="form-control" id="text" name="departmentName">
+        </div>
+    
+        <!-- Class ID field -->
+        <div class="form-group">
+            <label class="form-check-label" for="classId">
+                Class
+            </label>
+            <input type="text" class="form-control" id="text" name="classId" required>
+        </div>
+
+        <!-- Section name field -->
+        <div class="form-group">
+            <label class="form-check-label" for="sectionName">
+                Section
+            </label>
+            <input type="text" class="form-control" id="text" name="sectionName" required>
+        </div>
+
+        <!-- Submit button -->
+        <div class="form-group">
+                <button class="button btn-block" type="submit" name="submitButton" value="dashboardSubmit">Generate Class Code</button>
+        </div>
+
+    </form>
+</div>
+{% endblock %}

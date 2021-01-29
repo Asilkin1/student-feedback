@@ -1,20 +1,109 @@
 {% extends "base.html" %}
+{% block title %}Analytics{% endblock %}
+
 {% block content %}
+<!-- Analytics stats -->
 <style>
-    img{
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        width:40%;
-    }
-    object{
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-    }
+  p{
+        font-family: sans-serif;
+        font-size: 20px;
+        text-align: center;
+        background-color: white;
+  }
+  caption{
+        font-family: sans-serif;
+        font-size: 20px;
+        text-align: center;
+        background-color: white;
+        color: black;
+        border: 1px solid black;
+  }
+  img{
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+  }
+  object{
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+  }
+  .column{
+      margin-left: auto;
+      margin-right: auto;
+      width: 30.5%;
+  }
+  table, th, td{
+        border: 1px solid black;
+        background-color: white;
+  }
+  .row::after {
+  content: "";
+  clear: both;
+  display: table;
+  }
+  .graph{
+      background-color: white;
+      border: 1px solid black;
+  }
+  
+  a{
+      color:white;
+  }
+  footer{
+      background-color: white;
+  }
 </style>
 
-<!-- Analytics stats -->
-    <img src={{ url_for('drawbar', classCode= request.args.get('classCode'), Category = request.args.get('category') ) }} alt="Image Placeholder">
-    <object data={{ url_for('calc', classCode= request.args.get('classCode'), Category = request.args.get('category') ) }}></object>
-{% endblock content %}
+<div class="container">
+    <body class='bg-primary'>
+        <div class='graph'>
+        <img src={{url_for('drawbar', classCode=request.args.get('ccode'), Category=request.args.get('category') )}} alt="Image Placeholder" width="40%">
+        <p>{{display}}</p> 
+        <div class="row">
+            <div class="column">
+                <img src={{url_for('drawtimetoday', classCode=request.args.get('ccode'), Category=request.args.get('category') )}} alt="Image Placeholder" style="width:100%">
+            </div>
+            <div class="column">
+                <img src={{url_for('drawtimeyest', classCode=request.args.get('ccode'), Category=request.args.get('category') )}} alt="Image Placeholder" style="width:100%">
+            </div>
+            <div class="column">
+                <img src={{url_for('drawtimeweek', classCode=request.args.get('ccode'), Category=request.args.get('category') )}} alt="Image Placeholder" style="width:100%">
+            </div>
+        </div>
+        </div>
+        <br>
+          <div style="text-align: center; font-size: 15px; font-family: sans-serif; color:white;">
+              <a href="{{url_for("instructorDashboard")}}">Back to Class Selection</a>
+          </div>
+          <br>
+          <table style="width:100%;">
+            <caption style='text-align: center; caption-side: top;'>Data Table</caption>
+              <tr>
+                  <th>ID</th>
+                  <th>Date</th>
+                  <th>Time</th>
+                  <th>Class Code</th>
+                  <th>Student Code</th>
+                  <th>Emoji</th>
+                  <th>Category</th>
+                  <th>Response</th>
+              </tr>
+              {% for row in data.index %}
+              <tr>
+                  <td>{{data.at[row,'id']}}</td>
+                  <td>{{data.at[row,'date']}}</td>
+                  <td>{{data.at[row,'time']}}</td>
+                  <td>{{data.at[row,'classCode']}}</td>
+                  <td>{{data.at[row,'studentCode']}}</td>
+                  <td>{{data.at[row,'emoji']}}</td>
+                  <td>{{data.at[row,'elaborateNumber']}}</td>
+                  <td>{{data.at[row,'elaborateText']}}</td>
+              </tr>
+          {% endfor %} 
+          </table> 
+          <br>
+</body>
+</div>
+
+{% endblock %}

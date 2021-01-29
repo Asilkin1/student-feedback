@@ -2,27 +2,5 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<!-- Registration form -->
-<div id="form">
-    <h4>Register</h4>
-    <form class="justify-content-md-center" action="{{ url_for('register')}}" method="POST">
-        <div class="form-group-inline form-check">
-
-            <div class="col">
-                <label for="username">Username</label>
-                <input type="text" class="form-control" name="username">
-
-                <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" name="password">
-                
-                <label for="password">Repeat Password</label>
-                <input type="password" class="form-control" id="password" name="repassword">
-            </div>
-
-            <div class="col">
-                <button type="submit" class="btn btn-primary btn-block">register</button>
-            </div>
-        </div>
-    </form>
-</div>
+{% include 'forms/professorRegistrationForm.html'%}
 {% endblock %}

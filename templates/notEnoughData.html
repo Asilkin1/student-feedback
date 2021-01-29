@@ -2,45 +2,46 @@
 {% block title %}Not enough dta{% endblock %}
 
 {% block content %}
-
+<style>
+p{
+        font-family: sans-serif;
+        font-size: 30px;
+        text-align: center;  
+}
+table, th, td{
+        border: 1px solid black;
+}
+</style>
 <!-- Not enough data -->
 <div class="container-fluid">
     <h1>There is not sufficient data</h1>
 </div>
 
-<div class="container">
-    <table class="table">
-        <!-- Top level row with headers -->
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Date</th>
-            <th scope="col">Time</th>
-            <th scope="col">Class Code</th>
-            <th scope="col">Student Code</th>
-            <th scope="col">Emoji</th>
-            <th scope="col">Elaborate number</th>
-            <th scope="col">Elaborate text</th>
-            <th scope="col">Section</th>
-          </tr>
-        </thead>
-        <tbody>
-            <!-- Add flask for loop somewhere here -->
-          <tr>
-            <th scope="row">1</th>
-            <td>1/22/2021</td>
-            <td>9:29</td>
-            <td>AB202</td>
-            <td>E111</td>
-            <td>&#128512;</td>
-            <td>5</td>
-            <td>Very good instructions</td>
-            <td>2</td>
-          </tr>
-         
-          <!-- End of for loop -->
-        </tbody>
-      </table>
-
-</div>
+  <br>
+  <p>Data Table</p>
+  <table style="width:100%;">   
+    <tr>
+      <th>id</th>
+      <th>date</th>
+      <th>time</th>
+      <th>class code</th>
+      <th>student code</th>
+      <th>emoji</th>
+      <th>category</th>
+      <th>response</th>
+    </tr>
+    {% for row in data.index %}
+      <tr>
+        <td>{{data.at[row,'id']}}</td>
+        <td>{{data.at[row,'date']}}</td>
+        <td>{{data.at[row,'time']}}</td>
+        <td>{{data.at[row,'classCode']}}</td>
+        <td>{{data.at[row,'studentCode']}}</td>
+        <td>{{data.at[row,'emoji']}}</td>
+        <td>{{data.at[row,'elaborateNumber']}}</td>
+        <td>{{data.at[row,'elaborateText']}}</td>
+      </tr>
+    {% endfor %}
+  </table> 
+  <br>
 {% endblock %}

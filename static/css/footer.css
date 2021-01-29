@@ -1,0 +1,21 @@
+footer {
+    position: relative;
+    margin-top: -150px; /* negative value of footer height */
+    height: 150px;
+    clear:both;
+    padding-top:20px;
+}
+
+footer p,h1,h2,h3,h4,h5,h6{
+    color: white;
+    font-size:0.4rem;
+}
+
+main{
+    overflow:auto;
+    padding-bottom:150px; /* this needs to be bigger than footer height*/
+}
+
+#wrapper {
+    min-height: 100%;
+  }

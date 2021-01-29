@@ -1,30 +1,9 @@
+
 {% extends "base.html" %}
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<div id="form">
-    <h4>Log in</h4>
-    <form class="justify-content-md-center" action="{{ url_for('login')}}" method="POST">
-        <div class="form-group-inline form-check">
-            
-            <div class="col">
-                <label for="email">Username</label>
-                <input type="text" 
-                       class="form-control"  
-                       name="username">
 
-                <label for="password">Password</label>
-                <input type="password" 
-                       class="form-control" 
-                       id="password" 
-                       name="password">
-            </div>
-
-            <div class="col">
-                <button type="submit" class="btn btn-primary btn-block">login</button>
-            </div>
-        </div>
-    </form>
-</div>
+{% include 'forms/professorLogin.html'%}
 
 {% endblock %}

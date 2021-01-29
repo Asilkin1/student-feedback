@@ -1,0 +1,26 @@
+<!-- Registration form -->
+<div class="form-container container">
+    <div class="form">
+        <h1>Register</h1>
+        <form action="{{ url_for('register')}}" method="POST">
+
+            <div class="form-group">
+                <label class="form-check-label" for="username">Username</label>
+                <input type="text" class="form-control" name="username">
+            </div>
+
+            <div class="form-group">
+                <label class="form-check-label" for="password">Password</label>
+                <input type="password" class="form-control" id="password" name="password">
+            </div>
+
+            <div class="form-group">
+                <label class="form-check-label" for="password">Repeat Password</label>
+                <input type="password" class="form-control" id="password" name="repassword">
+            </div>
+
+            <button type="submit" class="button">register</button>
+
+        </form>
+    </div>
+</div>

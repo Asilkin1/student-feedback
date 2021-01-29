@@ -5,47 +5,38 @@
 {% block content %}
 
 <!-- Content for professor page -->
-<div class="container">
-    <form action="/professor/create" method="post">
-        <label class="form-check-label" for="professorname">
-            Name
-        </label>
-        <div class="col-sm-4">
-            <input type="text" class="form-control" id="text" name="professorName">
+<div id="form" class="mx-auto col-md-6">
+
+    <!-- Submit class code and a category -->
+    <form class="justify-content-md-center" action="/analytics/check" method="get">
+        <!-- Class code -->
+        <div class="form-group ">
+            <label for="ccode">Class Code</label>
+            <input type="text" class="form-control " id="ccode" name="classCode" aria-describedby="codeHint"
+                placeholder="enter your class code">
+            <small id="codeHint" class="form-text text-muted">Your class code has the format ex:AB2012</small>
+        </div>
+
+        <!-- Pick a category -->
+        <div class="form-group">
+            <label for="category">Category</label>
+                <select name="category" id="category" class="form-control">
+                  <option>Select</option>
+                  <option>Instructor</option>
+                  <option>Teaching-style</option>
+                  <option>Topic</option>
+                  <option>Other</option>
+                </select>
+        </div>
+
+        <!-- Submit button -->
+        <div class="form-group">
+            <div>
+                <button type="submit" class="btn btn-primary btn-block">See results</button>
+            </div>
         </div>
         
-        <label class="form-check-label" for="schoolname">
-            School
-        </label>
-        <div class="col-sm-4">
-            <input type="text" class="form-control" id="text" name="schoolName">
-        </div>
-    
-        <label class="form-check-label" for="departmentname">
-            Department
-        </label>
-        <div class="col-sm-4">
-            <input type="text" class="form-control" id="text" name="departmentName">
-        </div>
-
-        <label class="form-check-label" for="classid">
-            Class
-        </label>
-        <div class="col-sm-4">
-            <input type="text" class="form-control" id="text" name="classId">
-        </div>
-
-        <label class="form-check-label" for="sectionname">
-            Section
-        </label>
-        <div class="col-sm-4">
-            <input type="text" class="form-control" id="text" name="sectionName">
-        </div>
-
-        <input type="submit" value="Finish and Generate Class Code">
-        
+    </div>
     </form>
 </div>
-
-
 {% endblock %}
