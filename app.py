@@ -180,7 +180,6 @@ def newstudent():
         # Searching for the code
         print(hashed.decode())
         result = cur.execute("""SELECT code FROM studentcodes WHERE code=?""", (hashed.decode(),))
-        print('RESULT------------------',result)
         
         # No records found
         if result.fetchone() == None:
