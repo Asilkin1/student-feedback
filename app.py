@@ -2,6 +2,8 @@
 from flask import Flask, render_template, request, redirect, url_for, session, app, abort,flash, make_response, Response, render_template_string, Markup
 from flask_session.__init__ import Session as flaskGlobalSession
 
+# pagination
+from flask_paginate import Pagination, get_page_args
 
 
 from models import create_post, get_posts, delete_posts,create_class 
@@ -42,17 +44,8 @@ Session = sessionmaker(bind=engine)
 databaseConnection = Session()
 
 app = Flask(__name__)
-# Set sessions
-# Flask.secret_key = 'asdf3ff##'
-# app.config['SECRET_KEY'] = 'asdfdfdf'
-# # app.config.from_object(__name__)
-# sess = flaskGlobalSession()
-# sess.init_app(app)
-
 
 # Key for sessions
-
-
 #Class and student codes
 classCode = ""
 studentCode = ""
@@ -65,8 +58,10 @@ random_key = b64encode(random_key).decode('utf-8')
 
 @app.route('/', methods=["POST", "GET"])
 def index():
-    print('Session ID')
-    return render_template('index.html', title='submit')
+    # if session['logged_in']:
+    #     return render_template(url_for('instructorDashboard'))
+    # else:
+        return render_template('index.html', title='submit')
 
 @app.before_request
 def make_session_permanent():
@@ -241,16 +236,15 @@ def studentRegistration():
             flash('The code is already in use ','error')
             return redirect(url_for('newstudent'))
             # Returning user
-        # Code not registered
+        
         else:
-            flash('Welcome! Remember your code for the future use','success')
-            flash(myCode.decode(),'info')
+            flash(f"This is your code {hashed.decode()}",'info')
             # Add new user to the database
             newStudent = StudentCodes(hashed.decode())
             databaseConnection.add(newStudent)
             databaseConnection.commit()
 
-            return render_template('student_sign_in.html')
+            return render_template('student_sign_up.html')
 
     elif request.method == "GET":
         return render_template('student_sign_in.html')
@@ -396,13 +390,21 @@ def instructor():
 
 @app.route('/professor/dashboard', methods=["POST", "GET"])
 def instructorDashboard():
+    page = request.args.get('page', 1, type=int)
+
+    # Page 1, implicit: http://localhost:5000/index
+    # Page 1, explicit: http://localhost:5000/index?page=1
+    # Page 3: http://localhost:5000/index?page=3
     session['logged_in'] = True
-    # con = sl.connect('united.db')
-    # c = con.cursor()
-    # print(session['username'])
-    #result = c.execute("SELECT * FROM account where username=? ", (session['username'],)) 
-    query = databaseConnection.query(Account).filter(Account.username == session['username'])
-    result = query.all()  
+    query = databaseConnection.query(Account).filter(Account.username == session.get('username'))
+    #colors = Color.query.paginate(page=page, per_page=ROWS_PER_PAGE)
+    result = query.all().paginate(page=page)
+
+    #page = request.args.get('page', 1, type=int)
+    #print(page)
+    #pages = databaseConnection.query.paginate(per_page=3, page=2, error_out=True)
+    # page = request.args.get('page', 1, type=int)
+    #posts = databaseConnection.query(Account.paginate(page, 3, False))
     
     
     #For pagnation
@@ -414,7 +416,8 @@ def instructorDashboard():
     pagination_users = users[offset: offset + per_page]
     pagination = Pagination(page=page, per_page=per_page, total=total, css_framework='bootstrap4')
     
-    return render_template('index.html', title='dashboard', data = result, users=pagination_users, page=page, per_page=per_page, pagination=pagination,)
+    #, users=pagination_users, page=page, per_page=per_page, pagination=pagination
+    return render_template('index.html', title='dashboard', data=result, page=page, per_page=per_page, pagination=pagination)
 
 
 # --------------------------------------------------------------------------------------------- Analytics
@@ -466,7 +469,7 @@ def check():
                 return render_template('analytics.html',title='data', data=PassFrame,display=Show)
         
         elif(Category == 'Teaching-style'):
-            Frame = Frame[Frame['elaborateNumber'] == "Teaching Style"]
+            Frame = Frame[Frame['elaborateNumber'] == "Teaching style"]
             PassFrame = Frame
             if(len(Frame.index) < 10):
                 return render_template('notEnoughData.html',title='NED', data=PassFrame)
@@ -498,7 +501,7 @@ def drawbar(classCode,Category):
     if(Category=='Instructor'):
         Category='Instructor/Professor'
     elif(Category=='Teaching-style'):
-        Category='Teaching Style'
+        Category='Teaching style'
 
     con = sql.connect('united.db')
     Frame = pd.read_sql_query("SELECT * from feedback", con)
@@ -541,7 +544,7 @@ def calc(classCode,Category):
     if(Category=='Instructor'):
         Category='Instructor/Professor'
     elif(Category=='Teaching-style'):
-        Category='Teaching Style'
+        Category='Teaching style'
 
     con = sql.connect('united.db')
     Frame = pd.read_sql_query("SELECT * from feedback", con)
@@ -559,7 +562,7 @@ def drawtimetoday(classCode,Category):
     if(Category=='Instructor'):
         Category='Instructor/Professor'
     elif(Category=='Teaching-style'):
-        Category='Teaching Style'
+        Category='Teaching style'
 
     con = sql.connect('united.db')
     Frame = pd.read_sql_query("SELECT * from feedback", con)
@@ -608,7 +611,7 @@ def drawtimeyest(classCode,Category):
     if(Category=='Instructor'):
         Category='Instructor/Professor'
     elif(Category=='Teaching-style'):
-        Category='Teaching Style'
+        Category='Teaching style'
 
     con = sql.connect('united.db')
     Frame = pd.read_sql_query("SELECT * from feedback", con)
@@ -659,7 +662,7 @@ def drawtimeweek(classCode,Category):
     if(Category=='Instructor'):
         Category='Instructor/Professor'
     elif(Category=='Teaching-Style'):
-        Category='Teaching Style'
+        Category='Teaching style'
 
     con = sql.connect('united.db')
     Frame = pd.read_sql_query("SELECT * from feedback", con)
