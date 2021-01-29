@@ -15,18 +15,18 @@
 <div id="styledform" class="container col-md-4">
     <h3>Add class here</h3>
     <!-- When submit button is clicked then the action should bring to previous page -->
-    <form method="post" action="{{ url_for('instructorDashboard')}}">
+    <form  action="{{ url_for('professor')}}" method="post">
 
         <!-- Unite label and the field into a group -->
         <div class="form-group">
-            <label class="form-check-label" for="professorname">
+            <label class="form-check-label" for="professorName">
                 Name
             </label>
             <input type="text" class="form-control" id="text" name="professorName" required> 
         </div>
        
         <div class="form-group">
-            <label class="form-check-label" for="schoolname">
+            <label class="form-check-label" for="schoolName">
                 School
             </label>
             <input type="text" class="form-control" id="text" name="schoolName" required>
@@ -34,7 +34,7 @@
         
         <!-- Department name field -->
         <div class="form-group">
-            <label class="form-check-label" for="departmentname">
+            <label class="form-check-label" for="departmentName">
                 Department
             </label>
             <input type="text" class="form-control" id="text" name="departmentName">
@@ -42,7 +42,7 @@
     
         <!-- Class ID field -->
         <div class="form-group">
-            <label class="form-check-label" for="classid">
+            <label class="form-check-label" for="classId">
                 Class
             </label>
             <input type="text" class="form-control" id="text" name="classId" required>
@@ -50,7 +50,7 @@
 
         <!-- Section name field -->
         <div class="form-group">
-            <label class="form-check-label" for="sectionname">
+            <label class="form-check-label" for="sectionName">
                 Section
             </label>
             <input type="text" class="form-control" id="text" name="sectionName" required>

@@ -12,20 +12,15 @@
 
             <div class="form-group">
                 <label class="form-check-label" for="teachingstyle">
-                    Choose your student code
+                    Student code
                 </label>
-                <input type="text" id="number" value="" class="form-control" name="studentCode" placeholder="remember it for the future" required>
-                <button class="button" type="button" onclick="increment();">Generate</button>
+                <input type="text" id="number" value="" class="form-control" name="studentCode" placeholder="enter student code" required>
             </div>
-            
-            <script>
-                var i=1;
-                function increment(){
-                    document.getElementById("number").value = "AB"+i++;
-                }
-            </script>
             <!-- No need to put within a tag since the button is within the form -->
                 <button class="button" type="submit" name="submitButton" value="student">Login</button>
+                <a href="{{ url_for('studentRegistration') }}">
+                    <h6>Or signup</h6>
+                </a>
         </form>
     </div>
 </div>

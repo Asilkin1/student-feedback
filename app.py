@@ -1,6 +1,10 @@
 # Flask barebones
-from flask import Flask, render_template, request, redirect, url_for,session, abort,flash, make_response, Response, render_template_string
-from models import create_post, get_posts, delete_posts,create_class
+from flask import Flask, render_template, request, redirect, url_for, session, app, abort,flash, make_response, Response, render_template_string, Markup
+from flask_session.__init__ import Session as flaskGlobalSession
+
+
+
+from models import create_post, get_posts, delete_posts,create_class 
 from datetime import date, datetime, timedelta #get date and time
 from sqlalchemy.orm import sessionmaker #Making Sessions and login
 from sqlalchemy import insert,delete
@@ -10,6 +14,7 @@ import os #filepath
 
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 import sqlite3 as sql
 
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
@@ -29,13 +34,24 @@ import sqlite3 as sl
 #random code
 import bcrypt
 
-# Login engine
-engine = create_engine('sqlite:///united.db', echo=True)  # Connect to Users database
+# Database engine
+engine = create_engine('sqlite:///united.db', echo=True,connect_args={"check_same_thread": False})  # Connect to Users database
+# Establish connection to the database
+Session = sessionmaker(bind=engine)
+# Provides connection to the database for any operations
+databaseConnection = Session()
 
 app = Flask(__name__)
+# Set sessions
+# Flask.secret_key = 'asdf3ff##'
+# app.config['SECRET_KEY'] = 'asdfdfdf'
+# # app.config.from_object(__name__)
+# sess = flaskGlobalSession()
+# sess.init_app(app)
+
 
 # Key for sessions
-app.config['SECRET_KEY'] = 'oh_so_secret'
+
 
 #Class and student codes
 classCode = ""
@@ -51,47 +67,52 @@ random_key = b64encode(random_key).decode('utf-8')
 def index():
     print('Session ID')
     return render_template('index.html', title='submit')
-   
 
+@app.before_request
+def make_session_permanent():
+    session.permanent = True
+    app.permanent_session_lifetime = timedelta(minutes=1)
+   
 # -------------------------------------------------------------------- Log in
 @app.route('/login', methods=['GET','POST'])
 def login():
+    # Sumbitting login form
     if request.method == 'POST':
         send_username = request.form.get('username')
         send_password = request.form.get('password')
-
-        print('########################################')
-        print(send_password)
-        print(send_username)
+        
         # If the password and username is provided
         if send_password and send_username:
             session['logged_in'] = True
             session['username'] = send_username
-            Session = sessionmaker(bind=engine)
-            s = Session()
-
-            query = s.query(User).filter(User.username.in_([send_username]), User.password.in_([send_password]))
+            # Compare professor credentials with the records in the databse
+            query = databaseConnection.query(User).filter(User.username.in_([send_username]), User.password.in_([send_password]))
+            # Store result of the query
             result = query.first()
-
+         
+            # Match found in the database
             if result:
-                print('Checking for account in the database')
-                session['logged_in'] = True
+                #session['logged_in'] = True
                 session['username'] = send_username
+                print(session['username'])
                 flash('You have successfully logged in.','success')
-            
+
+                # Category for ... ?
                 category = request.args.get('category')
-                con = sl.connect('united.db')
-                c = con.cursor()
-                result = c.execute("SELECT * FROM account where username==?", (send_username,))
-                
+
+                # Get classes data for current username
+                query = databaseConnection.query(Account).filter(Account.username == session['username'])
+                # Not sure about this
+                result = query.all()    
                 return render_template('index.html', data = result)
             
             else:
                 flash('Wrong password or username','error')
+                return render_template('login.html')
 
         else:
             flash('Check your username and password','error')
-            session['logged_in'] = False 
+            #session['logged_in'] = False 
     elif request.method == 'GET':
         return render_template('login.html')
     else:
@@ -115,9 +136,9 @@ def logout():
 # --------------------------------------------------------------------- Registration
 @app.route('/register', methods=['GET','POST'])
 def register():
-    flash('Please register to gain access to the website','info')
+    
     if request.method == 'POST':
-        
+        flash('Please register to gain access to the website','info')
         # Get username from the form
         username = request.form.get('username')
         password = request.form.get('password')
@@ -126,29 +147,18 @@ def register():
         if username and password and repassword:
             # Passwords should match
             if str(password) == str(repassword):
-                Session = sessionmaker(bind=engine)
-                s = Session()
                 user = User(username,password)
-                s.add(user)
-                s.commit()
-                flash('You are registered successfully','success')
-            else:
-                flash("Password doesn't match",'error')
-        else:
-            flash('Fields cannot be empty','error')
+                databaseConnection.add(user)
+                databaseConnection.commit()
+                flash('You are registered')
 
+        else:
+            flash('Password doesn\'t match')
+    else:
+        flash('Cannot be empty')
     return render_template('register.html')
 
-@app.route('/analytics', methods=["POST","GET"])
-def analytics():
-    return render_template('analytics.html',title='stats')
 
-@app.route('/notenoughdata',methods=["POST","GET"])
-def notenoughdata():
-    flash('Not enough data to generate a graph','info')
-    return render_template('notEnoughData.html',title='not enough data')
-
-@app.route('/classerror',methods=["POST","GET"])
 def classerror():
     flash('Selected class cannot be found','error')
     return render_template('classError.html',title='class does not exist')
@@ -175,32 +185,75 @@ def newstudent():
         
         print('Hashed code', myCode.decode())
         # Connect to the database
-        con = sl.connect('united.db')
-        cur = con.cursor()
+        query = databaseConnection.query(StudentCodes).filter(StudentCodes.code == hashed.decode())
         # Searching for the code
         print(hashed.decode())
-        result = cur.execute("""SELECT code FROM studentcodes WHERE code=?""", (hashed.decode(),))
+        result = query.first()
         
-        # No records found
-        if result.fetchone() == None:
+        # Returning user
+        if result:
             flash('Welcome! Remember your code for the future use','success')
             flash(myCode.decode(),'info')
             session['classCode'] = classCode
             session['studentCode'] = studentCode
             session['logged_in'] = True
-            #insert into the database
-            #insert into feedback (date, time, classCode, studentCode, emoji, elaborateNumber, elaborateText) values(?, ?, ?, ?, ?, ?, ?)', (date, time, classCode, studentCode, emoji, elaborateNumber, elaborateText)
-            cur.execute('''Insert into studentcodes (code) values(?)''', (hashed.decode(),))
-            con.commit()
+            
+            # Insert new user into the database
+            newUser = StudentCodes(hashed.decode())
+            databaseConnection.add(newUser)
+            databaseConnection.commit()
+            
             return render_template('student.html')
-
-        # Returning user
-        else:
-            flash('The code is already in use ','error')
+        
+        # No records found
+        elif result == None:
+            flash(Markup('The code does not exist. Do you want to <a href="/student/registration">register</a>?'), 'error')
             return redirect(url_for('newstudent'))
                  
     elif request.method == "GET":
         return render_template('student_sign_up.html')
+
+@app.route('/student/registration', methods=["POST", "GET"])
+def studentRegistration():
+
+    if request.method == "POST":
+        # Generate a unique code here
+        studentCode = request.form.get('studentCode')
+        
+            ## hash student code
+        myCode = studentCode.encode('ascii')   ## Convert code to binary
+        salt = b'$2b$16$MTSQ7iU1kQ/bz6tdBgjrqu' #bcrypt.gensalt(rounds=16)   # used for hashing
+        print(salt)
+        hashed = bcrypt.hashpw(myCode,salt)    ## hashing the code
+        
+        print('Hashed code', myCode.decode())
+        # Connect to the database
+        query = databaseConnection.query(StudentCodes).filter(StudentCodes.code == hashed.decode())
+
+        # Need redirect to login after signup
+
+        # Searching for the code
+        print(hashed.decode())
+        result = query.first()
+
+        # Code exists
+        if result:
+            flash('The code is already in use ','error')
+            return redirect(url_for('newstudent'))
+            # Returning user
+        # Code not registered
+        else:
+            flash('Welcome! Remember your code for the future use','success')
+            flash(myCode.decode(),'info')
+            # Add new user to the database
+            newStudent = StudentCodes(hashed.decode())
+            databaseConnection.add(newStudent)
+            databaseConnection.commit()
+
+            return render_template('student_sign_in.html')
+
+    elif request.method == "GET":
+        return render_template('student_sign_in.html')
 
 @app.route('/student/', methods=["POST", "GET"])
 def student():
@@ -215,7 +268,6 @@ def student():
         dateNow = date.today()
 
         #Time
-        timeNow = time.asctime().split(' ')[3]
         currentTime = datetime.now()
         timeNow = currentTime.strftime("%I:%M %p")
 
@@ -229,6 +281,7 @@ def student():
 
         #Elaborate text
         elaborateText = request.form.get('elaborateText')
+        print(elaborateText)
         #elaborateText = mysql_aes_encrypt(elaborateText, random_key)
 
         #create data in database
@@ -279,56 +332,55 @@ def mysql_aes_decrypt(val,key):
 
     return v
 
-#creates a table for professor info
-# con = sl.connect('united.db')
-# with con:
-#     con.execute("""
-#         CREATE TABLE IF NOT EXISTS account (
-#         professorName text not null ,
-#         schoolName text not null,
-#         departmentName text not null,
-#         classId text not null,
-#         sectionName text not null,
-#         classCode integer not null,
-#         entryId integer PRIMARY KEY AUTOINCREMENT
-#         );
-#     """)
 
 @app.route('/professor/create', methods=["POST", "GET"])
 def professor():
-    con = sl.connect('united.db')
     inData = True
     
     if request.method == 'POST':
-        #Professors unique class code (Randomly generated between x, and y with z being the amount generated)
-        classCode = random.randrange(1,3000,1)
 
         #While loops until a random number is generated that is not already in the database
         while(inData):
+            #Professors unique class code (Randomly generated between x, and y with z being the amount generated)
+            classCode = random.randrange(1,3000,1)
+            print(classCode)
+
+            query = databaseConnection.query(Account).filter(Account.classCode == classCode)
             #Creates a cursor that checks if classCodes value exists at all
-            cur = con.cursor()
+            result = query.first()
             #Note that the , after classCode is nessassary otherwise you get an unsuported type error (turns the int into a tuple containing an int)
-            cur.execute("""SELECT classCode FROM account WHERE classCode=?""", (classCode,))
-            if not cur.fetchone():
-                inData = False
+            # cur.execute("""SELECT classCode FROM account WHERE classCode=?""", (classCode,))
+            if result == None:
+                 inData = False
 
         #Professors Name
         professorName = request.form.get('professorName')
+        print("professor name: ", professorName)
 
         #Schools Name
         schoolName = request.form.get('schoolName')
+        print("school name: ", schoolName)
 
         #Departments Name
         departmentName = request.form.get('departmentName')
-
+        print("department name: ", departmentName)
         #Class' Id
         classId = request.form.get('classId')
-
+        print("classID name: ", classId)
         #Sections Name
         sectionName = request.form.get('sectionName')
+        print("Section name: " ,sectionName)
+
 
         #adds data to database
-        create_class(professorName, schoolName, departmentName, classId, sectionName, int(classCode))
+        #engine.execute(Account.insert(), professorName, schoolName, departmentName, classId, sectionName, int(classCode))
+        newClass = Account(professorName, schoolName,departmentName, classId, sectionName, int(classCode), session['username'])
+        databaseConnection.add(newClass)
+        try:
+            databaseConnection.commit()
+        except:
+            databaseConnection.rollback()
+        #create_class(professorName, schoolName, departmentName, classId, sectionName, int(classCode))
         return redirect(url_for('instructorDashboard'))
 
     return render_template('forms/addClass.html', title='professor')
@@ -345,11 +397,24 @@ def instructor():
 @app.route('/professor/dashboard', methods=["POST", "GET"])
 def instructorDashboard():
     session['logged_in'] = True
-    con = sl.connect('united.db')
-    c = con.cursor()
-    print(session['username'])
-    result = c.execute("SELECT * FROM account where username=? ", (session['username'],))  
-    return render_template('index.html', title='dashboard', data = result)
+    # con = sl.connect('united.db')
+    # c = con.cursor()
+    # print(session['username'])
+    #result = c.execute("SELECT * FROM account where username=? ", (session['username'],)) 
+    query = databaseConnection.query(Account).filter(Account.username == session['username'])
+    result = query.all()  
+    
+    
+    #For pagnation
+    #Creates a list from the results databse
+    users = list(result)
+    page, per_page, offset = get_page_args(page_parameter='page', per_page_parameter='per_page')
+    total = len(users)
+    #Seperates the users into pages (of per_page)
+    pagination_users = users[offset: offset + per_page]
+    pagination = Pagination(page=page, per_page=per_page, total=total, css_framework='bootstrap4')
+    
+    return render_template('index.html', title='dashboard', data = result, users=pagination_users, page=page, per_page=per_page, pagination=pagination,)
 
 
 # --------------------------------------------------------------------------------------------- Analytics
@@ -391,37 +456,38 @@ def check():
     
     #Checks the size of the data depending on what category
     else:
+        Show=calc(ccode,Category)
         if(Category == 'Instructor'):
             Frame = Frame[Frame['elaborateNumber']== "Instructor/Professor"]
             PassFrame = Frame
             if(len(Frame.index) < 10):
                 return render_template('notEnoughData.html',title='NED', data=PassFrame)
             else:
-                return render_template('analytics.html',title='data', data=PassFrame)
+                return render_template('analytics.html',title='data', data=PassFrame,display=Show)
         
         elif(Category == 'Teaching-style'):
             Frame = Frame[Frame['elaborateNumber'] == "Teaching Style"]
             PassFrame = Frame
             if(len(Frame.index) < 10):
-                return render_template('notEnoughData.html',title='NED', data=PassFrame['id'])
+                return render_template('notEnoughData.html',title='NED', data=PassFrame)
             else:
-                return render_template('analytics.html',title='data', data=PassFrame)
+                return render_template('analytics.html',title='data', data=PassFrame,display=Show)
         
         elif(Category == 'Topic'):
             Frame = Frame[Frame['elaborateNumber'] == "Topic"]
             PassFrame = Frame
             if(len(Frame.index) < 10):
-                return render_template('notEnoughData.html',title='NED',data=PassFrame)
+                return render_template('notEnoughData.html',title='NED', data=PassFrame)
             else:
-                return render_template('analytics.html',title='data',data=PassFrame)
+                return render_template('analytics.html',title='data', data=PassFrame,display=Show)
         
         elif(Category == 'Other'):
             Frame = Frame[Frame['elaborateNumber'] == "Other"]
             PassFrame = Frame
             if(len(Frame.index) < 10):
-                return render_template('notEnoughData.html',title='NED',data=PassFrame)
+                return render_template('notEnoughData.html',title='NED', data=PassFrame)
             else:
-                return render_template('analytics.html',title='data',data=PassFrame)
+                return render_template('analytics.html',title='data', data=PassFrame,display=Show)
 
 
 @app.route('/analytics/plot/<classCode>&<Category>', methods=["POST","GET"]) #vars to be passed in are <classcode> and <category>. & makes sure they are seperate!
@@ -435,18 +501,29 @@ def drawbar(classCode,Category):
         Category='Teaching Style'
 
     con = sql.connect('united.db')
-    c = con.cursor()
     Frame = pd.read_sql_query("SELECT * from feedback", con)
     Frame = Frame[Frame['classCode']==classCode]
     Frame = Frame[Frame['elaborateNumber']==Category]
 
-    
     fig = Figure()
     axis = fig.add_subplot(1,1,1)
     Frame = Frame['emoji'] #get just the scores
     y = [Frame[Frame==1].count(),Frame[Frame==2].count(),Frame[Frame==3].count(),Frame[Frame==4].count(),Frame[Frame==5].count()] #Count of each score
-    axis.bar([1,2,3,4,5], y) #bar plot
-    axis.set_title(Category)
+    axis.bar([1,2,3,4,5],y) #bar plot
+
+    if(Frame.empty==False):
+        if(max(y) <=10):
+            Range=np.arange(0,max(y)+1,1,dtype=int)
+        elif(max(y) <= 20):
+            Range=np.arange(0,max(y)+2,2,dtype=int)
+        elif(max(y)<=50):
+            Range=np.arange(0,max(y)+5,5,dtype=int)
+        elif(max(y)<=100):
+            Range=np.arange(0,max(y)+10,10,dtype=int)
+        else:
+            Range=np.arange(0,max(y),dtype=int)
+        axis.set_yticks(Range)
+    axis.set_title(f'{Category} Overall')
     axis.set_xlabel('Score')
     axis.set_ylabel('Count')
     
@@ -467,14 +544,12 @@ def calc(classCode,Category):
         Category='Teaching Style'
 
     con = sql.connect('united.db')
-    c = con.cursor()
     Frame = pd.read_sql_query("SELECT * from feedback", con)
     Frame = Frame[Frame['classCode']==classCode]
     Frame = Frame[Frame['elaborateNumber']==Category]
 
     Frame = Frame['emoji'] #Get just the numbers
-    print(Frame)
-    return 'hi' #f'Your average score was {round(Frame.mean(),2)}' #return the mean
+    return f'Your average score is {round(Frame.mean(),2)}' # #return the mean
 
 @app.route('/analytics/plottime/today/<classCode>&<Category>', methods=["POST","GET"])
 #Called by Analytics.html 
@@ -487,22 +562,33 @@ def drawtimetoday(classCode,Category):
         Category='Teaching Style'
 
     con = sql.connect('united.db')
-    c = con.cursor()
     Frame = pd.read_sql_query("SELECT * from feedback", con)
     Frame = Frame[Frame['classCode']==classCode]
     Frame = Frame[Frame['elaborateNumber']==Category]
 
     dateNow = date.today() #Get today's date
-
-
+    
     Frame = Frame[Frame['date'] == f'{dateNow}'] #Filter the frame to pull data for today
-
+    
     Frame = Frame['emoji'] #Get just the numbers
     
     fig = Figure()
     axis = fig.add_subplot(1,1,1)
     y = [Frame[Frame==1].count(),Frame[Frame==2].count(),Frame[Frame==3].count(),Frame[Frame==4].count(),Frame[Frame==5].count()] #Count of each score
     axis.bar([1,2,3,4,5],y) #bar plot
+    
+    if(Frame.empty==False):
+        if(max(y) <=10):
+            Range=np.arange(0,max(y)+1,1,dtype=int)
+        elif(max(y) <= 20):
+            Range=np.arange(0,max(y)+2,2,dtype=int)
+        elif(max(y)<=50):
+            Range=np.arange(0,max(y)+5,5,dtype=int)
+        elif(max(y)<=100):
+            Range=np.arange(0,max(y)+10,10,dtype=int)
+        else:
+            Range=np.arange(0,max(y),dtype=int)
+        axis.set_yticks(Range)
     axis.set_title(f'{Category} for Today')
     axis.set_xlabel('Score')
     axis.set_ylabel('Count')
@@ -525,7 +611,6 @@ def drawtimeyest(classCode,Category):
         Category='Teaching Style'
 
     con = sql.connect('united.db')
-    c = con.cursor()
     Frame = pd.read_sql_query("SELECT * from feedback", con)
     Frame = Frame[Frame['classCode']==classCode]
     Frame = Frame[Frame['elaborateNumber']==Category]
@@ -542,6 +627,19 @@ def drawtimeyest(classCode,Category):
     axis = fig.add_subplot(1,1,1)
     y = [Frame[Frame==1].count(),Frame[Frame==2].count(),Frame[Frame==3].count(),Frame[Frame==4].count(),Frame[Frame==5].count()] #Count of each score
     axis.bar([1,2,3,4,5],y) #bar plot
+    
+    if(Frame.empty==False):
+        if(max(y) <=10):
+            Range=np.arange(0,max(y)+1,1,dtype=int)
+        elif(max(y) <= 20):
+            Range=np.arange(0,max(y)+2,2,dtype=int)
+        elif(max(y)<=50):
+            Range=np.arange(0,max(y)+5,5,dtype=int)
+        elif(max(y)<=100):
+            Range=np.arange(0,max(y)+10,10,dtype=int)
+        else:
+            Range=np.arange(0,max(y),dtype=int)
+        axis.set_yticks(Range)
     axis.set_title(f'{Category} for Yesterday')
     axis.set_xlabel('Score')
     axis.set_ylabel('Count')
@@ -564,7 +662,6 @@ def drawtimeweek(classCode,Category):
         Category='Teaching Style'
 
     con = sql.connect('united.db')
-    c = con.cursor()
     Frame = pd.read_sql_query("SELECT * from feedback", con)
     Frame = Frame[Frame['classCode']==classCode]
     Frame = Frame[Frame['elaborateNumber']==Category]
@@ -581,6 +678,19 @@ def drawtimeweek(classCode,Category):
     axis = fig.add_subplot(1,1,1)
     y = [Frame[Frame==1].count(),Frame[Frame==2].count(),Frame[Frame==3].count(),Frame[Frame==4].count(),Frame[Frame==5].count()] #Count of each score
     axis.bar([1,2,3,4,5],y) #bar plot
+    
+    if(Frame.empty==False):
+        if(max(y) <=10):
+            Range=np.arange(0,max(y)+1,1,dtype=int)
+        elif(max(y) <= 20):
+            Range=np.arange(0,max(y)+2,2,dtype=int)
+        elif(max(y)<=50):
+            Range=np.arange(0,max(y)+5,5,dtype=int)
+        elif(max(y)<=100):
+            Range=np.arange(0,max(y)+10,10,dtype=int)
+        else:
+            Range=np.arange(0,max(y),dtype=int)
+        axis.set_yticks(Range)
     axis.set_title(f'{Category} for the Last Week')
     axis.set_xlabel('Score')
     axis.set_ylabel('Count')
@@ -592,6 +702,13 @@ def drawtimeweek(classCode,Category):
     response.mimetype = 'image/png'
     return response
 
+
 if __name__ == '__main__':
     # app.secret_key = os.urandom(12)
+
+    app.secret_key = 'super secret key'
+    app.config['SESSION_TYPE'] = 'filesystem'
+    weirdsession = flaskGlobalSession()
+    weirdsession.init_app(app)
     app.run(debug=True)
+    

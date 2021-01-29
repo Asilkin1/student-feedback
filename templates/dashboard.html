@@ -24,10 +24,10 @@
     {% for row in data %}
     <tr class="">
       <form action="/analytics/check" method="GET">
-        <th scope="row">{{row[3]}}</th>
-        <td>{{row[4]}}</td>
+        <th scope="row">{{row.classId}}</th>
+        <td>{{row.sectionName}}</td>
         <!-- Get class code into the form  -->
-        <td ><input name="ccode" value={{row[5]}}></td>
+        <td ><input name="ccode" value={{row.classCode}}></td>
         <td>
           <div class="form-group">
             <select name="category" id="category" class="form-control" required>
