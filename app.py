@@ -45,11 +45,6 @@ databaseConnection = Session()
 
 app = Flask(__name__)
 
-# Key for sessions
-#Class and student codes
-classCode = ""
-studentCode = ""
-
 #Encryption Key
 #random_key = os.urandom(16)
 random_key = b"J3FTV1PL1jDFeMh01I9r+A=="
@@ -58,10 +53,7 @@ random_key = b64encode(random_key).decode('utf-8')
 
 @app.route('/', methods=["POST", "GET"])
 def index():
-    # if session['logged_in']:
-    #     return render_template(url_for('instructorDashboard'))
-    # else:
-        return render_template('index.html', title='submit')
+        return redirect(url_for('index'))
 
 @app.before_request
 def make_session_permanent():
@@ -87,19 +79,27 @@ def login():
          
             # Match found in the database
             if result:
-                #session['logged_in'] = True
-                session['username'] = send_username
-                print(session['username'])
+                # session['logged_in'] = True
+                # session['username'] = send_username
+                # print(session['username'])
                 flash('You have successfully logged in.','success')
 
                 # Category for ... ?
                 category = request.args.get('category')
 
                 # Get classes data for current username
-                query = databaseConnection.query(Account).filter(Account.username == session['username'])
+                dashboardData = databaseConnection.query(Account).filter(Account.username == session.get('username'))
                 # Not sure about this
-                result = query.all()    
-                return render_template('index.html', data = result)
+                search = False
+                q = request.args.get('q')
+                if q:
+                    search = True
+                # Get current page
+                page = request.args.get(get_page_args(),type=int,default=1)
+                print(page)
+                
+                pagination = Pagination(page=page,per_page=3, total=dashboardData.count(), search=search, record_name='Classes',css_framework='bootstrap4')    
+                return render_template('index.html', title='dashboard', data=dashboardData, page=page, pagination=pagination)
             
             else:
                 flash('Wrong password or username','error')
@@ -390,34 +390,18 @@ def instructor():
 
 @app.route('/professor/dashboard', methods=["POST", "GET"])
 def instructorDashboard():
-    page = request.args.get('page', 1, type=int)
+    # In case we need to search through the table
+    search = False
+    q = request.args.get('q')
+    if q:
+        search = True
+    # Get current page
+    page = request.args.get(get_page_args(),type=int,default=1)
+    print(page)
+    dashboardData = databaseConnection.query(Account).filter(Account.username == session.get('username'))
+    pagination = Pagination(page=page,per_page=3, total=dashboardData.count(), search=search, record_name='Classes',css_framework='bootstrap4')
 
-    # Page 1, implicit: http://localhost:5000/index
-    # Page 1, explicit: http://localhost:5000/index?page=1
-    # Page 3: http://localhost:5000/index?page=3
-    session['logged_in'] = True
-    query = databaseConnection.query(Account).filter(Account.username == session.get('username'))
-    #colors = Color.query.paginate(page=page, per_page=ROWS_PER_PAGE)
-    result = query.all().paginate(page=page)
-
-    #page = request.args.get('page', 1, type=int)
-    #print(page)
-    #pages = databaseConnection.query.paginate(per_page=3, page=2, error_out=True)
-    # page = request.args.get('page', 1, type=int)
-    #posts = databaseConnection.query(Account.paginate(page, 3, False))
-    
-    
-    #For pagnation
-    #Creates a list from the results databse
-    users = list(result)
-    page, per_page, offset = get_page_args(page_parameter='page', per_page_parameter='per_page')
-    total = len(users)
-    #Seperates the users into pages (of per_page)
-    pagination_users = users[offset: offset + per_page]
-    pagination = Pagination(page=page, per_page=per_page, total=total, css_framework='bootstrap4')
-    
-    #, users=pagination_users, page=page, per_page=per_page, pagination=pagination
-    return render_template('index.html', title='dashboard', data=result, page=page, per_page=per_page, pagination=pagination)
+    return render_template('index.html', title='dashboard', data=dashboardData,pagination=pagination)
 
 
 # --------------------------------------------------------------------------------------------- Analytics

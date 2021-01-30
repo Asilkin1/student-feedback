@@ -6,6 +6,11 @@
 {%endif%}
 {% endwith %}
 
+<div class="container col-md-3 justify-content-center">
+  {{ pagination.info }}
+  {{ pagination.links }}
+</div>
+
 <a href="{{ url_for('professor')}}"><button class="btn btn-info btn-lg">Create Class</button></a>
 <p class="display-4">Classes statistic</p>
 <p class="lead">see your class performance</p>
@@ -13,6 +18,7 @@
   <thead class="thead-dark lead">
     <!-- Table top rows -->
     <tr>
+      <th scope="col">#</th>
       <th scope="col">Class ID</th>
       <th scope="col">Section Name</th>
       <th scope="col">Class Code</th>
@@ -24,10 +30,11 @@
     {% for row in data %}
     <tr class="">
       <form action="/analytics/check" method="GET">
+        <th scope="row">{{ loop.index + pagination.skip }}</th>
         <th scope="row">{{row.classId}}</th>
         <td>{{row.sectionName}}</td>
         <!-- Get class code into the form  -->
-        <td ><input name="ccode" value={{row.classCode}}></td>
+        <td ><input name="ccode" value={{row.classCode}} disabled></td>
         <td>
           <div class="form-group">
             <select name="category" id="category" class="form-control" required>
@@ -45,3 +52,6 @@
     {% endfor %}
   </tbody>
 </table>
+<div class="container col-md-3 justify-content-center">
+  {{ pagination.links }}
+</div>
