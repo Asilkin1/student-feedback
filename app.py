@@ -53,7 +53,7 @@ random_key = b64encode(random_key).decode('utf-8')
 
 @app.route('/', methods=["POST", "GET"])
 def index():
-        return redirect(url_for('index'))
+        return render_template('index.html')
 
 @app.before_request
 def make_session_permanent():
