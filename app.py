@@ -55,10 +55,11 @@ random_key = b64encode(random_key).decode('utf-8')
 def index():
     return render_template('index.html')
 
-@app.before_request
-def make_session_permanent():
-    session.permanent = True
-    app.permanent_session_lifetime = timedelta(minutes=1)
+# !Error cachlib pickle
+# @app.before_request
+# def make_session_permanent():
+#     session.permanent = True
+#     app.permanent_session_lifetime = timedelta(minutes=1) 
    
 # -------------------------------------------------------------------- Log in
 @app.route('/login/', methods=['GET','POST'])
