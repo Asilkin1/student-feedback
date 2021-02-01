@@ -101,10 +101,10 @@ def login(page=1):
                 # Get current page
                 page, per_page, offset = get_page_args(page_parameter='page', per_page_parameter='per_page')
 
-                #page = request.args.get(get_page_args(),type=int,default=1)
                 print(page)
-                per_page = 10
+                per_page = 3
                 print("aaah", per_page)
+                offset = (int(page) - 1) * per_page
                 pagination_users = users[offset: offset + per_page]
                 print(pagination_users)
 
@@ -129,6 +129,7 @@ def login(page=1):
                 per_page=3
                 print(page)
                 print("aaaa", per_page)
+                offset = (int(page) - 1) * per_page
                 pagination_users = users[offset: offset + per_page]
                 print(pagination_users)
                 
@@ -160,7 +161,7 @@ def login(page=1):
         print(page)
         per_page=3
         # if per_page is 3, offset shows items 1-3 in the first page, 4-6 on the next page, etc
-        offset = (int(page) - 1) * per_page + 1
+        offset = (int(page) - 1) * per_page
         print("offset", offset)
         pagination_users = users[offset: offset + per_page]
         print("combined", offset + per_page)
