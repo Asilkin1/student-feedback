@@ -245,7 +245,6 @@ def newstudent():
         # Connect to the database
         query = databaseConnection.query(StudentCodes).filter(StudentCodes.code == hashed.decode())
         queryClass = databaseConnection.query(Account).filter(Account.classCode == classCode)
-        print(queryClass)
         # Searching for the code
         print(hashed.decode())
         result = query.first()
@@ -268,10 +267,10 @@ def newstudent():
         
         # No records found
         elif result == None:
-            flash(Markup('The code does not exist. Do you want to <a href="/student/registration">register</a>?'), 'error')
+            flash(Markup('The student code does not exist. Do you want to <a href="/student/registration">register</a>?'), 'error')
             return redirect(url_for('newstudent'))
         elif resultClass == None:
-            flash(Markup('The class code does not exist. Please check with your professor.'), 'error')
+            flash(Markup('The class code does not exist. Please check in with your professor.'), 'error')
             return redirect(url_for('newstudent'))
                  
     elif request.method == "GET":
