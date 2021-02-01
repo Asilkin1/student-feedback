@@ -11,7 +11,7 @@
   {{ pagination.links }}
 </div>
 
-<a href="{{ url_for('login', page=request.args.get('page')) }}"><button class="btn btn-info btn-lg">Create Class</button></a>
+<a href="{{ url_for('professor') }}"><button class="btn btn-info btn-lg">Create Class</button></a>
 <p class="display-4">Classes statistic</p>
 <p class="lead">see your class performance</p>
 <table class="table table-striped  table-hover table-sm" cellspacing="0" width="100%">
@@ -45,7 +45,7 @@
               <option>Other</option>
             </select>
           </div>
-          <button class="btn btn-block btn-dark" type="submit">Check</button>
+          <button href="{{ url_for('login', page=request.args.get('page')) }}" class="btn btn-block btn-dark" type="submit">Check</button>
 
         </td>
       </form>
