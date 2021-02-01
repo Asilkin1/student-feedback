@@ -32,7 +32,7 @@
 <body>
     <div id="wrapper">
     <header>
-        <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom shadow-sm">
+        <div class="d-flex flex-column flex-md-row align-items-center bg-white border-bottom">
             <!-- Conditional rendering of the  -->
             {% if session['logged_in'] and not session['studentCode']%}
             <a class="navbar-brand" href="{{url_for('instructorDashboard')}}">
@@ -79,7 +79,7 @@
 </div>
 </body>
 <!-- Footer as it should be  -->
-<footer class="footer border-top">
+<footer class="footer border-top shadow-sm">
     <div class="container">
         <span class="text-muted">@copyright 2021-present</span>
         <span>&#9749;</span>

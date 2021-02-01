@@ -55,10 +55,10 @@ random_key = b64encode(random_key).decode('utf-8')
 def index():
         return render_template('index.html')
 
-@app.before_request
-def make_session_permanent():
-    session.permanent = True
-    app.permanent_session_lifetime = timedelta(minutes=1)
+# @app.before_request
+# def make_session_permanent():
+#     session.permanent = True
+#     app.permanent_session_lifetime = timedelta(minutes=1)
    
 # -------------------------------------------------------------------- Log in
 @app.route('/login', methods=['GET','POST'])
@@ -70,8 +70,6 @@ def login():
         
         # If the password and username is provided
         if send_password and send_username:
-            session['logged_in'] = True
-            session['username'] = send_username
             # Compare professor credentials with the records in the databse
             query = databaseConnection.query(User).filter(User.username.in_([send_username]), User.password.in_([send_password]))
             # Store result of the query
@@ -79,9 +77,8 @@ def login():
          
             # Match found in the database
             if result:
-                # session['logged_in'] = True
-                # session['username'] = send_username
-                # print(session['username'])
+                session['logged_in'] = True
+                session['username'] = send_username
                 flash('You have successfully logged in.','success')
 
                 # Category for ... ?
@@ -107,7 +104,6 @@ def login():
 
         else:
             flash('Check your username and password','error')
-            #session['logged_in'] = False 
     elif request.method == 'GET':
         return render_template('login.html')
     else:
