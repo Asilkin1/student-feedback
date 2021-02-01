@@ -49,7 +49,7 @@
               <option>Other</option>
             </select>
           </div>
-          <button class="btn btn-block btn-dark" type="submit">Check</button>
+          <button href="{{ url_for('login', page=request.args.get('page')) }}" class="btn btn-block btn-dark" type="submit">Check</button>
 
         </td>
       </form>

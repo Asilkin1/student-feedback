@@ -54,7 +54,23 @@ random_key = b64encode(random_key).decode('utf-8')
 
 @app.route('/', methods=["POST", "GET"])
 def index():
-    return render_template('index.html')
+    # Get classes data for current username
+    dashboardData = databaseConnection.query(Account).filter(Account.username == session.get('username'))
+
+    users = list(dashboardData)
+
+    # Get current page
+    page, per_page, offset = get_page_args(page_parameter='page', per_page_parameter='per_page')
+
+    print(page)
+    per_page = 3
+    print("aaah", per_page)
+    offset = (int(page) - 1) * per_page
+    pagination_users = users[offset: offset + per_page]
+    print(pagination_users)
+
+    pagination = Pagination(page=page,per_page=3, total=dashboardData.count(), record_name='Classes',css_framework='bootstrap4')    
+    return render_template('index.html', title='dashboard', data=pagination_users, page=page, pagination=pagination)
 
 # -------------------------------------------------------------------- Log in
 
@@ -97,12 +113,7 @@ def login(page=1):
                 feedbackOther = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Other')
 
                 users = list(dashboardData)
-                # Not sure about this
-                search = False
-                #q = request.args.get('page')
-                q = request.args.get('q')
-                if q:
-                    search = True
+
                 # Get current page
                 page, per_page, offset = get_page_args(
                     page_parameter='page', per_page_parameter='per_page')
@@ -110,8 +121,9 @@ def login(page=1):
                 offset = (int(page) - 1) * per_page
                 pagination_users = users[offset: offset + per_page]
 
+
                 pagination = Pagination(page=page, per_page=3, total=dashboardData.count(
-                ), search=search, record_name='Classes', css_framework='bootstrap4')
+                ),record_name='Classes', css_framework='bootstrap4')
                 return render_template('index.html',
                                        title='dashboard',
                                        data=pagination_users,
@@ -147,6 +159,7 @@ def login(page=1):
                 q = request.args.get('page')
                 if q:
                     search = True
+
                 # Get current page
                 page, per_page, offset = get_page_args(
                     page_parameter='page', per_page_parameter='per_page')
@@ -158,8 +171,9 @@ def login(page=1):
                 pagination_users = users[offset: offset + per_page]
                 print(pagination_users)
 
+
                 pagination = Pagination(page=page, per_page=3, total=dashboardData.count(
-                ), search=search, record_name='Classes', css_framework='bootstrap4')
+                ), record_name='Classes', css_framework='bootstrap4')
                 return render_template('login.html', 
                                         title='dashboard', 
                                         data=pagination_users, 
@@ -189,14 +203,12 @@ def login(page=1):
         users = list(dashboardData)
         q = request.args.get('q')
 
-        # Not sure about this
-        search = False
-        if q:
-            search = True
+
         # Get current page
         page, per_page, offset = get_page_args(
             page_parameter='page', per_page_parameter='per_page')
         #page = request.args.get(get_page_args(),type=int,default=1)
+
         page = request.args.get('page')
         if page == None:
             page, per_page, offset = get_page_args(
@@ -207,7 +219,7 @@ def login(page=1):
         pagination_users = users[offset: offset + per_page]
 
         pagination = Pagination(page=page, per_page=3, total=dashboardData.count(
-        ), search=search, record_name='Classes', css_framework='bootstrap4')
+        ), record_name='Classes', css_framework='bootstrap4')
         return render_template('login.html', 
                                 title='dashboard', 
                                 data=pagination_users, 
@@ -296,16 +308,18 @@ def newstudent():
 
         print('Hashed code', myCode.decode())
         # Connect to the database
-        query = databaseConnection.query(StudentCodes).filter(
-            StudentCodes.code == hashed.decode())
+
+        query = databaseConnection.query(StudentCodes).filter(StudentCodes.code == hashed.decode())
+        queryClass = databaseConnection.query(Account).filter(Account.classCode == classCode)
         # Searching for the code
         print(hashed.decode())
         result = query.first()
-
+        resultClass = queryClass.first()
+        
         # Returning user
-        if result:
-            flash('Welcome! Remember your code for the future use', 'success')
-            flash(myCode.decode(), 'info')
+        if result and resultClass:
+            flash('Welcome! Remember your code for the future use','success')
+            flash(myCode.decode(),'info')
             session['classCode'] = classCode
             session['studentCode'] = studentCode
             session['logged_in'] = True
@@ -319,8 +333,10 @@ def newstudent():
 
         # No records found
         elif result == None:
-            flash(Markup(
-                'The code does not exist. Do you want to <a href="/student/registration">register</a>?'), 'error')
+            flash(Markup('The student code does not exist. Do you want to <a href="/student/registration">register</a>?'), 'error')
+            return redirect(url_for('newstudent'))
+        elif resultClass == None:
+            flash(Markup('The class code does not exist. Please check in with your professor.'), 'error')
             return redirect(url_for('newstudent'))
 
     elif request.method == "GET":
@@ -400,9 +416,11 @@ def student():
         print(elaborateText)
         #elaborateText = mysql_aes_encrypt(elaborateText, random_key)
 
-        # create data in database
-        create_post(dateNow, timeNow, session['classCode'],
-                    session['studentCode'], emoji, elaborateNumber, elaborateText)
+        #create data in database
+        newFeedback = Feedback(dateNow, timeNow, session['classCode'], session['studentCode'], emoji, elaborateNumber, elaborateText)
+        databaseConnection.add(newFeedback)
+        databaseConnection.commit()
+        #create_post(dateNow, timeNow, session['classCode'], session['studentCode'], emoji, elaborateNumber, elaborateText)
 
         # Decryption test
         #elaborateText = mysql_aes_decrypt(elaborateText, random_key)
@@ -530,8 +548,6 @@ def decryption(classCode, Category):
 
     return Frame
 
-# Called by professor.html
-
 
 @app.route('/analytics/check/', methods=["POST", "GET"])
 def check():
@@ -539,8 +555,30 @@ def check():
     ccode = request.args.get('ccode')
     Category = request.args.get('category')
 
-    Frame = pd.read_sql_query("SELECT * from feedback", engine)
-    Frame = Frame[Frame['classCode'] == ccode]
+    dashboardData = databaseConnection.query(Feedback).filter(Feedback.classCode == ccode)
+
+    users = list(dashboardData)
+
+    print("hi", users)
+
+    # Get current page
+    page = request.args.get('page')
+    if page == None:
+        page, per_page, offset = get_page_args(page_parameter='page', per_page_parameter='per_page')
+    print(page)
+    per_page=5
+    # if per_page is 3, offset shows items 1-3 in the first page, 4-6 on the next page, etc
+    offset = (int(page) - 1) * per_page
+    print("offset", offset)
+    pagination_users = users[offset: offset + per_page]
+    print("combined", offset + per_page)
+    print("aaa", per_page)
+    print(pagination_users)
+    
+    pagination = Pagination(page=page, per_page=per_page, total=dashboardData.count(), record_name='Classes',css_framework='bootstrap4')
+
+    Frame = pd.read_sql_query("SELECT * from Feedback", engine)
+    Frame = Frame[Frame['classCode']==ccode]
 
     if(Frame.empty):  # if the frame is empty, no class exists
         return render_template('ClassNotFound.html', title='CNF')
@@ -558,31 +596,31 @@ def check():
             if(len(Frame.index) < 10):
                 return render_template('notEnoughData.html', title='NED', data=PassFrame)
             else:
-                return render_template('analytics.html', title='data', data=PassFrame, display=Show)
-
+                return render_template('analytics.html',title='data', data=pagination_users, page=page, pagination=pagination, display=Show)
+        
         elif(Category == 'Teaching-style'):
             Frame = Frame[Frame['elaborateNumber'] == "Teaching style"]
             PassFrame = Frame
             if(len(Frame.index) < 10):
                 return render_template('notEnoughData.html', title='NED', data=PassFrame)
             else:
-                return render_template('analytics.html', title='data', data=PassFrame, display=Show)
-
+                return render_template('analytics.html',title='data', data=pagination_users, page=page, pagination=pagination, display=Show)
+        
         elif(Category == 'Topic'):
             Frame = Frame[Frame['elaborateNumber'] == "Topic"]
             PassFrame = Frame
             if(len(Frame.index) < 10):
                 return render_template('notEnoughData.html', title='NED', data=PassFrame)
             else:
-                return render_template('analytics.html', title='data', data=PassFrame, display=Show)
-
+                return render_template('analytics.html',title='data', data=pagination_users, page=page, pagination=pagination, display=Show)
+        
         elif(Category == 'Other'):
             Frame = Frame[Frame['elaborateNumber'] == "Other"]
             PassFrame = Frame
             if(len(Frame.index) < 10):
                 return render_template('notEnoughData.html', title='NED', data=PassFrame)
             else:
-                return render_template('analytics.html', title='data', data=PassFrame, display=Show)
+                return render_template('analytics.html',title='data', data=pagination_users, page=page, pagination=pagination, display=Show)
 
 
 # vars to be passed in are <classcode> and <category>. & makes sure they are seperate!
