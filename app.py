@@ -55,10 +55,10 @@ random_key = b64encode(random_key).decode('utf-8')
 def index():
     return render_template('index.html')
 
-# @app.before_request
-# def make_session_permanent():
-#     session.permanent = True
-#     app.permanent_session_lifetime = timedelta(minutes=1)
+@app.before_request
+def make_session_permanent():
+    session.permanent = True
+    app.permanent_session_lifetime = timedelta(minutes=1)
    
 # -------------------------------------------------------------------- Log in
 @app.route('/login/', methods=['GET','POST'])
@@ -70,8 +70,9 @@ def login(page=1):
         
         # If the password and username is provided
         if send_password and send_username:
-            session['logged_in'] = True
-            session['username'] = send_username
+            # This will brake the login
+            # session['logged_in'] = True
+            # session['username'] = send_username
             # Compare professor credentials with the records in the databse
             query = databaseConnection.query(User).filter(User.username.in_([send_username]), User.password.in_([send_password]))
             # Store result of the query
@@ -79,6 +80,7 @@ def login(page=1):
          
             # Match found in the database
             if result:
+                # Here we can login
                 session['logged_in'] = True
                 session['username'] = send_username
                 flash('You have successfully logged in.','success')
@@ -101,7 +103,7 @@ def login(page=1):
 
                 #page = request.args.get(get_page_args(),type=int,default=1)
                 print(page)
-                per_page = 3
+                per_page = 10
                 print("aaah", per_page)
                 pagination_users = users[offset: offset + per_page]
                 print(pagination_users)
