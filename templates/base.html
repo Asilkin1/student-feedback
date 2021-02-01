@@ -37,7 +37,6 @@
             {% if session['logged_in'] and not session['studentCode']%}
             <a class="navbar-brand" href="{{url_for('instructorDashboard')}}">
                 <p id="icon">&#127891;</p></i>
-                <p >Home</p>
             </a>
 
             {% if session['username']%}
@@ -49,23 +48,25 @@
             
             {% elif session['studentCode'] %}
             <a class="navbar-brand" href="{{url_for('student')}}">
-                <p id="icon">&#127891;</p></i>
-                <p >Home</p>
+                <p id="icon">&#127891;</p></i>   
             </a>
+
+            <a class="btn btn-primary" href="{{ url_for('index')}}">Home</a>
+
             {% else %}
             <a class="navbar-brand" href="{{url_for('index')}}">
                 <p id="icon">&#127891;</p></i>
             </a>
             {% endif %}
-            <h5 class="my-0 mr-md-auto font-weight-normal">Student's feedback</h5>
+            <h5 class="my-0 mr-md-auto font-weight-normal">RTEval</h5>
             {% if session['logged_in']%}
             <a class="btn btn-outline-danger" href="{{ url_for('logout')}}">Logout</a>
             {% else %}
-            <a class="btn btn-outline-success" href="{{ url_for('index')}}">Home</a>
+            <a class="btn btn-primary" href="{{ url_for('index')}}">Home</a>
             {% endif %}
             
             <nav class="my-2 my-md-0 mr-md-3">
-         
+                
             </nav>
             
           </div>

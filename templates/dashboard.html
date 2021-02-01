@@ -35,7 +35,7 @@
         <td>{{row.sectionName}}</td>
         <!-- Get class code into the form  -->
         <!-- The input cannot be disables -->
-        <td ><input type="text" name="ccode" value={{row.classCode}}></td> 
+        <td >{{row.classCode}}<input type="hidden" name="ccode" value={{row.classCode}}></td> 
         <td>
           <div class="form-group">
             <select name="category" id="category" class="form-control" required>
