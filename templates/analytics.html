@@ -43,7 +43,7 @@
                 {{pagination.links}}
                 <thead class="thead-dark lead">
                     <tr>
-                        <th scope="col">ID</th>
+                        <th scope="col">#</th>
                         <th scope="col">Date</th>
                         <th scope="col">Time</th>
                         <th scope="col">Class Code</th>
@@ -56,7 +56,7 @@
                 <tbody>
                     {% for row in data %}
                     <tr>
-                        <td>{{row.id}}</td>
+                        <th scope="row">{{ loop.index + pagination.skip }}</th>
                         <td>{{row.date}}</td>
                         <td>{{row.time}}</td>
                         <td>{{row.classCode}}</td>
