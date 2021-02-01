@@ -37,7 +37,7 @@
         <div class="d-flex flex-column flex-md-row align-items-center bg-white border-bottom">
             <!-- Conditional rendering of the  -->
             {% if session['logged_in'] and not session['studentCode']%}
-            <a class="navbar-brand" href="{{url_for('instructorDashboard')}}">
+            <a class="navbar-brand" href="{{url_for('login')}}">
                 <img id="logo" src="/static/logo.png">
             </a>
 

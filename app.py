@@ -53,7 +53,7 @@ random_key = b64encode(random_key).decode('utf-8')
 
 @app.route('/', methods=["POST", "GET"])
 def index():
-        return render_template('index.html')
+    return render_template('index.html')
 
 # @app.before_request
 # def make_session_permanent():
@@ -61,8 +61,8 @@ def index():
 #     app.permanent_session_lifetime = timedelta(minutes=1)
    
 # -------------------------------------------------------------------- Log in
-@app.route('/login', methods=['GET','POST'])
-def login():
+@app.route('/login/', methods=['GET','POST'])
+def login(page=1):
     # Sumbitting login form
     if request.method == 'POST':
         send_username = request.form.get('username')
@@ -70,6 +70,8 @@ def login():
         
         # If the password and username is provided
         if send_password and send_username:
+            session['logged_in'] = True
+            session['username'] = send_username
             # Compare professor credentials with the records in the databse
             query = databaseConnection.query(User).filter(User.username.in_([send_username]), User.password.in_([send_password]))
             # Store result of the query
@@ -86,25 +88,86 @@ def login():
 
                 # Get classes data for current username
                 dashboardData = databaseConnection.query(Account).filter(Account.username == session.get('username'))
+
+                users = list(dashboardData)
                 # Not sure about this
                 search = False
+                #q = request.args.get('page')
                 q = request.args.get('q')
                 if q:
                     search = True
                 # Get current page
-                page = request.args.get(get_page_args(),type=int,default=1)
+                page, per_page, offset = get_page_args(page_parameter='page', per_page_parameter='per_page')
+
+                #page = request.args.get(get_page_args(),type=int,default=1)
                 print(page)
-                
+                per_page = 3
+                print("aaah", per_page)
+                pagination_users = users[offset: offset + per_page]
+                print(pagination_users)
+
                 pagination = Pagination(page=page,per_page=3, total=dashboardData.count(), search=search, record_name='Classes',css_framework='bootstrap4')    
-                return render_template('index.html', title='dashboard', data=dashboardData, page=page, pagination=pagination)
+                return render_template('index.html', title='dashboard', data=pagination_users, page=page, pagination=pagination)
             
             else:
                 flash('Wrong password or username','error')
-                return render_template('login.html')
+
+                # Get classes data for current username
+                dashboardData = databaseConnection.query(Account).filter(Account.username == session.get('username'))
+
+                users=list(dashboardData)
+                # Not sure about this
+                search = False
+                q = request.args.get('page')
+                if q:
+                    search = True
+                # Get current page
+                page, per_page, offset = get_page_args(page_parameter='page', per_page_parameter='per_page')
+                page = request.args.get(get_page_args(),type=int,default=1)
+                per_page=3
+                print(page)
+                print("aaaa", per_page)
+                pagination_users = users[offset: offset + per_page]
+                print(pagination_users)
+                
+                pagination = Pagination(page=page,per_page=3, total=dashboardData.count(), search=search, record_name='Classes',css_framework='bootstrap4') 
+                return render_template('login.html', title='dashboard', data=pagination_users, page=page, pagination=pagination)
 
         else:
             flash('Check your username and password','error')
     elif request.method == 'GET':
+        # Get classes data for current username
+        dashboardData = databaseConnection.query(Account).filter(Account.username == session.get('username'))
+
+        #dashboardData = databaseConnection.query(Account).filter(Account.username == session.get('username')).paginate(per_page=3)
+        users = list(dashboardData)
+
+        print("hi", users)
+        q = request.args.get('q')
+
+        # Not sure about this
+        search = False
+        if q:
+            search = True
+        # Get current page
+        page, per_page, offset = get_page_args(page_parameter='page', per_page_parameter='per_page')
+        #page = request.args.get(get_page_args(),type=int,default=1)
+        page = request.args.get('page')
+        if page == None:
+            page, per_page, offset = get_page_args(page_parameter='page', per_page_parameter='per_page')
+        print(page)
+        per_page=3
+        # if per_page is 3, offset shows items 1-3 in the first page, 4-6 on the next page, etc
+        offset = (int(page) - 1) * per_page + 1
+        print("offset", offset)
+        pagination_users = users[offset: offset + per_page]
+        print("combined", offset + per_page)
+        print("aaa", per_page)
+        print(pagination_users)
+        
+        pagination = Pagination(page=page,per_page=3, total=dashboardData.count(), search=search, record_name='Classes',css_framework='bootstrap4')
+        return render_template('login.html', title='dashboard', data=pagination_users, page=page, pagination=pagination)
+
         return render_template('login.html')
     else:
         return render_template('login.html')
@@ -371,7 +434,7 @@ def professor():
         except:
             databaseConnection.rollback()
         #create_class(professorName, schoolName, departmentName, classId, sectionName, int(classCode))
-        return redirect(url_for('instructorDashboard'))
+        return redirect(url_for('login'))
 
     return render_template('forms/addClass.html', title='professor')
 
@@ -383,22 +446,6 @@ def instructor():
        return render_template('login.html', title='submit')
    else:
        return render_template('professor.html')
-
-@app.route('/professor/dashboard', methods=["POST", "GET"])
-def instructorDashboard():
-    # In case we need to search through the table
-    search = False
-    q = request.args.get('q')
-    if q:
-        search = True
-    # Get current page
-    page = request.args.get(get_page_args(),type=int,default=1)
-    print(page)
-    dashboardData = databaseConnection.query(Account).filter(Account.username == session.get('username'))
-    pagination = Pagination(page=page,per_page=3, total=dashboardData.count(), search=search, record_name='Classes',css_framework='bootstrap4')
-
-    return render_template('index.html', title='dashboard', data=dashboardData,pagination=pagination)
-
 
 # --------------------------------------------------------------------------------------------- Analytics
 def decryption(classCode, Category):
