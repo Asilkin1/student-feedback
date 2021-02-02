@@ -7,13 +7,15 @@
 
     <form action="{{ url_for('student')}}" method="post">
         <!-- Mood section -->
-
+        <div class="row justify-content-center">
+            <h1>Feel:</h1>
+        </div>
         <div class="row justify-content-center" id="face_row">
-            <p>Mood</p>
+
             <!-- Excited -->
             <div class="col- feedmoji">
                 <div class="form-check justify-content-center">
-                    <input class="form-check-input"  type="radio" name="emoji" id="excited" value="5" required>
+                    <input class="form-check-input" type="radio" name="emoji" id="excited" value="5" required>
                     <label class="form-check-label" for="excited">
                         Excited
                         <p id="emoji">&#128512;</p>
@@ -61,9 +63,14 @@
                 </div>
             </div>
         </div>
-
+        <!-- About -->
+        <div class="row justify-content-center">
+            <h1>About:</h1>
+        </div>
         <!-- Categrory -->
         <div class="row justify-content-center" id="face_row">
+
+
             <!-- Instructor -->
             <div class="col- feedmoji">
                 <div class="form-check justify-content-center">
@@ -91,7 +98,8 @@
             <div class="col- feedmoji">
                 <!-- Topic -->
                 <div class="form-check">
-                    <input class="form-check-input block" name="elaborateNumber" type="radio" id="topic" value="Topic" required>
+                    <input class="form-check-input block" name="elaborateNumber" type="radio" id="topic" value="Topic"
+                        required>
                     <label class="form-check-label" for="topic">
                         <span id="emojiaction">&#128218;</span>
                         Topic
@@ -103,11 +111,11 @@
                 <!-- Other -->
                 <div class="form-check">
                     <input class="form-check-input block" name="elaborateNumber" type="radio" id="other" value="Other"
-                    required>
-                <label class="form-check-label" for="other">
-                    <span id="emojiaction">&#128400;</span>
-                   Other
-                </label>
+                        required>
+                    <label class="form-check-label" for="other">
+                        <span id="emojiaction">&#128400;</span>
+                        Other
+                    </label>
                 </div>
             </div>
         </div>
@@ -117,24 +125,25 @@
         <div class="row justify-content-center">
             <!-- Finger emoji -->
             <div class="col-sm-6 btn-block">
-                <input class="form-control" type="text" placeholder="Elaborate your thoughts" name="elaborateText" class="form-control" id="emojifield" autofocus>
+                <input class="form-control" type="text" placeholder="Elaborate your thoughts" name="elaborateText"
+                    class="form-control" id="emojifield" autofocus>
             </div>
         </div>
 
 
-        </div>
-        <div class="row justify-content-center">
-            <div class="col-sm-3">
-                <!-- Submit button -->
-                <div class="form-group">
-                    <div>
-                        <button type="submit" class="button btn btn-primary btn-block" id="feedback_button">Leave
-                            feedback</button>
-                    </div>
-                </div>
+</div>
+<div class="row justify-content-center">
+    <div class="col-sm-3">
+        <!-- Submit button -->
+        <div class="form-group">
+            <div>
+                <button type="submit" class="button btn btn-primary btn-block" id="feedback_button">Leave
+                    feedback</button>
             </div>
         </div>
+    </div>
+</div>
 
-    </form>
+</form>
 
 </div>
