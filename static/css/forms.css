@@ -7,23 +7,22 @@
     background: linear-gradient(90deg, rgb(10, 28, 68) 0%, #010418 100%);
     justify-content: center;
     margin-top: 5%;
+    align-items: center;
 }
 .form {
     /* height: 100%;  Too height*/ 
-    display: flex;
-    flex-direction: column;
     justify-content: center;
-    align-items: center;
     position: relative;
     margin-top: 5%;
     margin-bottom: 5%;
+    flex-wrap: wrap;
 }
 
 .input{
     height:25%;
 }
 .button {
-    width: 400px;
+    width: 300px;
     height: 50px;
     margin-top: 15px;
     border-radius: 2px;
@@ -58,7 +57,7 @@
 .form h2 {
     font-size: 1rem;
     text-align: center;
-    width: 90%;
+    width: 100%;
     margin-bottom: 1rem;
     color: #fff;
 }
