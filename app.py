@@ -612,7 +612,7 @@ def check():
     # Checks the size of the data depending on what category
     else:
         Show = calc(ccode, Category)
-        if(Category == 'Instructor'):
+        if(Category == 'Instructor/Professor'):
             Frame = Frame[Frame['elaborateNumber'] == "Instructor/Professor"]
             PassFrame = Frame
             if(len(Frame.index) < 10):
