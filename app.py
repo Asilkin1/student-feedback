@@ -572,7 +572,12 @@ def check():
     ccode = request.args.get('ccode')
     Category = request.args.get('category')
 
-    dashboardData = databaseConnection.query(Feedback).filter(Feedback.classCode == ccode)
+    if(Category == 'Instructor'):
+            Category = 'Instructor/Professor'
+    elif(Category == 'Teaching-style'):
+        Category = 'Teaching style'
+
+    dashboardData = databaseConnection.query(Feedback).filter(Feedback.classCode == ccode, Feedback.elaborateNumber == Category)
 
     users = list(dashboardData)
 
@@ -615,7 +620,7 @@ def check():
             else:
                 return render_template('analytics.html',title='data', data=pagination_users, page=page, pagination=pagination, display=Show)
         
-        elif(Category == 'Teaching-style'):
+        elif(Category == 'Teaching style'):
             Frame = Frame[Frame['elaborateNumber'] == "Teaching style"]
             PassFrame = Frame
             if(len(Frame.index) < 10):
@@ -814,7 +819,7 @@ def drawtimeweek(classCode, Category):
     # Match the category var to database names
     if(Category == 'Instructor'):
         Category = 'Instructor/Professor'
-    elif(Category == 'Teaching-Style'):
+    elif(Category == 'Teaching-style'):
         Category = 'Teaching style'
 
     Frame = pd.read_sql_query("SELECT * from feedback", engine)
