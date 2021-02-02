@@ -36,7 +36,7 @@ import sqlite3 as sl
 import bcrypt
 
 # Database engine
-engine = create_engine('sqlite:///united.db', echo=True,
+engine = create_engine('sqlite:////var/www/student-feedback/student-feedback/united.db', echo=True,
                        connect_args={"check_same_thread": False})  # Connect to Users database
 # Establish connection to the database
 Session = sessionmaker(bind=engine)
