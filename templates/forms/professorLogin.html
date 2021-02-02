@@ -2,7 +2,6 @@
     <div class="form">
         <h1>Professor login</h1>
         <form action="{{ url_for('login', page=request.args.get('page')) }}" method="POST">
-
             <div class="form-group">
                 <label class="form-check-label" for="username">Username</label>
                 <input type="text" class="form-control" id="username" name="username" placeholder="Enter username"
