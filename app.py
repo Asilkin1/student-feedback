@@ -5,7 +5,6 @@ from flask_session.__init__ import Session as flaskGlobalSession
 # pagination
 from flask_paginate import Pagination, get_page_args
 
-
 from models import create_post, get_posts, delete_posts, create_class
 from datetime import date, datetime, timedelta  # get date and time
 from sqlalchemy.orm import sessionmaker  # Making Sessions and login
@@ -57,6 +56,17 @@ def index():
     # Get classes data for current username
     dashboardData = databaseConnection.query(Account).filter(Account.username == session.get('username'))
 
+     # Filter professor by class codes, feedbacks and username
+    hasCodes = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode)
+
+    # Get classes data for current username
+    dashboardData = databaseConnection.query(Account).filter(
+    Account.username == session.get('username'))
+
+    feedbackInstructor = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Instructor/Professor')
+    feedbackTeachingStyle = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Teaching style')
+    feedbackTopic = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Topic')
+    feedbackOther = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Other')
     users = list(dashboardData)
 
     # Get current page
@@ -70,11 +80,18 @@ def index():
     print(pagination_users)
 
     pagination = Pagination(page=page,per_page=3, total=dashboardData.count(), record_name='Classes',css_framework='bootstrap4')    
-    return render_template('index.html', title='dashboard', data=pagination_users, page=page, pagination=pagination)
+    return render_template('index.html', 
+                            title='dashboard', 
+                            data=pagination_users, 
+                            page=page, 
+                            pagination=pagination,
+                            instructor=feedbackInstructor.count(),
+                            topic=feedbackTopic.count(),
+                            other=feedbackOther.count(),
+                            teaching=feedbackTeachingStyle.count()
+                            )
 
 # -------------------------------------------------------------------- Log in
-
-
 @app.route('/login/', methods=['GET', 'POST'])
 def login(page=1):
     # Sumbitting login form
