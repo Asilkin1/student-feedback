@@ -1,3 +1,11 @@
 #icon{
-    font-size:60px;
+    font-size:90px;
 }
+
+header {
+    padding: 20px;
+    text-align: center;
+    background: #38e0bfc2;
+    color: white;
+    font-size: 20px;
+  }
