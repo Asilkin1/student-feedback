@@ -21,6 +21,8 @@
     <link rel="stylesheet" href="{{url_for('static',filename='css/header.css') }}">
     <!-- Slider -->
     <link rel="stylesheet" href="{{url_for('static',filename='css/slider.css') }}">
+    <!-- Flash messages -->
+    <link rel="stylesheet" href="{{url_for('static',filename='css/flashMessages.css') }}">
     <!-- Datatable -->
     <!-- Nav bar -->
     <link rel="stylesheet" href="{{url_for('static',filename='css/nav.css') }}">
@@ -30,56 +32,65 @@
         integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous" />
     <!-- Incude chart.js for interactive dashboard -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+        <!-- Include jQuert -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        
 </head>
 
 <body>
     <div id="wrapper">
-    <header>
-        <div class="d-flex flex-column flex-md-row align-items-center bg-white border-bottom">
-            <!-- Conditional rendering of the  -->
-            {% if session['logged_in'] and not session['studentCode']%}
-            <a class="navbar-brand" href="{{url_for('login')}}">
-                <img id="logo" src="/static/logo.png">
-            </a>
+        <header>
+            v1.0 open for public testing
+        </header>
+        <nav class="navbar navbar-dark  bg-disabled flex-md-nowrap p-0">
+             <!-- Conditional rendering of the  -->
+             {% if session['logged_in'] and not session['studentCode']%}
+             <a class="navbar-brand" href="{{url_for('login')}}">
+                 <img id="logo" src="/static/logo.png">
+             </a>
+ 
+             {% if session['username']%}
+             <div class="col">
+                 <h4>Welcome, professor {{ session['username']}}</h4>
+             </div>
+             
+             {% endif %}
+             
+             {{ session['_id'] }}
+             <!-- Hello {{ session['username'] }} -->
+             
+             {% elif session['studentCode'] %}
+             <a class="navbar-brand" href="{{url_for('student')}}">
+                 <img  id="logo" src="/static/logo.png">
+             </a>
+             <div class="col">
+             <a class="btn btn-outline-grey" href="{{ url_for('index')}}">Home</a>
+             </div>
+             
+             {% else %}
+             <a class="navbar-brand" href="{{url_for('index')}}">
+                 <img id="logo" src="/static/logo.png">
+             </a>
+             {% endif %}
+             
+             {% if session['logged_in']%}
+             <a class="btn btn-outline-danger" href="{{ url_for('logout')}}">Logout</a>
+             {% else %}
+             <div class="col">
+                 <a class="btn btn-outline-grey" href="{{ url_for('index')}}">Home</a>
+             </div>
+             
+             {% endif %}
+     
+          
+            <!-- <ul class="navbar-nav px-3">
+              <li class="nav-item text-nowrap">
+                
+            </li>
+            </ul> -->
+          </nav>
 
-            {% if session['username']%}
-            <div class="col">
-                <h4>Welcome, professor {{ session['username']}}</h4>
-            </div>
-            
-            {% endif %}
-            
-            {{ session['_id'] }}
-            <!-- Hello {{ session['username'] }} -->
-            
-            {% elif session['studentCode'] %}
-            <a class="navbar-brand" href="{{url_for('student')}}">
-                <img  id="logo" src="/static/logo.png">
-            </a>
-            <div class="col">
-            <a class="btn btn-outline-grey" href="{{ url_for('index')}}">Home</a>
-            </div>
-            
-
-            {% else %}
-            <a class="navbar-brand" href="{{url_for('index')}}">
-                <img id="logo" src="/static/logo.png">
-            </a>
-            {% endif %}
-            
-            {% if session['logged_in']%}
-            <a class="btn btn-outline-danger" href="{{ url_for('logout')}}">Logout</a>
-            {% else %}
-            <div class="col">
-                <a class="btn btn-outline-grey" href="{{ url_for('index')}}">Home</a>
-            </div>
-            
-            {% endif %}
-            
-          </div>
-    
-    </header>
-    <main role="main" class="container">
+    <main role="main" class="container-fluid">
         {% include 'flash_messages.html'%}
 
         {% block content %}{% endblock %}
@@ -99,3 +110,27 @@
     
 </footer>
 </html>
+<script>
+    // $(document).ready(function(){
+
+    //     $(document).on('click', '.page-link', function(event){
+    //         let link = $(this).attr('href');
+    //         next(link);         // Next page link ?page=2
+    //         event.preventDefault(); // Should not reload the page
+    //     });
+    // });
+
+    // let next = function(link){
+    //     req = $.ajax({
+    //         data:{
+    //             pageOne: $('input[dpage=1]').val()
+    //         },
+    //         type: 'POST',
+    //         url: link
+    //     });
+    //     req.done(function(data){
+    //         console.log('Next page');
+    //         $('#results').html(data);
+    //     })
+    // }
+</script>
