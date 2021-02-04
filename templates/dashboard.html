@@ -3,7 +3,6 @@
   <div lass="row">
     <p class="display-4">Classes statistic</p>
     <div class="container col-">
-      {{ pagination.links }}
      
     </div>
         <div class="btn-toolbar mb-2 mb-md-0">
@@ -44,12 +43,13 @@
               <th scope="col">Section Name</th>
               <th scope="col">Class Code</th>
               <th scope="col">Category</th>
+              <th scope="col">Options</th>
             </tr>
           </thead>
           <tbody>
         
             {% for row in data %}
-            <tr class="">
+            <tr>
               <form action="/analytics/check" method="GET">
                 <th scope="row">{{ loop.index + pagination.skip }}</th>
                 <th scope="row">{{row.classId}}</th>
@@ -67,13 +67,25 @@
                     </select>
                   </div>
                   <button href="{{ url_for('login', page=request.args.get('page')) }}" class="btn btn-block btn-dark" type="submit">Check</button>
-        
+                </td>
+                <td>
+                  <table style="border: none;">
+                    <td style="border: none;">
+                      <div class="form-group">
+                        <a href="/professor/edit/{{row.entryId}}" class="btn btn-outline-success">Edit</a>
+                      </div>
+                    </td>
+                    <td style="border: none;">
+                      <a href="/professor/delete/{{row.entryId}}" class="btn btn-outline-danger">Delete</a>
+                    </td>
+                  </table>
                 </td>
               </form>
             </tr>
             {% endfor %}
           </tbody>
         </table>
+        {{ pagination.links }}
       </div>
     </div>
   </div>

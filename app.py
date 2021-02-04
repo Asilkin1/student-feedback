@@ -418,7 +418,7 @@ def student():
 
         # Time
         currentTime = datetime.now()
-        timeNow = currentTime.strftime("%I:%M %p")
+        timeNow = currentTime.strftime("%H:%M")
 
         # Emoji number
         emoji = request.form.get('emoji')
@@ -433,8 +433,22 @@ def student():
         print(elaborateText)
         #elaborateText = mysql_aes_encrypt(elaborateText, random_key)
 
+        query = databaseConnection.query(Account).filter(Account.classCode == session['classCode'])
+        result = query.first()
+        classStart = result.start
+        classEnd = result.end
+
+        print("greater or: ", (timeNow < classEnd))
+
+        if timeNow > classStart and timeNow < classEnd:
+            inClass = "Inside"
+        inClass = "Outside"
+
+
+        
+
         #create data in database
-        newFeedback = Feedback(dateNow, timeNow, session['classCode'], session['studentCode'], emoji, elaborateNumber, elaborateText)
+        newFeedback = Feedback(dateNow, timeNow, session['classCode'], session['studentCode'], emoji, elaborateNumber, elaborateText, inClass)
         databaseConnection.add(newFeedback)
         databaseConnection.commit()
         #create_post(dateNow, timeNow, session['classCode'], session['studentCode'], emoji, elaborateNumber, elaborateText)
@@ -526,10 +540,22 @@ def professor():
         sectionName = request.form.get('sectionName')
         print("Section name: ", sectionName)
 
+        # Mode
+        mode = request.form.get('mode')
+        print("Mode: ", mode)
+
+        # Start Time
+        start = request.form.get('start')
+        print("Start time: ", start)
+
+        # End Time
+        end = request.form.get('end')
+        print("End time: ", end)
+
         # adds data to database
         #engine.execute(Account.insert(), professorName, schoolName, departmentName, classId, sectionName, int(classCode))
         newClass = Account(professorName, schoolName, departmentName,
-                           classId, sectionName, int(classCode), session['username'])
+                           classId, sectionName, int(classCode), start, end, session['username'])
         databaseConnection.add(newClass)
         try:
             databaseConnection.commit()
@@ -539,6 +565,50 @@ def professor():
         return redirect(url_for('login'))
 
     return render_template('forms/addClass.html', title='professor')
+
+
+@app.route("/professor/edit/<string:id>", methods=['GET', 'POST'])
+def editClass(id):
+    query = databaseConnection.query(Account).filter(
+                Account.entryId == id)
+
+    result = query.first()
+
+    # Populate article form fields
+    professorName = result.professorName
+    schoolName = result.schoolName
+    departmentName = result.departmentName
+    classId = result.classId
+    sectionName = result.sectionName
+
+    if request.method == 'POST':
+        professorName = request.form['professorName']
+        schoolName = request.form['schoolName']
+        departmentName = request.form['departmentName']
+        classId = request.form['classId']
+        sectionName = request.form['sectionName']
+
+        result.professorName = professorName
+        result.schoolName = schoolName
+        result.departmentName = departmentName
+        result.classId = classId
+        result.sectionName = sectionName
+        
+        databaseConnection.commit()
+
+        flash('Class Updated', 'success')
+
+        return redirect(url_for('login'))
+
+    return render_template('forms/editClass.html', entryId=id, professorName=professorName, schoolName=schoolName, departmentName=departmentName, classId=classId, sectionName=sectionName)
+
+@app.route("/professor/delete/<string:id>", methods=['GET', 'POST'])
+def deleteClass(id):
+    databaseConnection.query(Account).filter(Account.entryId == id).delete()
+    databaseConnection.commit()
+
+    flash('Class Deleted', 'success')
+    return redirect(url_for('login'))
 
 
 @app.route('/professor', methods=["POST", "GET"])
@@ -710,7 +780,7 @@ def calc(classCode, Category):
 
 @app.route('/analytics/plottime/today/<classCode>&<Category>', methods=["POST", "GET"])
 # Called by Analytics.html
-def drawtimetoday(classCode, Category):
+def draimetoday(classCode, Category):
 
     # Match the category var to database names
     if(Category == 'Instructor'):

@@ -16,7 +16,8 @@ drop table if exists feedback;
         emoji integer not null,
         elaborateNumber integer not null,
         elaborateText text not null,
-        inClass binary not null,
+        inClass text not null,
+        -- inClass binary not null,
     );
 
 	

@@ -15,7 +15,7 @@
 <div class="container col- mx-auto">
     <h3>Add class</h3>
     <!-- When submit button is clicked then the action should bring to previous page -->
-    <form action="{{ url_for('professor')}}" method="post">
+    <form action="/professor/edit/{{entryId}}" method="post">
         <!-- Split form into two columns -->
         <div class="row">
             <!-- Left side -->
@@ -25,7 +25,7 @@
                     <label class="form-check-label" for="professorName">
                         Name:
                     </label>
-                    <input type="text" class="form-control" id="text" placeholder="Enter your name" name="professorName"
+                    <input type="text" class="form-control" id="text" value={{professorName}} name="professorName"
                         required>
                 </div>
 
@@ -33,7 +33,7 @@
                     <label class="form-check-label" for="schoolName">
                         School:
                     </label>
-                    <input type="text" class="form-control" id="text" placeholder="Enter your school name"
+                    <input type="text" class="form-control" id="text" value={{schoolName}}
                         name="schoolName" required>
                 </div>
 
@@ -42,7 +42,7 @@
                     <label class="form-check-label" for="departmentName">
                         Department:
                     </label>
-                    <input type="text" class="form-control" id="text" placeholder="Enter your department"
+                    <input type="text" class="form-control" id="text" value={{departmentName}}
                         name="departmentName">
                 </div>
             </div>
@@ -54,7 +54,7 @@
                     <label class="form-check-label" for="classId">
                         Class:
                     </label>
-                    <input type="text" class="form-control" id="text" placeholder="Enter your class name" name="classId"
+                    <input type="text" class="form-control" id="text" value={{classId}} name="classId"
                         required>
                 </div>
 
@@ -63,21 +63,17 @@
                     <label class="form-check-label" for="sectionName">
                         Section:
                     </label>
-                    <input type="text" class="form-control" id="text" placeholder="Enter your section name"
+                    <input type="text" class="form-control" id="text" value={{sectionName}}
                         name="sectionName" required>
                 </div>
 
                 <!-- Type -->
                 <div class="form-group">
-                    <label class="form-check-label" for="classId">
+                    <label class="form-check-label" for="classMode">
                         Mode:
                     </label>
-                    <select name="mode" class="form-control" for="classMode">
-                        <option selected disabled value="">Choose class mode</option>
-                        <option>Remote</option>
-                        <option>In-person</option>
-                        <option>Hybrid</option>
-                    </select>
+                    <input type="text" class="form-control" id="text" placeholder="Enter your class mode"
+                        name="classMode" required>
                 </div>
             </div>
 
@@ -168,8 +164,10 @@
 
         <!-- Submit button -->
         <div class="form-group">
-            <button class="button btn-block" type="submit" name="submitButton" value="dashboardSubmit">Generate Class
-                Code</button>
+            <button class="button btn-block" type="submit" name="submitButton" value="dashboardSubmit">Update Class</button>
+            <form action="{{url_for('login', page=request.args.get('page'))}}">
+                <button class="button btn-block">Back To Class Dashboard</a>
+            </form>
         </div>
     </form>
 </div>
