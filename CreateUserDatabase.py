@@ -4,7 +4,7 @@ from sqlalchemy import Column, Date, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
 
-engine = create_engine('sqlite:///united.db', echo=True,connect_args={"check_same_thread": False})
+engine = create_engine('sqlite:///united_1.db', echo=True,connect_args={"check_same_thread": False})
 Base = declarative_base()
 
 # User database(professor)
