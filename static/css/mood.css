@@ -15,13 +15,7 @@ input[type="radio"]:checked + label{
    /* border: 4px dashed #0074D9; */
 }
 
-/* Show that current radio button is selected */
-input[type="checkbox"]:checked + label{
-    padding: 10px;
-    box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 7px 20px 0 rgba(0, 0, 0, 0.2);
-    border-radius: 8px;
-    /* border: 4px dashed #0074D9; */
- }
+
 
 input[type="text"],input[type="password"],input[type="checkbox"],input[type="time"]{
     padding: 10px;

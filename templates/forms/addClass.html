@@ -13,7 +13,7 @@
 
 <!-- Typical approach to create any form with bootstrap  -->
 <div class="container col- mx-auto">
-    <h3>Add class here</h3>
+    <h3>Add class</h3>
     <!-- When submit button is clicked then the action should bring to previous page -->
     <form action="{{ url_for('professor')}}" method="post">
         <!-- Split form into two columns -->
@@ -23,7 +23,7 @@
                 <!-- Unite label and the field into a group -->
                 <div class="form-group">
                     <label class="form-check-label" for="professorName">
-                        Name
+                        Name:
                     </label>
                     <input type="text" class="form-control" id="text" placeholder="Enter your name" name="professorName"
                         required>
@@ -31,7 +31,7 @@
 
                 <div class="form-group">
                     <label class="form-check-label" for="schoolName">
-                        School
+                        School:
                     </label>
                     <input type="text" class="form-control" id="text" placeholder="Enter your school name"
                         name="schoolName" required>
@@ -40,7 +40,7 @@
                 <!-- Department name field -->
                 <div class="form-group">
                     <label class="form-check-label" for="departmentName">
-                        Department
+                        Department:
                     </label>
                     <input type="text" class="form-control" id="text" placeholder="Enter your department"
                         name="departmentName">
@@ -52,7 +52,7 @@
                 <!-- Class ID field -->
                 <div class="form-group">
                     <label class="form-check-label" for="classId">
-                        Class
+                        Class:
                     </label>
                     <input type="text" class="form-control" id="text" placeholder="Enter your class name" name="classId"
                         required>
@@ -61,7 +61,7 @@
                 <!-- Section name field -->
                 <div class="form-group">
                     <label class="form-check-label" for="sectionName">
-                        Section
+                        Section:
                     </label>
                     <input type="text" class="form-control" id="text" placeholder="Enter your section name"
                         name="sectionName" required>
@@ -70,7 +70,7 @@
                 <!-- Type -->
                 <div class="form-group">
                     <label class="form-check-label" for="classMode">
-                        Mode
+                        Mode:
                     </label>
                     <input type="text" class="form-control" id="text" placeholder="Enter your class mode"
                         name="classMode" required>
@@ -82,7 +82,7 @@
                 <!-- Start time -->
                 <div class="form-group">
                     <label class="form-check-label" for="start">
-                        Start time
+                        Start time:
                     </label>
                     <input type="time" id="appt" class="form-control" min="07:00" max="19:00" name="start" required>
                     <span class="validity"></span>
@@ -91,7 +91,7 @@
                 <!-- End time -->
                 <div class="form-group">
                     <label class="form-check-label" for="end">
-                        End time
+                        End time:
                     </label>
                     <input type="time" id="appt" class="form-control" min="07:00" max="19:00" name="end" required>
                     <span class="validity"></span>
@@ -101,7 +101,7 @@
         </div>
         <!-- Days picker -->
         <label class="form-check-label">
-            Days
+            Days:
         </label>
         <div class="row justify-content-center">
             <!-- Days -->
