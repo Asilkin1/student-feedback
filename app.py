@@ -552,10 +552,15 @@ def professor():
         end = request.form.get('end')
         print("End time: ", end)
 
+        #days
+        days = request.form.getlist('day')
+        saveDays = ''
+        print('Days picked: ', days)
+
         # adds data to database
         #engine.execute(Account.insert(), professorName, schoolName, departmentName, classId, sectionName, int(classCode))
         newClass = Account(professorName, schoolName, departmentName,
-                           classId, sectionName, int(classCode), start, end, session['username'])
+                           classId, sectionName, int(classCode), start, end,saveDays.join(days), session['username'])
         databaseConnection.add(newClass)
         try:
             databaseConnection.commit()
