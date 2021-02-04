@@ -65,12 +65,18 @@
                         <td>{{row.emoji}}</td>
                         <td>{{row.elaborateNumber}}</td>
                         <td>{{row.elaborateText}}</td>
-                        <td>{{row.inClass}}</td>
+                        <td>
+                            <!-- Conditional rendering of the results -->
+                            {% if row.inClass %}
+                                <h6><span class="badge badge-success">YES</span></h6>
+                            {% else %}
+                                <h6><span class="badge badge-danger">NO</span></h6>
+                            {% endif %}
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
-            {{pagination.links}}
 
         </div>
 
