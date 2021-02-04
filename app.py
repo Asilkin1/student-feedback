@@ -780,7 +780,7 @@ def calc(classCode, Category):
 
 @app.route('/analytics/plottime/today/<classCode>&<Category>', methods=["POST", "GET"])
 # Called by Analytics.html
-def draimetoday(classCode, Category):
+def drawtimetoday(classCode, Category):
 
     # Match the category var to database names
     if(Category == 'Instructor'):
