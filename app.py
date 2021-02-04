@@ -419,6 +419,26 @@ def student():
         # Time
         currentTime = datetime.now()
         timeNow = currentTime.strftime("%H:%M")
+        
+        currentDay = dateNow.weekday()
+
+        day = ""
+
+        # Monday
+        if currentDay == 0:
+            day = "M"
+        # Tuesday
+        if currentDay == 1:
+            day = "T"
+        # Wednesday
+        if currentDay == 2:
+            day = "W"
+        # Thursday
+        if currentDay == 3:
+            day = "H"
+        # Friday
+        if currentDay == 4:
+            day = "F"
 
         # Emoji number
         emoji = request.form.get('emoji')
@@ -437,14 +457,12 @@ def student():
         result = query.first()
         classStart = result.start
         classEnd = result.end
+        classDays = result.days
 
-        print("greater or: ", (timeNow < classEnd))
-
-        if timeNow > classStart and timeNow < classEnd:
+        if (timeNow > classStart) and (timeNow < classEnd) and (day in classDays):
             inClass = "Inside"
-        inClass = "Outside"
-
-
+        else:
+            inClass = "Outside"
         
 
         #create data in database

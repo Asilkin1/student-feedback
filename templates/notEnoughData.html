@@ -29,6 +29,7 @@ table, th, td{
       <th>emoji</th>
       <th>category</th>
       <th>response</th>
+      <th>in class?</th>
     </tr>
     {% for row in data.index %}
       <tr>
@@ -40,6 +41,7 @@ table, th, td{
         <td>{{data.at[row,'emoji']}}</td>
         <td>{{data.at[row,'elaborateNumber']}}</td>
         <td>{{data.at[row,'elaborateText']}}</td>
+        <td>{{data.at[row,'inclass']}}</td>
       </tr>
     {% endfor %}
   </table> 
