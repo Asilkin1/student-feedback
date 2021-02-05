@@ -3,7 +3,7 @@
   <div lass="row">
     <p class="display-4">Classes statistic</p>
     <div class="container col-">
-     
+      {{ pagination.links }}
     </div>
         <div class="btn-toolbar mb-2 mb-md-0">
           <div class="btn-group mr-2">
@@ -16,8 +16,7 @@
   <div class="row">
     <!-- Put Chart -->
     <div class="col">
-        
-  
+      
       <!-- Put chart here -->
       <canvas id="myChart"></canvas>
 
@@ -83,7 +82,7 @@
             {% endfor %}
           </tbody>
         </table>
-        {{ pagination.links }}
+        
       </div>
     </div>
   </div>
