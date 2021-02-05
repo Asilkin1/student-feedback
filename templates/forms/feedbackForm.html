@@ -10,11 +10,14 @@
 
     {% if you  %}
     <div class="row justify-content-center">
+        In this class {{ notYou + you }} / {{ size}} cast their vote
+    </div>
+    <div class="row justify-content-center">
         <h4>Class reward progress:</h4>
     </div>
     
     <div class="row justify-content-center">
-        <h4>You voted: {{ you }} times
+        <h4>You voted: {{ voted }} times
     </div>
     <div class="row justify-content-center">
         <h4>Your classmates voted: {{ notYou }} times

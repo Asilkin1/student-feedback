@@ -342,15 +342,18 @@ def newstudent():
             session['logged_in'] = True
 
             # Get some data about class votes
-            youVotedForTheClass = databaseConnection.query(Feedback).filter(Feedback.classCode == session.get('classCode'),Feedback.studentCode == session.get('studentCode'))
-            distinctVoters = databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == session.get('classCode'),Feedback.studentCode != session.get('studentCode'))
+            # Don't forget to get each row for current student code only once
+            yourCodeVotes = databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == session.get('classCode'),Feedback.studentCode == session.get('studentCode')).distinct()
+            yourVotedTimes = databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == session.get('classCode'),Feedback.studentCode == session.get('studentCode'))            
+            
+            distinctVoters = databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == session.get('classCode'),Feedback.studentCode != session.get('studentCode')).distinct()
             classSize = databaseConnection.query(Account.size).filter(Account.classCode == session.get('classCode'))
 
             # Use the query as an iterable for more efficiency
             # Get all records without calling all() allow to interact with each object individually
             # for voted in getSomeReward:
             #     print('Resulttttttttt: ',voted)
-            print('This many times you voted: ',youVotedForTheClass.count())
+            print('This many times you voted: ',yourCodeVotes.count())
             print('This many people voted: ',distinctVoters.count())
             print('Size of the class: ',classSize.one())
 
@@ -360,7 +363,7 @@ def newstudent():
             databaseConnection.add(newUser)
             databaseConnection.commit()
 
-            return render_template('student.html', you=youVotedForTheClass.count(), notYou = distinctVoters.count(), size=classSize.one()[0])
+            return render_template('student.html', you=yourCodeVotes.count(), notYou = distinctVoters.count(), size=classSize.one()[0], voted = yourVotedTimes.count())
 
         # No records found
         elif result == None:
