@@ -341,12 +341,26 @@ def newstudent():
             session['studentCode'] = studentCode
             session['logged_in'] = True
 
+            # Get some data about class votes
+            youVotedForTheClass = databaseConnection.query(Feedback).filter(Feedback.classCode == session.get('classCode'),Feedback.studentCode == session.get('studentCode'))
+            distinctVoters = databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == session.get('classCode'),Feedback.studentCode != session.get('studentCode'))
+            classSize = databaseConnection.query(Account.size).filter(Account.classCode == session.get('classCode'))
+
+            # Use the query as an iterable for more efficiency
+            # Get all records without calling all() allow to interact with each object individually
+            # for voted in getSomeReward:
+            #     print('Resulttttttttt: ',voted)
+            print('This many times you voted: ',youVotedForTheClass.count())
+            print('This many people voted: ',distinctVoters.count())
+            print('Size of the class: ',classSize.count())
+
+
             # Insert new user into the database
             newUser = StudentCodes(hashed.decode())
             databaseConnection.add(newUser)
             databaseConnection.commit()
 
-            return render_template('student.html')
+            return render_template('student.html', you=youVotedForTheClass.count(), notYou = distinctVoters.count(), size=classSize.count() )
 
         # No records found
         elif result == None:
@@ -410,6 +424,7 @@ def student():
     if request.method == 'GET':
         # Delete existing data in database (can change this later)
         # delete_posts()
+        # Get data for rewards
         pass
 
     if request.method == 'POST':

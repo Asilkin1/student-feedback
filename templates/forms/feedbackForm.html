@@ -5,20 +5,33 @@
 </style>
 <div class="container" id="feedback-form">
 
+    <!-- On login only -->
     <!-- Incentive part -->
+
+    {% if you  %}
     <div class="row justify-content-center">
-        Class reward progress:
+        <h4>Class reward progress:</h4>
+    </div>
+    
+    <div class="row justify-content-center">
+        <h4>You voted:</h4> <h5>{{ you }} times</h5>
+    </div>
+    <div class="row justify-content-center">
+        <h4>Yout classmates voted:</h4> <h5>{{ notYou }} times</h5>
+    </div>
+    <div class="row justify-content-center">
+        <h4>Class size: </h4> <h5>{{ size }}</h5>
     </div>
     <div class="row justify-content-center">
 
         <div class="col-md-3">
             <div class="progress">
-                <div class="progress-bar w-75" role="progressbar" aria-valuenow="75" aria-valuemin="0"
+                <div class="progress-bar w-{{ notYou }}" role="progressbar" aria-valuenow="{{ you }}" aria-valuemin="0"
                     aria-valuemax="100"></div>
             </div>
         </div>
     </div>
-
+    {% endif %}
     <form action="{{ url_for('student')}}" method="post">
         <!-- Mood section -->
         <div class="row justify-content-center">
