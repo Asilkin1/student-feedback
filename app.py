@@ -8,7 +8,7 @@ from flask_paginate import Pagination, get_page_args
 from models import create_post, get_posts, delete_posts, create_class
 from datetime import date, datetime, timedelta  # get date and time
 from sqlalchemy.orm import sessionmaker  # Making Sessions and login
-from sqlalchemy import insert, delete
+from sqlalchemy import insert, delete, event
 from CreateUserDatabase import *    # Table for Users
 import time  # date and time
 import os  # filepath
@@ -30,7 +30,6 @@ import binascii
 import hashlib
 
 import random
-import sqlite3 as sl
 
 # random code
 import bcrypt
@@ -49,6 +48,51 @@ app = Flask(__name__)
 #random_key = os.urandom(16)
 random_key = b"J3FTV1PL1jDFeMh01I9r+A=="
 random_key = b64encode(random_key).decode('utf-8')
+
+
+# Stream data into any template ------------------------------------------------------------------
+def stream_template(template_name, **context):
+    app.update_template_context(context)
+    t = app.jinja_env.get_template(template_name)
+    rv = t.stream(context)
+    rv.enable_buffering(5)  # this is some sort of delay I assume
+    return rv
+
+# ------------------ Database event handler for update and insert
+# Inset and update event for the database
+def insert_update(mapper, connection, target):
+    tablename = mapper.mapped_table.name
+
+    data = {}
+    for name in mapper.c.keys():
+        v = getattr(target, name)
+        if isinstance(v,datetime):
+            v = v.astimezone(timezone.utc)
+        data[name] = v
+
+    print('Something changed in the database',tablename, 'Name:', v,' inserted or updated ')
+
+
+def delete_event_db_handler(mapper, connection,target):
+    '''Do something when entry is removed'''
+    print('Something removed from the database')
+    tablename = mapper.mapped_table.name
+    index = get_es_index(tablename)
+    doc_type = 'doc'
+    id = target.id
+    res = es.delete(index=index, doc_type=doc, id=id)
+    print('delete index', res)
+
+
+# Set event listener for Account table
+event.listen(Account, 'after_update',insert_update,propagate=True)
+event.listen(Account, 'after_delete',delete_event_db_handler,propagate=True)
+
+
+@app.route('/realtime')
+def render_realtime():
+    return Response(stream_template('realtime.html', data=databaseConnection.query(Account).all()))
+    
 
 
 @app.route('/', methods=["POST", "GET"])
