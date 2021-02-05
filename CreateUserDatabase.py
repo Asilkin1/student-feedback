@@ -33,8 +33,9 @@ class Feedback(Base):
     emoji = Column(Integer, nullable=False)
     elaborateNumber = Column(Integer,nullable=False)
     elaborateText = Column(String,nullable=False)
+    inClass = Column(String, nullable=False)
 
-    def __init__(self, date, time, classCode,studentCode,emoji,elaborateNumber, elaborateText):
+    def __init__(self, date, time, classCode,studentCode,emoji,elaborateNumber, elaborateText, inClass):
         self.date = date
         self.time = time
         self.classCode = classCode
@@ -42,6 +43,7 @@ class Feedback(Base):
         self.emoji = emoji
         self.elaborateNumber = elaborateNumber
         self.elaborateText = elaborateText
+        self.inClass = inClass
 
 # Table for professor account
 class Account(Base):
@@ -53,26 +55,32 @@ class Account(Base):
     schoolName = Column(String, nullable=False)
     departmentName = Column(String, nullable=False)
     classId = Column(String, nullable=False)
-    sectionName = Column(String, nullable=False)
     classCode = Column(String, nullable=False)
+    start = Column(String, nullable=False)
+    end = Column(String, nullable=False)
+    days = Column(String, nullable=False)
+    size = Column(String, nullable=False)
+    mode = Column(String, nullable=False)
     # Account is associated with a professor username
     username = Column(String, ForeignKey('professor_login.username'))
 
-    def __init__(self,professorName,schoolName,departmentName,classId,sectionName,classCode, username):
+    def __init__(self,professorName,schoolName,departmentName,classId,classCode, start, end, days, size, mode, username):
         self.professorName = professorName
         self.schoolName = schoolName
         self.departmentName = departmentName
         self.classId = classId
-        self.sectionName = sectionName
         self.classCode = classCode
+        self.start = start
+        self.end = end
+        self.days = days
+        self.size = size
+        self.mode = mode
         self.username = username
 
 class StudentCodes(Base):
     __tablename__ = 'studentcodes'
 
-    code = Column(String, nullable=False)
-    id = Column(Integer, primary_key=True)
-
+    code = Column(String, primary_key=True, nullable=False)
     def __init__(self, code):
         self.code = code
 

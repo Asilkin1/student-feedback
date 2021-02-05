@@ -274,7 +274,7 @@ def logout():
 def register():
 
     if request.method == 'POST':
-        flash('Please register to gain access to the website', 'info')
+        flash('You have registered', 'info')
         # Get username from the form
         username = request.form.get('username')
         password = request.form.get('password')
@@ -341,12 +341,29 @@ def newstudent():
             session['studentCode'] = studentCode
             session['logged_in'] = True
 
+            # Get some data about class votes
+            # Don't forget to get each row for current student code only once
+            yourCodeVotes = databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == session.get('classCode'),Feedback.studentCode == session.get('studentCode')).distinct()
+            yourVotedTimes = databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == session.get('classCode'),Feedback.studentCode == session.get('studentCode'))            
+            
+            distinctVoters = databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == session.get('classCode'),Feedback.studentCode != session.get('studentCode')).distinct()
+            classSize = databaseConnection.query(Account.size).filter(Account.classCode == session.get('classCode'))
+
+            # Use the query as an iterable for more efficiency
+            # Get all records without calling all() allow to interact with each object individually
+            # for voted in getSomeReward:
+            #     print('Resulttttttttt: ',voted)
+            print('This many times you voted: ',yourCodeVotes.count())
+            print('This many people voted: ',distinctVoters.count())
+            print('Size of the class: ',classSize.one())
+
+
             # Insert new user into the database
             newUser = StudentCodes(hashed.decode())
             databaseConnection.add(newUser)
             databaseConnection.commit()
 
-            return render_template('student.html')
+            return render_template('student.html', you=yourCodeVotes.count(), notYou = distinctVoters.count(), size=classSize.one()[0], voted = yourVotedTimes.count())
 
         # No records found
         elif result == None:
@@ -410,6 +427,7 @@ def student():
     if request.method == 'GET':
         # Delete existing data in database (can change this later)
         # delete_posts()
+        # Get data for rewards
         pass
 
     if request.method == 'POST':
@@ -418,7 +436,27 @@ def student():
 
         # Time
         currentTime = datetime.now()
-        timeNow = currentTime.strftime("%I:%M %p")
+        timeNow = currentTime.strftime("%H:%M")
+        
+        currentDay = dateNow.weekday()
+
+        day = ""
+
+        # Monday
+        if currentDay == 0:
+            day = "M"
+        # Tuesday
+        if currentDay == 1:
+            day = "T"
+        # Wednesday
+        if currentDay == 2:
+            day = "W"
+        # Thursday
+        if currentDay == 3:
+            day = "H"
+        # Friday
+        if currentDay == 4:
+            day = "F"
 
         # Emoji number
         emoji = request.form.get('emoji')
@@ -433,8 +471,20 @@ def student():
         print(elaborateText)
         #elaborateText = mysql_aes_encrypt(elaborateText, random_key)
 
+        query = databaseConnection.query(Account).filter(Account.classCode == session['classCode'])
+        result = query.first()
+        classStart = result.start
+        classEnd = result.end
+        classDays = result.days
+
+        if (timeNow > classStart) and (timeNow < classEnd) and (day in classDays):
+            inClass = "Inside"
+        else:
+            inClass = "Outside"
+        
+
         #create data in database
-        newFeedback = Feedback(dateNow, timeNow, session['classCode'], session['studentCode'], emoji, elaborateNumber, elaborateText)
+        newFeedback = Feedback(dateNow, timeNow, session['classCode'], session['studentCode'], emoji, elaborateNumber, elaborateText, inClass)
         databaseConnection.add(newFeedback)
         databaseConnection.commit()
         #create_post(dateNow, timeNow, session['classCode'], session['studentCode'], emoji, elaborateNumber, elaborateText)
@@ -510,26 +560,41 @@ def professor():
 
         # Professors Name
         professorName = request.form.get('professorName')
-        print("professor name: ", professorName)
 
         # Schools Name
         schoolName = request.form.get('schoolName')
-        print("school name: ", schoolName)
-
+        
         # Departments Name
         departmentName = request.form.get('departmentName')
-        print("department name: ", departmentName)
+        
         # Class' Id
         classId = request.form.get('classId')
-        print("classID name: ", classId)
+    
         # Sections Name
         sectionName = request.form.get('sectionName')
-        print("Section name: ", sectionName)
 
+        # Mode
+        mode = request.form.get('classMode')
+        # Start Time
+        start = request.form.get('start')
+
+        # End Time
+        end = request.form.get('end')
+
+        # Class size
+        classSize = str(request.form.get('size'))
+        
+        #days
+        days = request.form.getlist('day')
+        saveDays = ''
+        print('Days picked: ', days)
+
+        # Combined section and class code
+        classAndSection = str(classCode) + '-' + sectionName
+        
         # adds data to database
-        #engine.execute(Account.insert(), professorName, schoolName, departmentName, classId, sectionName, int(classCode))
         newClass = Account(professorName, schoolName, departmentName,
-                           classId, sectionName, int(classCode), session['username'])
+                           classId,classAndSection, start, end, saveDays.join(days), classSize, mode, session['username'])
         databaseConnection.add(newClass)
         try:
             databaseConnection.commit()
@@ -539,6 +604,68 @@ def professor():
         return redirect(url_for('login'))
 
     return render_template('forms/addClass.html', title='professor')
+
+
+@app.route("/professor/edit/<string:id>", methods=['GET', 'POST'])
+def editClass(id):
+    query = databaseConnection.query(Account).filter(
+                Account.entryId == id)
+
+    result = query.first()
+
+    # Populate article form fields
+    professorName = result.professorName
+    schoolName = result.schoolName
+    departmentName = result.departmentName
+    classId = result.classId
+    start = result.start 
+    end = result.end
+    parsingClassCode = result.classCode.split("-")
+    mode = result.mode
+
+    # Parse for section
+    sectionName = parsingClassCode[1]
+
+    if request.method == 'POST':
+        professorName = request.form['professorName']
+        schoolName = request.form['schoolName']
+        departmentName = request.form['departmentName']
+        classId = request.form['classId']
+        sectionName = request.form['sectionName']
+        start = request.form['start']
+        end = request.form['end']
+        mode = request.form['mode']
+
+        result.professorName = professorName
+        result.schoolName = schoolName
+        result.departmentName = departmentName
+        result.classId = classId
+        result.start = start
+        result.end = end
+        result.mode = mode
+
+        # Parse for class code
+        parsingClassCode = result.classCode.split("-")
+        classCode = parsingClassCode[0]
+
+        result.classCode = str(classCode) + '-' + sectionName
+        
+        databaseConnection.commit()
+
+        flash('Class Updated', 'success')
+
+        return redirect(url_for('login'))
+
+    return render_template('forms/editClass.html', entryId=id, professorName=professorName, schoolName=schoolName, departmentName=departmentName, classId=classId,
+                                                    sectionName=sectionName, start=start, end=end, classMode=mode)
+
+@app.route("/professor/delete/<string:id>", methods=['GET', 'POST'])
+def deleteClass(id):
+    databaseConnection.query(Account).filter(Account.entryId == id).delete()
+    databaseConnection.commit()
+
+    flash('Class Deleted', 'success')
+    return redirect(url_for('login'))
 
 
 @app.route('/professor', methods=["POST", "GET"])

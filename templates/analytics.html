@@ -37,7 +37,7 @@
       
         
         <!-- Table begins  -->
-        <div class="container">
+        <div class="table-responsive">
             <table class="table table-striped  table-hover table-sm" cellspacing="0" width="100%">
                 <p class="display-4" style="padding-top: 5%;">Datatable</p>
                 {{pagination.links}}
@@ -51,6 +51,7 @@
                         <th scope="col">Emoji</th>
                         <th scope="col">Category</th>
                         <th scope="col">Response</th>
+                        <th scope="col">In class?</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -64,11 +65,18 @@
                         <td>{{row.emoji}}</td>
                         <td>{{row.elaborateNumber}}</td>
                         <td>{{row.elaborateText}}</td>
+                        <td>
+                            <!-- Conditional rendering of the results -->
+                            {% if row.inClass %}
+                                <h6><span class="badge badge-success">YES</span></h6>
+                            {% else %}
+                                <h6><span class="badge badge-danger">NO</span></h6>
+                            {% endif %}
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
-            {{pagination.links}}
 
         </div>
 
