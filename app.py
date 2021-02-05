@@ -634,7 +634,7 @@ def editClass(id):
         sectionName = request.form['sectionName']
         start = request.form['start']
         end = request.form['end']
-        mode = request.form['classMode']
+        mode = request.form['mode']
 
         result.professorName = professorName
         result.schoolName = schoolName

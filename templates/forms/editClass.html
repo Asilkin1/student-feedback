@@ -64,7 +64,7 @@
                         Section:
                     </label>
                     <input type="text" class="form-control" id="text" value={{sectionName}}
-                        name="sectionName" required>
+                        name="sectionName" maxlength="4" required>
                 </div>
 
                 <!-- Type -->
@@ -74,9 +74,19 @@
                     </label>
                     <select name="mode" class="form-control" for="classMode">
                         <option selected disabled value="">Choose class mode</option>
-                        <option>Remote</option>
+                        {% if classMode == "Remote" %}
+                        <option selected>Remote</option>
                         <option>In-person</option>
                         <option>Hybrid</option>
+                        {% elif classMode == "In-person"%}
+                        <option>Remote</option>
+                        <option selected >In-person</option>
+                        <option>Hybrid</option>
+                        {% else %}
+                        <option>Remote</option>
+                        <option>In-person</option>
+                        <option selected >Hybrid</option>
+                        {% endif%}
                     </select>
                 </div>
             </div>
@@ -88,7 +98,7 @@
                     <label class="form-check-label" for="start">
                         Start time:
                     </label>
-                    <input type="time" id="appt" class="form-control" min="07:00" max="19:00" name="start" required>
+                    <input type="time" id="start" class="form-control" min="07:00" max="19:00" name="start" required>
                     <span class="validity"></span>
                 </div>
 
@@ -97,7 +107,7 @@
                     <label class="form-check-label" for="end">
                         End time:
                     </label>
-                    <input type="time" id="appt" class="form-control" min="07:00" max="19:00" name="end" required>
+                    <input type="time" id="end" class="form-control" min="07:00" max="19:00" name="end" required>
                     <span class="validity"></span>
                 </div>
             </div>
@@ -163,9 +173,6 @@
             </div>
         </div>
 
-
-
-
         <!-- Submit button -->
         <div class="form-group">
             <button class="button btn-block" type="submit" name="submitButton" value="dashboardSubmit">Update Class</button>
@@ -175,4 +182,8 @@
         </div>
     </form>
 </div>
+<script>
+    document.getElementById("start").value= "{{ start }}"
+    document.getElementById('end').value = "{{ end }}"
+</script>
 {% endblock %}
