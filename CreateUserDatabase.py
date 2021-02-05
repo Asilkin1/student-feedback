@@ -80,9 +80,7 @@ class Account(Base):
 class StudentCodes(Base):
     __tablename__ = 'studentcodes'
 
-    code = Column(String, nullable=False)
-    id = Column(Integer, primary_key=True)
-
+    code = Column(String, primary_key=True, nullable=False)
     def __init__(self, code):
         self.code = code
 
