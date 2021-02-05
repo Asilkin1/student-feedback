@@ -40,7 +40,6 @@
             <tr>
               <th scope="col">#</th>
               <th scope="col">Class ID</th>
-              <th scope="col">Section Name</th>
               <th scope="col">Class Code</th>
               <th scope="col">Category</th>
               <th scope="col">Options</th>
@@ -53,7 +52,6 @@
               <form action="/analytics/check" method="GET">
                 <th scope="row">{{ loop.index + pagination.skip }}</th>
                 <th scope="row">{{row.classId}}</th>
-                <td>{{row.sectionName}}</td>
                 <!-- Get class code into the form  -->
                 <!-- The input cannot be disables -->
                 <td >{{row.classCode}}<input type="hidden" name="ccode" value={{row.classCode}}></td> 
