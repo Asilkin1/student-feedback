@@ -51,10 +51,9 @@ class Account(Base):
     __tablename__ = 'account'
     
     entryId = Column(Integer, autoincrement=True, primary_key=True)
-    professorName = Column(String, nullable=False)
     schoolName = Column(String, nullable=False)
     departmentName = Column(String, nullable=False)
-    classId = Column(String, nullable=False)
+    className = Column(String, nullable=False)
     classCode = Column(String, nullable=False)
     start = Column(String, nullable=False)
     end = Column(String, nullable=False)
@@ -64,11 +63,10 @@ class Account(Base):
     # Account is associated with a professor username
     username = Column(String, ForeignKey('professor_login.username'))
 
-    def __init__(self,professorName,schoolName,departmentName,classId,classCode, start, end, days, size, mode, username):
-        self.professorName = professorName
+    def __init__(self, schoolName,departmentName, className, classCode, start, end, days, size, mode, username):
         self.schoolName = schoolName
         self.departmentName = departmentName
-        self.classId = classId
+        self.className = className
         self.classCode = classCode
         self.start = start
         self.end = end

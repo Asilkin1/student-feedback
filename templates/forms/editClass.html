@@ -22,14 +22,6 @@
             <div class="col">
                 <!-- Unite label and the field into a group -->
                 <div class="form-group">
-                    <label class="form-check-label" for="professorName">
-                        Name:
-                    </label>
-                    <input type="text" class="form-control" id="text" value={{professorName}} name="professorName"
-                        required>
-                </div>
-
-                <div class="form-group">
                     <label class="form-check-label" for="schoolName">
                         School:
                     </label>
@@ -44,27 +36,6 @@
                     </label>
                     <input type="text" class="form-control" id="text" value={{departmentName}}
                         name="departmentName">
-                </div>
-            </div>
-
-            <!-- Center class/section/mode -->
-            <div class="col">
-                <!-- Class ID field -->
-                <div class="form-group">
-                    <label class="form-check-label" for="classId">
-                        Class:
-                    </label>
-                    <input type="text" class="form-control" id="text" value={{classId}} name="classId"
-                        required>
-                </div>
-
-                <!-- Section name field -->
-                <div class="form-group">
-                    <label class="form-check-label" for="sectionName">
-                        Section:
-                    </label>
-                    <input type="text" class="form-control" id="text" value={{sectionName}}
-                        name="sectionName" maxlength="4" required>
                 </div>
 
                 <!-- Type -->
@@ -88,6 +59,36 @@
                         <option selected >Hybrid</option>
                         {% endif%}
                     </select>
+                </div>
+            </div>
+
+            <!-- Center class/section/mode -->
+            <div class="col">
+                <!-- Class ID field -->
+                <div class="form-group">
+                    <label class="form-check-label" for="className">
+                        Class Name:
+                    </label>
+                    <input type="text" class="form-control" id="text" value={{className}} name="className"
+                        required>
+                </div>
+
+                <!-- Section name field -->
+                <div class="form-group">
+                    <label class="form-check-label" for="sectionName">
+                        Section:
+                    </label>
+                    <input type="text" class="form-control" id="text" value={{sectionName}}
+                        name="sectionName" maxlength="4" required>
+                </div>
+
+                <!-- Class size -->
+                <div class="form-group">
+                    <label class="form-check-label" for="size">
+                        Class size:
+                    </label>
+                    <input type="number" class="form-control" min="13" max="26" value={{size}} name="size" required>
+                    <span class="validity"></span>
                 </div>
             </div>
 
@@ -124,35 +125,35 @@
                 <div class="row justify-content-center">
                     <!-- Monday -->
                     <div class="col-" id="face_row">
-                        <input name="day" class="form-check-input" type="checkbox" value="1" id="1">
+                        <input name="days" class="form-check-input" type="checkbox" value="M" id="1">
                         <label class="form-check-label" for="1">
                             MO
                         </label>
                     </div>
                     <!-- Tuesday -->
                     <div class="col-" id="face_row">
-                        <input name="day" class="form-check-input" type="checkbox" value="2" id="2">
+                        <input name="days" class="form-check-input" type="checkbox" value="T" id="2">
                         <label class="form-check-label" for="2">
                             TU
                         </label>
                     </div>
                     <!-- Wed -->
                     <div class="col-" id="face_row" id="face_row">
-                        <input name="day" class="form-check-input" type="checkbox" value="3" id="3">
+                        <input name="days" class="form-check-input" type="checkbox" value="W" id="3">
                         <label class="form-check-label" for="3">
                             WE
                         </label>
                     </div>
                     <!-- Thursday -->
                     <div class="col-" id="face_row" id="face_row">
-                        <input name="day" class="form-check-input" type="checkbox" value="4" id="4">
+                        <input name="days" class="form-check-input" type="checkbox" value="H" id="4">
                         <label class="form-check-label" for="4">
                             TH
                         </label>
                     </div>
                     <!-- Friday -->
                     <div class="col-" id="face_row" id="face_row">
-                        <input name="day" class="form-check-input" type="checkbox" value="5" id="5">
+                        <input name="days" class="form-check-input" type="checkbox" value="F" id="5">
                         <label class="form-check-label" for="5">
                             FR
                         </label>
@@ -173,5 +174,22 @@
 <script>
     document.getElementById("start").value= "{{ start }}"
     document.getElementById('end').value = "{{ end }}"
+    console.log("{{className}}")
+    var nodeList = document.getElementsByName("days");
+    if ("{{days}}".includes(nodeList[0].value) == true) {
+        nodeList[0].checked = true;
+    } 
+    if ("{{days}}".includes(nodeList[1].value) == true) {
+        nodeList[1].checked = true;
+    }
+    if ("{{days}}".includes(nodeList[2].value) == true) {
+        nodeList[2].checked = true;
+    }
+    if ("{{days}}".includes(nodeList[3].value) == true) {
+        nodeList[3].checked = true;
+    } 
+    if ("{{days}}".includes(nodeList[4].value) == true) {
+        nodeList[4].checked = true;
+    }
 </script>
 {% endblock %}

@@ -53,8 +53,6 @@ random_key = b64encode(random_key).decode('utf-8')
 
 @app.route('/', methods=["POST", "GET"])
 def index():
-    if session['logged_in'] == False:
-        return render_template('index.html')
     if session['logged_in']:
         # Get classes data for current username
         dashboardData = databaseConnection.query(Account).filter(Account.username == session.get('username'))
@@ -71,8 +69,8 @@ def index():
         feedbackTopic = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Topic')
         feedbackOther = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Other')
         
-        # Get some data about class votes
-        # Don't forget to get each row for current student code only once
+        #Get some data about class votes
+        #Don't forget to get each row for current student code only once
         yourCodeVotes = databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == session.get('classCode'),Feedback.studentCode == session.get('studentCode')).distinct()
         yourVotedTimes = databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == session.get('classCode'),Feedback.studentCode == session.get('studentCode'))            
         
@@ -96,6 +94,8 @@ def index():
                             teaching=feedbackTeachingStyle.count(),
                             you=yourCodeVotes.count(), notYou = distinctVoters.count(), size=classSize.one()[0], voted = yourVotedTimes.count()
                             )
+    else:
+        return render_template('index.html')
 
 # -------------------------------------------------------------------- Log in
 @app.route('/login/', methods=['GET', 'POST'])
@@ -351,7 +351,7 @@ def studentRegistration():
             # Returning user
 
         else:
-            flash(f"This is your code {studentCode}", 'info')
+            flash(f"Your student code is: {studentCode}", 'info')
             # Add new user to the database
             newStudent = StudentCodes(hashed.decode())
             databaseConnection.add(newStudent)
@@ -503,9 +503,6 @@ def professor():
             if result == None:
                 inData = False
 
-        # Professors Name
-        professorName = request.form.get('professorName')
-
         # Schools Name
         schoolName = request.form.get('schoolName')
         
@@ -513,13 +510,14 @@ def professor():
         departmentName = request.form.get('departmentName')
         
         # Class' Id
-        classId = request.form.get('classId')
+        className = request.form.get('className')
     
         # Sections Name
         sectionName = request.form.get('sectionName')
 
         # Mode
         mode = request.form.get('classMode')
+
         # Start Time
         start = request.form.get('start')
 
@@ -538,14 +536,14 @@ def professor():
         classAndSection = str(classCode) + '-' + sectionName
         
         # adds data to database
-        newClass = Account(professorName, schoolName, departmentName,
-                           classId,classAndSection, start, end, saveDays.join(days), classSize, mode, session['username'])
+        newClass = Account(schoolName, departmentName,
+                           className, classAndSection, start, end, saveDays.join(days), classSize, mode, session['username'])
         databaseConnection.add(newClass)
         try:
             databaseConnection.commit()
         except:
             databaseConnection.rollback()
-        #create_class(professorName, schoolName, departmentName, classId, sectionName, int(classCode))
+
         return redirect(url_for('login'))
 
     return render_template('forms/addClass.html', title='professor')
@@ -559,35 +557,43 @@ def editClass(id):
     result = query.first()
 
     # Populate article form fields
-    professorName = result.professorName
     schoolName = result.schoolName
     departmentName = result.departmentName
-    classId = result.classId
+    className = result.className
+    print("class name", className)
     start = result.start 
     end = result.end
+    days = result.days
     parsingClassCode = result.classCode.split("-")
     mode = result.mode
+    size = result.size
 
     # Parse for section
     sectionName = parsingClassCode[1]
 
     if request.method == 'POST':
-        professorName = request.form['professorName']
         schoolName = request.form['schoolName']
         departmentName = request.form['departmentName']
-        classId = request.form['classId']
+        className = request.form['className']
         sectionName = request.form['sectionName']
+        days = request.form['day']
+
+        days = request.form.getlist('day')
+        saveDays = ''
+
         start = request.form['start']
         end = request.form['end']
         mode = request.form['mode']
+        size = request.form['size']
 
-        result.professorName = professorName
         result.schoolName = schoolName
         result.departmentName = departmentName
-        result.classId = classId
+        result.className = className
         result.start = start
+        result.days = saveDays.join(days)
         result.end = end
         result.mode = mode
+        result.size = size
 
         # Parse for class code
         parsingClassCode = result.classCode.split("-")
@@ -601,8 +607,8 @@ def editClass(id):
 
         return redirect(url_for('login'))
 
-    return render_template('forms/editClass.html', entryId=id, professorName=professorName, schoolName=schoolName, departmentName=departmentName, classId=classId,
-                                                    sectionName=sectionName, start=start, end=end, classMode=mode)
+    return render_template('forms/editClass.html', entryId=id, schoolName=schoolName, departmentName=departmentName, className=className,
+                                                    sectionName=sectionName, days=days, start=start, end=end, size=size, classMode=mode)
 
 @app.route("/professor/delete/<string:id>", methods=['GET', 'POST'])
 def deleteClass(id):

@@ -22,14 +22,6 @@
             <div class="col">
                 <!-- Unite label and the field into a group -->
                 <div class="form-group">
-                    <label class="form-check-label" for="professorName">
-                        Name:
-                    </label>
-                    <input type="text" class="form-control" id="text" placeholder="Enter your name" name="professorName"
-                        required>
-                </div>
-
-                <div class="form-group">
                     <label class="form-check-label" for="schoolName">
                         School:
                     </label>
@@ -45,16 +37,29 @@
                     <input type="text" class="form-control" id="text" placeholder="Enter your department"
                         name="departmentName">
                 </div>
+
+                 <!-- Type -->
+                 <div class="form-group">
+                    <label class="form-check-label" for="classMode">
+                        Mode:
+                    </label>
+                    <select name="classMode" class="form-control" for="classMode">
+                        <option selected disabled value="">Choose class mode</option>
+                        <option>Remote</option>
+                        <option>In-person</option>
+                        <option>Hybrid</option>
+                    </select>
+                </div>
             </div>
 
             <!-- Center class/section/mode -->
             <div class="col">
                 <!-- Class ID field -->
                 <div class="form-group">
-                    <label class="form-check-label" for="classId">
-                        Class:
+                    <label class="form-check-label" for="className">
+                        Class Name:
                     </label>
-                    <input type="text" class="form-control" id="text" placeholder="Enter your class name" name="classId"
+                    <input type="text" class="form-control" id="text" placeholder="Enter your class name" name="className"
                         required>
                 </div>
 
@@ -67,17 +72,14 @@
                         name="sectionName" maxlength="4" required>
                 </div>
 
-                <!-- Type -->
+                <!-- <input type="number" id="tentacles" name="tentacles"
+                min="10" max="100"> -->
                 <div class="form-group">
-                    <label class="form-check-label" for="classMode">
-                        Mode:
+                    <label class="form-check-label" for="size">
+                        Class size:
                     </label>
-                    <select name="classMode" class="form-control" for="classMode">
-                        <option selected disabled value="">Choose class mode</option>
-                        <option>Remote</option>
-                        <option>In-person</option>
-                        <option>Hybrid</option>
-                    </select>
+                    <input type="number" class="form-control" min="13" max="26" name="size" required>
+                    <span class="validity"></span>
                 </div>
             </div>
 
@@ -101,15 +103,6 @@
                     <span class="validity"></span>
                 </div>
 
-                <!-- <input type="number" id="tentacles" name="tentacles"
-       min="10" max="100"> -->
-                <div class="form-group">
-                    <label class="form-check-label" for="size">
-                        Class size:
-                    </label>
-                    <input type="number" class="form-control" min="13" max="26" name="size" required>
-                    <span class="validity"></span>
-                </div>
             </div>
 
         </div>
