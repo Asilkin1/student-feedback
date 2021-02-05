@@ -55,7 +55,6 @@ class Account(Base):
     schoolName = Column(String, nullable=False)
     departmentName = Column(String, nullable=False)
     classId = Column(String, nullable=False)
-    sectionName = Column(String, nullable=False)
     classCode = Column(String, nullable=False)
     start = Column(String, nullable=False)
     end = Column(String, nullable=False)
@@ -64,12 +63,11 @@ class Account(Base):
     # Account is associated with a professor username
     username = Column(String, ForeignKey('professor_login.username'))
 
-    def __init__(self,professorName,schoolName,departmentName,classId,sectionName, classCode, start, end, days,size,username):
+    def __init__(self,professorName,schoolName,departmentName,classId,classCode, start, end, days,size,username):
         self.professorName = professorName
         self.schoolName = schoolName
         self.departmentName = departmentName
         self.classId = classId
-        self.sectionName = sectionName
         self.classCode = classCode
         self.start = start
         self.end = end

@@ -542,46 +542,42 @@ def professor():
 
         # Professors Name
         professorName = request.form.get('professorName')
-        print("professor name: ", professorName)
 
         # Schools Name
         schoolName = request.form.get('schoolName')
-        print("school name: ", schoolName)
-
+        
         # Departments Name
         departmentName = request.form.get('departmentName')
-        print("department name: ", departmentName)
+        
         # Class' Id
         classId = request.form.get('classId')
-        print("classID name: ", classId)
+    
         # Sections Name
         sectionName = request.form.get('sectionName')
-        print("Section name: ", sectionName)
 
         # Mode
         mode = request.form.get('mode')
-        print("Mode: ", mode)
 
         # Start Time
         start = request.form.get('start')
-        print("Start time: ", start)
 
         # End Time
         end = request.form.get('end')
-        print("End time: ", end)
 
-        #class size to use for reward system
-        # classSize = request.form.get('classSize')
+        # Class size
         classSize = str(request.form.get('size'))
+        
         #days
         days = request.form.getlist('day')
         saveDays = ''
         print('Days picked: ', days)
 
+        # Combined section and class code
+        classAndSection = str(classCode) + '-' + sectionName
+        
         # adds data to database
-        #engine.execute(Account.insert(), professorName, schoolName, departmentName, classId, sectionName, int(classCode))
         newClass = Account(professorName, schoolName, departmentName,
-                           classId, sectionName, int(classCode), start, end,saveDays.join(days),classSize, session['username'])
+                           classId,classAndSection, start, end,saveDays.join(days),classSize, session['username'])
         databaseConnection.add(newClass)
         try:
             databaseConnection.commit()
