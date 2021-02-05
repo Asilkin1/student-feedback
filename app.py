@@ -67,24 +67,10 @@ def index():
     feedbackTeachingStyle = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Teaching style')
     feedbackTopic = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Topic')
     feedbackOther = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Other')
-    users = list(dashboardData)
-
-    # Get current page
-    page, per_page, offset = get_page_args(page_parameter='page', per_page_parameter='per_page')
-
-    print(page)
-    per_page = 3
-    print("aaah", per_page)
-    offset = (int(page) - 1) * per_page
-    pagination_users = users[offset: offset + per_page]
-    print(pagination_users)
-
-    pagination = Pagination(page=page,per_page=3, total=dashboardData.count(), record_name='Classes',css_framework='bootstrap4')    
+   
     return render_template('index.html', 
                             title='dashboard', 
-                            data=pagination_users, 
-                            page=page, 
-                            pagination=pagination,
+                            data=dashboardData,
                             instructor=feedbackInstructor.count(),
                             topic=feedbackTopic.count(),
                             other=feedbackOther.count(),
@@ -129,23 +115,9 @@ def login(page=1):
                 feedbackTopic = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Topic')
                 feedbackOther = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Other')
 
-                users = list(dashboardData)
-
-                # Get current page
-                page, per_page, offset = get_page_args(
-                    page_parameter='page', per_page_parameter='per_page')
-                per_page = 3
-                offset = (int(page) - 1) * per_page
-                pagination_users = users[offset: offset + per_page]
-
-
-                pagination = Pagination(page=page, per_page=3, total=dashboardData.count(
-                ),record_name='Classes', css_framework='bootstrap4')
                 return render_template('index.html',
                                        title='dashboard',
-                                       data=pagination_users,
-                                       page=page,
-                                       pagination=pagination,
+                                       data=dashboardData,
                                        instructor=feedbackInstructor.count(),
                                        topic=feedbackTopic.count(),
                                        other=feedbackOther.count(),
@@ -170,32 +142,10 @@ def login(page=1):
                 feedbackTeachingStyle = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Teaching style')
                 feedbackTopic = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Topic')
                 feedbackOther = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Other')
-                users = list(dashboardData)
-                # Not sure about this
-                search = False
-                q = request.args.get('page')
-                if q:
-                    search = True
 
-                # Get current page
-                page, per_page, offset = get_page_args(
-                    page_parameter='page', per_page_parameter='per_page')
-                page = request.args.get(get_page_args(), type=int, default=1)
-                per_page = 3
-                print(page)
-                print("aaaa", per_page)
-                offset = (int(page) - 1) * per_page
-                pagination_users = users[offset: offset + per_page]
-                print(pagination_users)
-
-
-                pagination = Pagination(page=page, per_page=3, total=dashboardData.count(
-                ), record_name='Classes', css_framework='bootstrap4')
                 return render_template('login.html', 
                                         title='dashboard', 
-                                        data=pagination_users, 
-                                        page=page, 
-                                        pagination=pagination,
+                                        data=dashboardData,
                                         instructor=feedbackInstructor.count(),
                                         topic=feedbackTopic.count(),
                                         other=feedbackOther.count(),
@@ -217,31 +167,9 @@ def login(page=1):
         feedbackTopic = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Topic')
         feedbackOther = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Other')
 
-        users = list(dashboardData)
-        q = request.args.get('q')
-
-
-        # Get current page
-        page, per_page, offset = get_page_args(
-            page_parameter='page', per_page_parameter='per_page')
-        #page = request.args.get(get_page_args(),type=int,default=1)
-
-        page = request.args.get('page')
-        if page == None:
-            page, per_page, offset = get_page_args(
-                page_parameter='page', per_page_parameter='per_page')
-        per_page = 3
-        # if per_page is 3, offset shows items 1-3 in the first page, 4-6 on the next page, etc
-        offset = (int(page) - 1) * per_page
-        pagination_users = users[offset: offset + per_page]
-
-        pagination = Pagination(page=page, per_page=3, total=dashboardData.count(
-        ), record_name='Classes', css_framework='bootstrap4')
         return render_template('login.html', 
                                 title='dashboard', 
-                                data=pagination_users, 
-                                page=page, 
-                                pagination=pagination,
+                                data=dashboardData,
                                 instructor=feedbackInstructor.count(),
                                 topic=feedbackTopic.count(),
                                 other=feedbackOther.count(),
@@ -704,28 +632,6 @@ def check():
     elif(Category == 'Teaching-style'):
         Category = 'Teaching style'
 
-    dashboardData = databaseConnection.query(Feedback).filter(Feedback.classCode == ccode, Feedback.elaborateNumber == Category)
-
-    users = list(dashboardData)
-
-    print("hi", users)
-
-    # Get current page
-    page = request.args.get('page')
-    if page == None:
-        page, per_page, offset = get_page_args(page_parameter='page', per_page_parameter='per_page')
-    print(page)
-    per_page=5
-    # if per_page is 3, offset shows items 1-3 in the first page, 4-6 on the next page, etc
-    offset = (int(page) - 1) * per_page
-    print("offset", offset)
-    pagination_users = users[offset: offset + per_page]
-    print("combined", offset + per_page)
-    print("aaa", per_page)
-    print(pagination_users)
-    
-    pagination = Pagination(page=page, per_page=per_page, total=dashboardData.count(), record_name='Classes',css_framework='bootstrap4')
-
     Frame = pd.read_sql_query("SELECT * from Feedback", engine)
     Frame = Frame[Frame['classCode']==ccode]
 
@@ -745,7 +651,7 @@ def check():
             if(len(Frame.index) < 10):
                 return render_template('notEnoughData.html', title='NED', data=PassFrame)
             else:
-                return render_template('analytics.html',title='data', data=pagination_users, page=page, pagination=pagination, display=Show)
+                return render_template('analytics.html',title='data', data=PassFrame, display=Show)
         
         elif(Category == 'Teaching style'):
             Frame = Frame[Frame['elaborateNumber'] == "Teaching style"]
@@ -753,7 +659,7 @@ def check():
             if(len(Frame.index) < 10):
                 return render_template('notEnoughData.html', title='NED', data=PassFrame)
             else:
-                return render_template('analytics.html',title='data', data=pagination_users, page=page, pagination=pagination, display=Show)
+                return render_template('analytics.html',title='data', data=PassFrame, display=Show)
         
         elif(Category == 'Topic'):
             Frame = Frame[Frame['elaborateNumber'] == "Topic"]
@@ -761,7 +667,7 @@ def check():
             if(len(Frame.index) < 10):
                 return render_template('notEnoughData.html', title='NED', data=PassFrame)
             else:
-                return render_template('analytics.html',title='data', data=pagination_users, page=page, pagination=pagination, display=Show)
+                return render_template('analytics.html',title='data', data=PassFrame, display=Show)
         
         elif(Category == 'Other'):
             Frame = Frame[Frame['elaborateNumber'] == "Other"]
@@ -769,7 +675,7 @@ def check():
             if(len(Frame.index) < 10):
                 return render_template('notEnoughData.html', title='NED', data=PassFrame)
             else:
-                return render_template('analytics.html',title='data', data=pagination_users, page=page, pagination=pagination, display=Show)
+                return render_template('analytics.html',title='data', data=PassFrame, display=Show)
 
 
 # vars to be passed in are <classcode> and <category>. & makes sure they are seperate!

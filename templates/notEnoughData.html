@@ -13,13 +13,16 @@ table, th, td{
 }
 </style>
 <!-- Not enough data -->
-<div class="container-fluid">
-    <h1>There is not sufficient data</h1>
+<div class="row justify-content-center">
+  <h1>There is not sufficient data to generate graphs.</h1>
 </div>
-
+<div style="text-align: center; font-size: 15px; font-family: sans-serif;">
+  <a href="/login">Back to Class Selection</a>
+</div>
   <br>
   <p>Data Table</p>
-  <table style="width:100%;">   
+  <table id="myTable" class="table table-striped  table-hover table-sm" cellspacing="0" width="100%">
+    <thead class="thead-dark lead">  
     <tr>
       <th>id</th>
       <th>date</th>
@@ -31,6 +34,8 @@ table, th, td{
       <th>response</th>
       <th>in class?</th>
     </tr>
+  </thead>
+    <tbody>
     {% for row in data.index %}
       <tr>
         <td>{{data.at[row,'id']}}</td>
@@ -41,9 +46,16 @@ table, th, td{
         <td>{{data.at[row,'emoji']}}</td>
         <td>{{data.at[row,'elaborateNumber']}}</td>
         <td>{{data.at[row,'elaborateText']}}</td>
-        <td>{{data.at[row,'inclass']}}</td>
+        <td>{{data.at[row,'inClass']}}</td>
       </tr>
     {% endfor %}
+  </tbody>
   </table> 
   <br>
+
+<script>
+    $('#myTable').dataTable( {
+      "lengthMenu": [ 5, 10, 15, 20, 25 ]
+    } );
+</script>
 {% endblock %}
