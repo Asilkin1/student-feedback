@@ -83,28 +83,48 @@ def render_realtime():
 
 @app.route('/', methods=["POST", "GET"])
 def index():
-    # Get classes data for current username
-    dashboardData = databaseConnection.query(Account).filter(Account.username == session.get('username'))
+    if session['logged_in'] == False:
+        return render_template('index.html')
+    if session['logged_in']:
+        # Get classes data for current username
+        dashboardData = databaseConnection.query(Account).filter(Account.username == session.get('username'))
 
-     # Filter professor by class codes, feedbacks and username
-    hasCodes = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode)
+        # Filter professor by class codes, feedbacks and username
+        hasCodes = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode)
 
-    # Get classes data for current username
-    dashboardData = databaseConnection.query(Account).filter(
-    Account.username == session.get('username'))
+        # Get classes data for current username
+        dashboardData = databaseConnection.query(Account).filter(
+        Account.username == session.get('username'))
 
-    feedbackInstructor = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Instructor/Professor')
-    feedbackTeachingStyle = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Teaching style')
-    feedbackTopic = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Topic')
-    feedbackOther = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Other')
-   
-    return render_template('index.html', 
+        feedbackInstructor = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Instructor/Professor')
+        feedbackTeachingStyle = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Teaching style')
+        feedbackTopic = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Topic')
+        feedbackOther = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Other')
+        
+        # Get some data about class votes
+        # Don't forget to get each row for current student code only once
+        yourCodeVotes = databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == session.get('classCode'),Feedback.studentCode == session.get('studentCode')).distinct()
+        yourVotedTimes = databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == session.get('classCode'),Feedback.studentCode == session.get('studentCode'))            
+        
+        distinctVoters = databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == session.get('classCode'),Feedback.studentCode != session.get('studentCode')).distinct()
+        classSize = databaseConnection.query(Account.size).filter(Account.classCode == session.get('classCode'))
+
+        # Use the query as an iterable for more efficiency
+        # Get all records without calling all() allow to interact with each object individually
+        # for voted in getSomeReward:
+        #     print('Resulttttttttt: ',voted)
+        print('This many times you voted: ',yourCodeVotes.count())
+        print('This many people voted: ',distinctVoters.count())
+        print('Size of the class: ',classSize.one())
+
+        return render_template('index.html', 
                             title='dashboard', 
                             data=dashboardData,
                             instructor=feedbackInstructor.count(),
                             topic=feedbackTopic.count(),
                             other=feedbackOther.count(),
-                            teaching=feedbackTeachingStyle.count()
+                            teaching=feedbackTeachingStyle.count(),
+                            you=yourCodeVotes.count(), notYou = distinctVoters.count(), size=classSize.one()[0], voted = yourVotedTimes.count()
                             )
 
 # -------------------------------------------------------------------- Log in
@@ -432,7 +452,6 @@ def student():
         newFeedback = Feedback(dateNow, timeNow, session['classCode'], session['studentCode'], emoji, elaborateNumber, elaborateText, inClass)
         databaseConnection.add(newFeedback)
         databaseConnection.commit()
-        #create_post(dateNow, timeNow, session['classCode'], session['studentCode'], emoji, elaborateNumber, elaborateText)
 
         # Get some data about class votes
         # Don't forget to get each row for current student code only once
@@ -449,10 +468,6 @@ def student():
         print('This many times you voted: ',yourCodeVotes.count())
         print('This many people voted: ',distinctVoters.count())
         print('Size of the class: ',classSize.one())
-
-        # Decryption test
-        #elaborateText = mysql_aes_decrypt(elaborateText, random_key)
-        #create_post(dateNow, timeNow, classCode, studentCode, emoji, elaborateNumber, elaborateText)
 
         # Message
         flash('Thank you for your feedback', 'info')

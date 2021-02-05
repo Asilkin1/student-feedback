@@ -64,7 +64,7 @@
              <!-- Hello {{ session['username'] }} -->
              
              {% elif session['studentCode'] %}
-             <a class="navbar-brand" href="{{url_for('student')}}">
+             <a class="navbar-brand" href="{{url_for('index')}}">
                  <img  id="logo" src="/static/logo.png">
              </a>
              <div class="col">
@@ -78,7 +78,7 @@
              {% endif %}
              
              {% if session['logged_in']%}
-             <a class="btn btn-outline-danger" href="{{ url_for('logout')}}">Logout</a>
+             <a class="btn btn-outline-danger" href="{{ url_for('logout')}}" style="margin-right: 3%;">Logout</a>
              {% else %}
              <div class="col">
                  <a class="btn btn-outline-grey" href="{{ url_for('index')}}">Home</a>
