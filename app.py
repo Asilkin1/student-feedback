@@ -274,7 +274,7 @@ def logout():
 def register():
 
     if request.method == 'POST':
-        flash('Please register to gain access to the website', 'info')
+        flash('You have registered', 'info')
         # Get username from the form
         username = request.form.get('username')
         password = request.form.get('password')
@@ -571,8 +571,7 @@ def professor():
         sectionName = request.form.get('sectionName')
 
         # Mode
-        mode = request.form.get('mode')
-
+        mode = request.form.get('classMode')
         # Start Time
         start = request.form.get('start')
 
@@ -592,7 +591,7 @@ def professor():
         
         # adds data to database
         newClass = Account(professorName, schoolName, departmentName,
-                           classId,classAndSection, start, end,saveDays.join(days),classSize, session['username'])
+                           classId,classAndSection, start, end, saveDays.join(days), classSize, mode, session['username'])
         databaseConnection.add(newClass)
         try:
             databaseConnection.commit()
@@ -616,7 +615,13 @@ def editClass(id):
     schoolName = result.schoolName
     departmentName = result.departmentName
     classId = result.classId
-    sectionName = result.sectionName
+    start = result.start 
+    end = result.end
+    parsingClassCode = result.classCode.split("-")
+    mode = result.mode
+
+    # Parse for section
+    sectionName = parsingClassCode[1]
 
     if request.method == 'POST':
         professorName = request.form['professorName']
@@ -624,12 +629,23 @@ def editClass(id):
         departmentName = request.form['departmentName']
         classId = request.form['classId']
         sectionName = request.form['sectionName']
+        start = request.form['start']
+        end = request.form['end']
+        mode = request.form['classMode']
 
         result.professorName = professorName
         result.schoolName = schoolName
         result.departmentName = departmentName
         result.classId = classId
-        result.sectionName = sectionName
+        result.start = start
+        result.end = end
+        result.mode = mode
+
+        # Parse for class code
+        parsingClassCode = result.classCode.split("-")
+        classCode = parsingClassCode[0]
+
+        result.classCode = str(classCode) + '-' + sectionName
         
         databaseConnection.commit()
 
@@ -637,7 +653,8 @@ def editClass(id):
 
         return redirect(url_for('login'))
 
-    return render_template('forms/editClass.html', entryId=id, professorName=professorName, schoolName=schoolName, departmentName=departmentName, classId=classId, sectionName=sectionName)
+    return render_template('forms/editClass.html', entryId=id, professorName=professorName, schoolName=schoolName, departmentName=departmentName, classId=classId,
+                                                    sectionName=sectionName, start=start, end=end, classMode=mode)
 
 @app.route("/professor/delete/<string:id>", methods=['GET', 'POST'])
 def deleteClass(id):

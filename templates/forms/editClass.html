@@ -13,7 +13,7 @@
 
 <!-- Typical approach to create any form with bootstrap  -->
 <div class="container col- mx-auto">
-    <h3>Add class</h3>
+    <h3>Edit class</h3>
     <!-- When submit button is clicked then the action should bring to previous page -->
     <form action="/professor/edit/{{entryId}}" method="post">
         <!-- Split form into two columns -->
@@ -72,8 +72,12 @@
                     <label class="form-check-label" for="classMode">
                         Mode:
                     </label>
-                    <input type="text" class="form-control" id="text" placeholder="Enter your class mode"
-                        name="classMode" required>
+                    <select name="mode" class="form-control" for="classMode">
+                        <option selected disabled value="">Choose class mode</option>
+                        <option>Remote</option>
+                        <option>In-person</option>
+                        <option>Hybrid</option>
+                    </select>
                 </div>
             </div>
 

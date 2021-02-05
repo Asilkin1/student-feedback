@@ -4,7 +4,7 @@ from sqlalchemy import Column, Date, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
 
-engine = create_engine('sqlite:///united_1.db', echo=True,connect_args={"check_same_thread": False})
+engine = create_engine('sqlite:///united.db', echo=True,connect_args={"check_same_thread": False})
 Base = declarative_base()
 
 # User database(professor)
@@ -60,10 +60,11 @@ class Account(Base):
     end = Column(String, nullable=False)
     days = Column(String, nullable=False)
     size = Column(String, nullable=False)
+    mode = Column(String, nullable=False)
     # Account is associated with a professor username
     username = Column(String, ForeignKey('professor_login.username'))
 
-    def __init__(self,professorName,schoolName,departmentName,classId,classCode, start, end, days,size,username):
+    def __init__(self,professorName,schoolName,departmentName,classId,classCode, start, end, days, size, mode, username):
         self.professorName = professorName
         self.schoolName = schoolName
         self.departmentName = departmentName
@@ -73,6 +74,7 @@ class Account(Base):
         self.end = end
         self.days = days
         self.size = size
+        self.mode = mode
         self.username = username
 
 class StudentCodes(Base):
