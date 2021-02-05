@@ -97,49 +97,29 @@ def render_realtime():
 
 @app.route('/', methods=["POST", "GET"])
 def index():
-    if session['logged_in']:
-        # Get classes data for current username
-        dashboardData = databaseConnection.query(Account).filter(Account.username == session.get('username'))
+    # Get classes data for current username
+    dashboardData = databaseConnection.query(Account).filter(Account.username == session.get('username'))
 
-        # Filter professor by class codes, feedbacks and username
-        hasCodes = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode)
+    # Filter professor by class codes, feedbacks and username
+    hasCodes = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode)
 
-        # Get classes data for current username
-        dashboardData = databaseConnection.query(Account).filter(
-        Account.username == session.get('username'))
+    # Get classes data for current username
+    dashboardData = databaseConnection.query(Account).filter(
+    Account.username == session.get('username'))
 
-        feedbackInstructor = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Instructor/Professor')
-        feedbackTeachingStyle = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Teaching style')
-        feedbackTopic = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Topic')
-        feedbackOther = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Other')
-        
-        #Get some data about class votes
-        #Don't forget to get each row for current student code only once
-        yourCodeVotes = databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == session.get('classCode'),Feedback.studentCode == session.get('studentCode')).distinct()
-        yourVotedTimes = databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == session.get('classCode'),Feedback.studentCode == session.get('studentCode'))            
-        
-        distinctVoters = databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == session.get('classCode'),Feedback.studentCode != session.get('studentCode')).distinct()
-        classSize = databaseConnection.query(Account.size).filter(Account.classCode == session.get('classCode'))
+    feedbackInstructor = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Instructor/Professor')
+    feedbackTeachingStyle = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Teaching style')
+    feedbackTopic = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Topic')
+    feedbackOther = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Other')
 
-        # Use the query as an iterable for more efficiency
-        # Get all records without calling all() allow to interact with each object individually
-        # for voted in getSomeReward:
-        #     print('Resulttttttttt: ',voted)
-        print('This many times you voted: ',yourCodeVotes.count())
-        print('This many people voted: ',distinctVoters.count())
-        print('Size of the class: ',classSize.one())
-
-        return render_template('index.html', 
-                            title='dashboard', 
-                            data=dashboardData,
-                            instructor=feedbackInstructor.count(),
-                            topic=feedbackTopic.count(),
-                            other=feedbackOther.count(),
-                            teaching=feedbackTeachingStyle.count(),
-                            you=yourCodeVotes.count(), notYou = distinctVoters.count(), size=classSize.one()[0], voted = yourVotedTimes.count()
-                            )
-    else:
-        return render_template('index.html')
+    return render_template('index.html', 
+                        title='dashboard', 
+                        data=dashboardData,
+                        instructor=feedbackInstructor.count(),
+                        topic=feedbackTopic.count(),
+                        other=feedbackOther.count(),
+                        teaching=feedbackTeachingStyle.count()
+                        )
 
 # -------------------------------------------------------------------- Log in
 @app.route('/login/', methods=['GET', 'POST'])
@@ -443,12 +423,15 @@ def student():
 
         # Emoji number
         emoji = request.form.get('emoji')
+        emoji = mysql_aes_encrypt(emoji, random_key)
 
         # Elaborate number
         elaborateNumber = request.form.get('elaborateNumber')
+        elaborateNumber = mysql_aes_encrypt(elaborateNumber, random_key)
 
         # Elaborate text
         elaborateText = request.form.get('elaborateText')
+        elaborateText = mysql_aes_encrypt(elaborateText, random_key)
 
         query = databaseConnection.query(Account).filter(Account.classCode == session['classCode'])
         result = query.first()
@@ -694,6 +677,8 @@ def check():
     ccode = request.args.get('ccode')
     Category = request.args.get('category')
 
+    result = databaseConnection.query(Feedback).filter(Feedback.classCode == ccode)
+
     if(Category == 'Instructor'):
             Category = 'Instructor/Professor'
     elif(Category == 'Teaching-style'):
@@ -701,6 +686,30 @@ def check():
 
     Frame = pd.read_sql_query("SELECT * from Feedback", engine)
     Frame = Frame[Frame['classCode']==ccode]
+    for (column, columnData) in Frame.iteritems():
+        print(column)
+        if column == "emoji":
+            for values in columnData.values:
+                if isinstance(values, str):
+                    continue
+                else:
+                    print(values)
+                    decryptValue = mysql_aes_decrypt(values, random_key)
+                    Frame[column] = Frame[column].replace(values, decryptValue)
+        if column == "elaborateText":
+            for values in columnData.values:
+                if isinstance(values, str):
+                    continue
+                else:
+                    decryptValue = mysql_aes_decrypt(values, random_key)
+                    Frame[column] = Frame[column].replace(values, decryptValue)
+        if column == "elaborateNumber":
+            for values in columnData.values:
+                if isinstance(values, str):
+                    pass
+                else:
+                    decryptValue = mysql_aes_decrypt(values, random_key)
+                    Frame[column] = Frame[column].replace(values, decryptValue)
 
     if(Frame.empty):  # if the frame is empty, no class exists
         return render_template('ClassNotFound.html', title='CNF')
