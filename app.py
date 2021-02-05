@@ -285,12 +285,6 @@ def newstudent():
             print('This many people voted: ',distinctVoters.count())
             print('Size of the class: ',classSize.one())
 
-
-            # Insert new user into the database
-            newUser = StudentCodes(hashed.decode())
-            databaseConnection.add(newUser)
-            databaseConnection.commit()
-
             return render_template('student.html', you=yourCodeVotes.count(), notYou = distinctVoters.count(), size=classSize.one()[0], voted = yourVotedTimes.count())
 
         # No records found
@@ -353,9 +347,6 @@ def studentRegistration():
 def student():
 
     if request.method == 'GET':
-        # Delete existing data in database (can change this later)
-        # delete_posts()
-        # Get data for rewards
         pass
 
     if request.method == 'POST':
@@ -388,16 +379,12 @@ def student():
 
         # Emoji number
         emoji = request.form.get('emoji')
-        #emoji = mysql_aes_encrypt(emoji, random_key)
 
         # Elaborate number
         elaborateNumber = request.form.get('elaborateNumber')
-        #elaborateNumber = mysql_aes_encrypt(elaborateNumber, random_key)
 
         # Elaborate text
         elaborateText = request.form.get('elaborateText')
-        print(elaborateText)
-        #elaborateText = mysql_aes_encrypt(elaborateText, random_key)
 
         query = databaseConnection.query(Account).filter(Account.classCode == session['classCode'])
         result = query.first()
@@ -417,17 +404,32 @@ def student():
         databaseConnection.commit()
         #create_post(dateNow, timeNow, session['classCode'], session['studentCode'], emoji, elaborateNumber, elaborateText)
 
+        # Get some data about class votes
+        # Don't forget to get each row for current student code only once
+        yourCodeVotes = databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == session.get('classCode'),Feedback.studentCode == session.get('studentCode')).distinct()
+        yourVotedTimes = databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == session.get('classCode'),Feedback.studentCode == session.get('studentCode'))            
+        
+        distinctVoters = databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == session.get('classCode'),Feedback.studentCode != session.get('studentCode')).distinct()
+        classSize = databaseConnection.query(Account.size).filter(Account.classCode == session.get('classCode'))
+
+        # Use the query as an iterable for more efficiency
+        # Get all records without calling all() allow to interact with each object individually
+        # for voted in getSomeReward:
+        #     print('Resulttttttttt: ',voted)
+        print('This many times you voted: ',yourCodeVotes.count())
+        print('This many people voted: ',distinctVoters.count())
+        print('Size of the class: ',classSize.one())
+
         # Decryption test
         #elaborateText = mysql_aes_decrypt(elaborateText, random_key)
         #create_post(dateNow, timeNow, classCode, studentCode, emoji, elaborateNumber, elaborateText)
 
         # Message
         flash('Thank you for your feedback', 'info')
+        return render_template('student.html', title="student", you=yourCodeVotes.count(), notYou = distinctVoters.count(), size=classSize.one()[0], voted = yourVotedTimes.count())
     return render_template('student.html', title='student')
 
 # Encryption
-
-
 def mysql_aes_encrypt(val, key):
     val = Padding.appendPadding(
         val, blocksize=Padding.AES_blocksize, mode='Random')
