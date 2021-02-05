@@ -4,32 +4,57 @@
     }
 </style>
 <div class="container" id="feedback-form">
-
-    <!-- On login only -->
     <!-- Incentive part -->
-
-    {% if you  %}
     <div class="row justify-content-center">
-        In this class {{ notYou + you }} / {{ size}} cast their vote
+        {% if you  %}
+        <!-- Card for total individuals vote -->
+        <div class="col">
+            <div class="card text-center">
+                <div class="card-header">
+                  Participated
+                </div>
+                <div class="card-body">
+                  <h2 class="card-text">{{ notYou + you }} / {{ size}}</h2>
+                </div>
+              </div>
+        </div>
+
+         <!-- Card for you voted -->
+         <div class="col">
+            <div class="card text-center">
+                <div class="card-header">
+                  You
+                </div>
+                <div class="card-body">
+                  <h2 class="card-text">{{ voted }}</h2>
+                </div>
+              </div>
+        </div>
+
+        <!-- Other's feedbacks -->
+        <div class="col">
+            <div class="card text-center">
+                <div class="card-header">
+                  Others
+                </div>
+                <div class="card-body">
+                  <h2 class="card-text">{{ notYou }}</h2>
+                </div>
+              </div>
+        </div>
     </div>
+    <!-- On login only -->
+    
+
+
     <div class="row justify-content-center">
         <h4>Class reward progress:</h4>
     </div>
     
     <div class="row justify-content-center">
-        <h4>You voted: {{ voted }} times
-    </div>
-    <div class="row justify-content-center">
-        <h4>Your classmates voted: {{ notYou }} times
-    </div>
-    <div class="row justify-content-center">
-        <h4>Class size: {{ size }}</h4>
-    </div>
-    <div class="row justify-content-center">
-
-        <div class="col-md-3">
+        <div class="col">
             <div class="progress">
-                <div class="progress-bar w-{{ notYou }}" role="progressbar" aria-valuenow="{{ you }}" aria-valuemin="0"
+                <div class="progress-bar" style="width:{{ (notYou + you) / size|int }}%;" role="progressbar" aria-valuenow="{{ you }}" aria-valuemin="0"
                     aria-valuemax="100"></div>
             </div>
         </div>
