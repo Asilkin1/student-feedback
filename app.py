@@ -570,6 +570,9 @@ def professor():
         end = request.form.get('end')
         print("End time: ", end)
 
+        #class size to use for reward system
+        # classSize = request.form.get('classSize')
+        classSize = str(request.form.get('size'))
         #days
         days = request.form.getlist('day')
         saveDays = ''
@@ -578,7 +581,7 @@ def professor():
         # adds data to database
         #engine.execute(Account.insert(), professorName, schoolName, departmentName, classId, sectionName, int(classCode))
         newClass = Account(professorName, schoolName, departmentName,
-                           classId, sectionName, int(classCode), start, end,saveDays.join(days), session['username'])
+                           classId, sectionName, int(classCode), start, end,saveDays.join(days),classSize, session['username'])
         databaseConnection.add(newClass)
         try:
             databaseConnection.commit()

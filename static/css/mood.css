@@ -17,7 +17,7 @@ input[type="radio"]:checked + label{
 
 
 
-input[type="text"],input[type="password"],input[type="checkbox"],input[type="time"],select{
+input[type="text"],input[type="password"],input[type="checkbox"],input[type="time"],select,input[type="number"]{
     padding: 10px;
     box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 7px 20px 0 rgba(0, 0, 0, 0.2);
     border-radius: 8px;

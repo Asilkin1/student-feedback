@@ -63,8 +63,8 @@
                     <label class="form-check-label" for="sectionName">
                         Section:
                     </label>
-                    <input type="text" class="form-control" id="text" placeholder="Enter your section name"
-                        name="sectionName" required>
+                    <input oninput="this.value = this.value.toUpperCase()" type="text" class="form-control" id="text" placeholder="Enter your section name"
+                        name="sectionName" maxlength="4" required>
                 </div>
 
                 <!-- Type -->
@@ -100,6 +100,16 @@
                     <input type="time" id="appt" class="form-control" min="07:00" max="19:00" name="end" required>
                     <span class="validity"></span>
                 </div>
+
+                <!-- <input type="number" id="tentacles" name="tentacles"
+       min="10" max="100"> -->
+                <div class="form-group">
+                    <label class="form-check-label" for="size">
+                        Class size:
+                    </label>
+                    <input type="number" class="form-control" min="13" max="26" name="size" required>
+                    <span class="validity"></span>
+                </div>
             </div>
 
         </div>
@@ -110,7 +120,7 @@
         <div class="row justify-content-center">
             <!-- Days -->
             <div class="form-group">
-                
+
                 <div class="row justify-content-center">
                     <!-- Monday -->
                     <div class="col-" id="face_row">
