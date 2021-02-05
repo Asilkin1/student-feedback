@@ -352,7 +352,7 @@ def newstudent():
             #     print('Resulttttttttt: ',voted)
             print('This many times you voted: ',youVotedForTheClass.count())
             print('This many people voted: ',distinctVoters.count())
-            print('Size of the class: ',classSize.count())
+            print('Size of the class: ',classSize.one())
 
 
             # Insert new user into the database
@@ -360,7 +360,7 @@ def newstudent():
             databaseConnection.add(newUser)
             databaseConnection.commit()
 
-            return render_template('student.html', you=youVotedForTheClass.count(), notYou = distinctVoters.count(), size=classSize.count() )
+            return render_template('student.html', you=youVotedForTheClass.count(), notYou = distinctVoters.count(), size=classSize.one()[0])
 
         # No records found
         elif result == None:
