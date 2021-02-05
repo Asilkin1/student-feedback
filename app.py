@@ -58,6 +58,7 @@ def stream_template(template_name, **context):
     rv.enable_buffering(5)  # this is some sort of delay I assume
     return rv
 
+# ------------------ Database event handler for update and insert
 # Inset and update event for the database
 def insert_update(mapper, connection, target):
     tablename = mapper.mapped_table.name
@@ -71,8 +72,21 @@ def insert_update(mapper, connection, target):
 
     print('Something changed in the database',tablename, 'Name:', v,' inserted or updated ')
 
+
+def delete_event_db_handler(mapper, connection,target):
+    '''Do something when entry is removed'''
+    print('Something removed from the database')
+    tablename = mapper.mapped_table.name
+    index = get_es_index(tablename)
+    doc_type = 'doc'
+    id = target.id
+    res = es.delete(index=index, doc_type=doc, id=id)
+    print('delete index', res)
+
+
 # Set event listener for Account table
 event.listen(Account, 'after_update',insert_update,propagate=True)
+event.listen(Account, 'after_delete',delete_event_db_handler,propagate=True)
 
 
 @app.route('/realtime')
