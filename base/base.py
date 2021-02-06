@@ -8,7 +8,7 @@ base_bp = Blueprint('base_bp', __name__,
 
 @base_bp.route('/', methods=["POST", "GET"])
 def index():
-    if session.get('logged_in'):
+    if session.get('logged_in') and session.get('studentCode'):
         # Get classes data for current username
         dashboardData = databaseConnection.query(Account).filter(Account.username == session.get('username'))
 
