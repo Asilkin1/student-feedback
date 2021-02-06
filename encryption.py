@@ -1,3 +1,12 @@
+from Crypto.Cipher import AES
+from base64 import b64encode
+import Padding
+import binascii
+import hashlib
+
+random_key = b"J3FTV1PL1jDFeMh01I9r+A=="
+random_key = b64encode(random_key).decode('utf-8')
+
 # Encryption
 def mysql_aes_encrypt(val, key):
     val = Padding.appendPadding(

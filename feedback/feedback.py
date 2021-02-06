@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template,request, flash, session,Markup,redirect, url_for
 import bcrypt
 from datetime import date, datetime, timedelta  # get date and time
-from CreateUserDatabase import * 
-
+from CreateUserDatabase import *
+from encryption import *
 
 student_bp = Blueprint('student_bp', __name__,
     template_folder='templates',
@@ -149,14 +149,17 @@ def student():
         if currentDay == 4:
             day = "F"
 
-        # Emoji number
+        # Emoji number and encrypt it
         emoji = request.form.get('emoji')
+        emoji = mysql_aes_encrypt(emoji, random_key)
 
-        # Elaborate number
+        # Elaborate number and encrypt it
         elaborateNumber = request.form.get('elaborateNumber')
+        elaborateNumber = mysql_aes_encrypt(elaborateNumber, random_key)
 
-        # Elaborate text
+        # Elaborate text and encrypt it
         elaborateText = request.form.get('elaborateText')
+        elaborateText = mysql_aes_encrypt(elaborateText, random_key)
 
         query = databaseConnection.query(Account).filter(Account.classCode == session['classCode'])
         result = query.first()
