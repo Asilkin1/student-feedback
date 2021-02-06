@@ -69,7 +69,7 @@ class Account(Base):
     # Account is associated with a professor username
     username = Column(String, ForeignKey('professor_login.username'))
 
-    def __init__(self, schoolName,departmentName, className, classCode, start, end, days, size, mode, username):
+    def __init__(self, schoolName, departmentName, className, classCode, start, end, days, size, mode, username):
         self.schoolName = schoolName
         self.departmentName = departmentName
         self.className = className

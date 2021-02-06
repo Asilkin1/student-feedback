@@ -72,14 +72,14 @@ def editClass(id):
     sectionName = parsingClassCode[1]
 
     if request.method == 'POST':
-        professorName = request.form['professorName']
         schoolName = request.form['schoolName']
         departmentName = request.form['departmentName']
         className = request.form['className']
         sectionName = request.form['sectionName']
-        days = request.form['day']
-        days = request.form.getlist('day')
+        
+        days = request.form.getlist('days')
         saveDays = ''
+
         start = request.form['start']
         end = request.form['end']
         mode = request.form['mode']
@@ -107,7 +107,7 @@ def editClass(id):
         return redirect(url_for('auth_bp.login'))
 
     return render_template('editClass.html', entryId=id, schoolName=schoolName, departmentName=departmentName, className=className,
-                                                    sectionName=sectionName,days=days, start=start, end=end, size=size, classMode=mode)
+                                                    sectionName=sectionName, days=days, start=start, end=end, size=size, classMode=mode)
 @professor_bp.route('/professor/create', methods=["POST", "GET"])
 def professor():
     inData = True
@@ -129,6 +129,7 @@ def professor():
 
         # Schools Name
         schoolName = request.form.get('schoolName')
+        print(schoolName)
         
         # Departments Name
         departmentName = request.form.get('departmentName')
@@ -160,13 +161,14 @@ def professor():
         
         # adds data to database
         newClass = Account(schoolName, departmentName,
-                           className,classAndSection, start, end, saveDays.join(days), classSize, mode, session['username'])
+                           className, classAndSection, start, end, saveDays.join(days), classSize, mode, session['username'])
         databaseConnection.add(newClass)
+
         try:
             databaseConnection.commit()
         except:
             databaseConnection.rollback()
-        #create_class(professorName, schoolName, departmentName, classId, sectionName, int(classCode))
+            
         return redirect(url_for('auth_bp.login'))
 
     return render_template('addClass.html', title='professor')
