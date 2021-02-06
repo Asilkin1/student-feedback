@@ -20,7 +20,7 @@
         <div class="row">
             <!-- Left side -->
             <div class="col">
-
+                <!-- Unite label and the field into a group -->
                 <div class="form-group">
                     <label class="form-check-label" for="schoolName">
                         School:
@@ -36,27 +36,6 @@
                     </label>
                     <input type="text" class="form-control" id="text" value={{departmentName}}
                         name="departmentName">
-                </div>
-            </div>
-
-            <!-- Center class/section/mode -->
-            <div class="col">
-                <!-- Class ID field -->
-                <div class="form-group">
-                    <label class="form-check-label" for="classId">
-                        Class:
-                    </label>
-                    <input type="text" class="form-control" id="text" value={{className}} name="className"
-                        required>
-                </div>
-
-                <!-- Section name field -->
-                <div class="form-group">
-                    <label class="form-check-label" for="sectionName">
-                        Section:
-                    </label>
-                    <input type="text" class="form-control" id="text" value={{sectionName}}
-                        name="sectionName" maxlength="4" required>
                 </div>
 
                  <!-- Class size -->
@@ -91,6 +70,36 @@
                         <option selected >Hybrid</option>
                         {% endif%}
                     </select>
+                </div>
+            </div>
+
+            <!-- Center class/section/mode -->
+            <div class="col">
+                <!-- Class ID field -->
+                <div class="form-group">
+                    <label class="form-check-label" for="className">
+                        Class Name:
+                    </label>
+                    <input type="text" class="form-control" id="text" value={{className}} name="className"
+                        required>
+                </div>
+
+                <!-- Section name field -->
+                <div class="form-group">
+                    <label class="form-check-label" for="sectionName">
+                        Section:
+                    </label>
+                    <input type="text" class="form-control" id="text" value={{sectionName}}
+                        name="sectionName" maxlength="4" required>
+                </div>
+
+                <!-- Class size -->
+                <div class="form-group">
+                    <label class="form-check-label" for="size">
+                        Class size:
+                    </label>
+                    <input type="number" class="form-control" min="13" max="26" value={{size}} name="size" required>
+                    <span class="validity"></span>
                 </div>
             </div>
 
