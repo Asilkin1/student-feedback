@@ -1,0 +1,18 @@
+<!-- Registration form -->
+<div class="form-container container">
+    <div class="form">
+        <h1>Register</h1>
+        <form action="{{ url_for('student_bp.studentRegistration')}}" method="POST">
+
+            <div class="form-group">
+                <label class="form-check-label" for="studentCode">Student code</label>
+                <input type="text" class="form-control" placeholder="Enter a code you wish to use" name="studentCode">
+            </div>
+
+            <button type="submit" class="button btn-block">Register</button>
+            <a href="{{ url_for('student_bp.newstudent') }}">
+                <h6>Or login</h6>
+            </a>
+        </form>
+    </div>
+</div>

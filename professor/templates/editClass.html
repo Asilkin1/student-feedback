@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+{% with messages = get_flashed_messages()%}
+{% if messages %}
+
+<p>{{msg}}</p>
+
+{%endif%}
+{% endwith %}
+
+<!-- Typical approach to create any form with bootstrap  -->
+<div class="container col- mx-auto">
+    <h3>Edit class</h3>
+    <!-- When submit button is clicked then the action should bring to previous page -->
+    <form action="/professor/edit/{{entryId}}" method="post">
+        <!-- Split form into two columns -->
+        <div class="row">
+            <!-- Left side -->
+            <div class="col">
+
+                <div class="form-group">
+                    <label class="form-check-label" for="schoolName">
+                        School:
+                    </label>
+                    <input type="text" class="form-control" id="text" value={{schoolName}}
+                        name="schoolName" required>
+                </div>
+
+                <!-- Department name field -->
+                <div class="form-group">
+                    <label class="form-check-label" for="departmentName">
+                        Department:
+                    </label>
+                    <input type="text" class="form-control" id="text" value={{departmentName}}
+                        name="departmentName">
+                </div>
+            </div>
+
+            <!-- Center class/section/mode -->
+            <div class="col">
+                <!-- Class ID field -->
+                <div class="form-group">
+                    <label class="form-check-label" for="classId">
+                        Class:
+                    </label>
+                    <input type="text" class="form-control" id="text" value={{className}} name="className"
+                        required>
+                </div>
+
+                <!-- Section name field -->
+                <div class="form-group">
+                    <label class="form-check-label" for="sectionName">
+                        Section:
+                    </label>
+                    <input type="text" class="form-control" id="text" value={{sectionName}}
+                        name="sectionName" maxlength="4" required>
+                </div>
+
+                 <!-- Class size -->
+                 <div class="form-group">
+                    <label class="form-check-label" for="size">
+                        Class size:
+                    </label>
+                    <input type="number" class="form-control" min="13" max="26" value={{size}} name="size" required>
+                    <span class="validity"></span>
+                </div>
+
+
+
+                <!-- Type -->
+                <div class="form-group">
+                    <label class="form-check-label" for="classMode">
+                        Mode:
+                    </label>
+                    <select name="mode" class="form-control" for="classMode">
+                        <option selected disabled value="">Choose class mode</option>
+                        {% if classMode == "Remote" %}
+                        <option selected>Remote</option>
+                        <option>In-person</option>
+                        <option>Hybrid</option>
+                        {% elif classMode == "In-person"%}
+                        <option>Remote</option>
+                        <option selected >In-person</option>
+                        <option>Hybrid</option>
+                        {% else %}
+                        <option>Remote</option>
+                        <option>In-person</option>
+                        <option selected >Hybrid</option>
+                        {% endif%}
+                    </select>
+                </div>
+            </div>
+
+            <!-- Right column -->
+            <div class="col">
+                <!-- Start time -->
+                <div class="form-group">
+                    <label class="form-check-label" for="start">
+                        Start time:
+                    </label>
+                    <input type="time" id="start" class="form-control" min="07:00" max="19:00" name="start" required>
+                    <span class="validity"></span>
+                </div>
+
+                <!-- End time -->
+                <div class="form-group">
+                    <label class="form-check-label" for="end">
+                        End time:
+                    </label>
+                    <input type="time" id="end" class="form-control" min="07:00" max="19:00" name="end" required>
+                    <span class="validity"></span>
+                </div>
+            </div>
+
+        </div>
+        <!-- Days picker -->
+        <label class="form-check-label">
+            Days:
+        </label>
+        <div class="row justify-content-center">
+            <!-- Days -->
+            <div class="form-group">
+                
+                <div class="row justify-content-center">
+                    <!-- Monday -->
+                    <div class="col-" id="face_row">
+                        <input name="days" class="form-check-input" type="checkbox" value="M" id="1">
+                        <label class="form-check-label" for="1">
+                            MO
+                        </label>
+                    </div>
+                    <!-- Tuesday -->
+                    <div class="col-" id="face_row">
+                        <input name="days" class="form-check-input" type="checkbox" value="T" id="2">
+                        <label class="form-check-label" for="2">
+                            TU
+                        </label>
+                    </div>
+                    <!-- Wed -->
+                    <div class="col-" id="face_row" id="face_row">
+                        <input name="days" class="form-check-input" type="checkbox" value="W" id="3">
+                        <label class="form-check-label" for="3">
+                            WE
+                        </label>
+                    </div>
+                    <!-- Thursday -->
+                    <div class="col-" id="face_row" id="face_row">
+                        <input name="days" class="form-check-input" type="checkbox" value="H" id="4">
+                        <label class="form-check-label" for="4">
+                            TH
+                        </label>
+                    </div>
+                    <!-- Friday -->
+                    <div class="col-" id="face_row" id="face_row">
+                        <input name="days" class="form-check-input" type="checkbox" value="F" id="5">
+                        <label class="form-check-label" for="5">
+                            FR
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit button -->
+        <div class="form-group">
+            <button class="button btn-block" type="submit" name="submitButton" value="dashboardSubmit">Update Class</button>
+            <form action="{{url_for('auth_bp.login', page=request.args.get('page'))}}">
+                <button class="button btn-block">Back To Class Dashboard</a>
+            </form>
+        </div>
+    </form>
+</div>
+<script>
+    document.getElementById("start").value= "{{ start }}"
+    document.getElementById('end').value = "{{ end }}"
+    console.log("{{className}}")
+    var nodeList = document.getElementsByName("days");
+    if ("{{days}}".includes(nodeList[0].value) == true) {
+        nodeList[0].checked = true;
+    } 
+    if ("{{days}}".includes(nodeList[1].value) == true) {
+        nodeList[1].checked = true;
+    }
+    if ("{{days}}".includes(nodeList[2].value) == true) {
+        nodeList[2].checked = true;
+    }
+    if ("{{days}}".includes(nodeList[3].value) == true) {
+        nodeList[3].checked = true;
+    } 
+    if ("{{days}}".includes(nodeList[4].value) == true) {
+        nodeList[4].checked = true;
+    }
+</script>
+{% endblock %}

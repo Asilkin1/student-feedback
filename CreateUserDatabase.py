@@ -3,8 +3,14 @@ from sqlalchemy import create_engine, ForeignKey
 from sqlalchemy import Column, Date, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
+from sqlalchemy.orm import sessionmaker
 
 engine = create_engine('sqlite:///united.db', echo=True,connect_args={"check_same_thread": False})
+# Establish connection to the database
+Session = sessionmaker(bind=engine)
+# Provides connection to the database for any operations
+databaseConnection = Session()
+
 Base = declarative_base()
 
 # User database(professor)
@@ -54,7 +60,7 @@ class Account(Base):
     professorName = Column(String, nullable=False)
     schoolName = Column(String, nullable=False)
     departmentName = Column(String, nullable=False)
-    classId = Column(String, nullable=False)
+    className = Column(String, nullable=False)
     classCode = Column(String, nullable=False)
     start = Column(String, nullable=False)
     end = Column(String, nullable=False)
@@ -64,11 +70,11 @@ class Account(Base):
     # Account is associated with a professor username
     username = Column(String, ForeignKey('professor_login.username'))
 
-    def __init__(self,professorName,schoolName,departmentName,classId,classCode, start, end, days, size, mode, username):
+    def __init__(self,professorName,schoolName,departmentName,className,classCode, start, end, days, size, mode, username):
         self.professorName = professorName
         self.schoolName = schoolName
         self.departmentName = departmentName
-        self.classId = classId
+        self.className = className
         self.classCode = classCode
         self.start = start
         self.end = end
@@ -86,4 +92,4 @@ class StudentCodes(Base):
 
 
 # create tables
-Base.metadata.create_all(engine)
+# Base.metadata.create_all(engine)

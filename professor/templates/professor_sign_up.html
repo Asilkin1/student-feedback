@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<!-- Right col professor sign up for a class-->
+<div class="col border">
+    <h4>Professor signup</h4>
+    <form class="justify-content-md-center" action="{{ url_for('auth_bp.registration')}}">
+        <div class="form-group-inline form-check">
+            
+            <div class="col">
+                <label for="email">Email</label>
+                <input type="email" 
+                       class="form-control" 
+                       id="email" 
+                       name="email">
+
+                <label for="password">Password</label>
+                <input type="password" 
+                       class="form-control" 
+                       id="password" 
+                       name="password">
+
+                <label for="repassword">Retype Password</label>
+                <input type="password" 
+                       class="form-control" 
+                       id="repassword" 
+                       name="repassword">
+            </div>
+
+            <div class="col">
+                <button type="submit" class="btn btn-primary btn-block">signup</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{% endblock %}
