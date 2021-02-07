@@ -1,0 +1,18 @@
+
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+<!-- If logged in show professor dashboard -->
+{% if session['logged_in'] and not session['studentCode']%}
+  
+{% include 'dashboard.html'%}
+
+{% else %}
+
+{% include 'professorLogin.html'%}
+
+{% endif %}
+
+{% endblock %}

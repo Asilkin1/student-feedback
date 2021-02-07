@@ -1,0 +1,214 @@
+<style>
+    .form-check {
+        padding-left: 1.5rem;
+    }
+</style>
+<div class="container" id="feedback-form">
+    <!-- Incentive part -->
+    <div class="row justify-content-center">
+        {% if you  %}
+        <!-- Card for total individuals vote -->
+        <div class="col">
+            <div class="card text-center">
+                <div class="card-body">
+                    Students participated
+                </div>
+                <div class="card-body">
+                  <h2 class="card-text">{{ notYou + you }} / {{ size}}</h2>
+                </div>
+              </div>
+        </div>
+
+         <!-- Card for you voted -->
+         <div class="col">
+            <div class="card text-center">
+                <div class="card-body">
+                  You submitted
+                </div>
+                <div class="card-body">
+                  <h2 class="card-text">{{ voted }}</h2>
+                </div>
+              </div>
+        </div>
+
+        <!-- Other's feedbacks -->
+        <div class="col">
+            <div class="card text-center">
+                <div class="card-body">
+                  Others submitted
+                </div>
+                <div class="card-body">
+                  <h2 class="card-text">{{ total }}</h2>
+                </div>
+              </div>
+        </div>
+    </div>
+    <!-- On login only -->
+    
+
+
+    <div class="row justify-content-center">
+        <h4>Class reward progress:</h4>
+    </div>
+    
+    <div class="row justify-content-center">
+        <div class="col">
+            <div class="progress">
+                <div class="progress-bar" style="width:{{ (notYou + you) / size|int }}%;" role="progressbar" aria-valuenow="{{ you }}" aria-valuemin="0"
+                    aria-valuemax="100"></div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    <form action="{{ url_for('student_bp.student')}}" method="post">
+        <!-- Mood section -->
+        <div class="row justify-content-center">
+            <h1>Feel:</h1>
+        </div>
+        <div class="row justify-content-center" id="face_row">
+
+            <!-- Excited -->
+            <div class="col- feedmoji">
+                <div class="form-check justify-content-center">
+                    <input class="form-check-input" type="radio" name="emoji" id="excited" value="5" required>
+                    <label class="form-check-label" for="excited" title="Choose your mood. Is that what you think?"
+                        style="cursor: pointer;">
+                        Excited
+                        <p id="emoji">&#128512;</p>
+                    </label>
+                </div>
+            </div>
+            <div class="col- feedmoji">
+                <!-- Normal -->
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="emoji" id="normal" value="4" required>
+                    <label class="form-check-label" for="normal" title="Choose your mood. Is that what you think?"
+                        style="cursor: pointer;">
+                        Normal
+                        <p id="emoji">&#128528;</p>
+                    </label>
+                </div>
+            </div>
+            <div class="col- feedmoji">
+                <!-- unclear -->
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="emoji" id="unclear" value="3" required>
+                    <label class="form-check-label" for="unclear" title="Choose your mood. Is that what you think?"
+                        style="cursor: pointer;">
+                        Unclear
+                        <p id="emoji">&#128530;</p>
+                    </label>
+                </div>
+            </div>
+            <div class="col- feedmoji">
+                <!-- Nervous -->
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="emoji" id="nervous" value="2" required>
+                    <label class="form-check-label" for="nervous" title="Choose your mood. Is that what you think?"
+                        style="cursor: pointer;">
+                        Nervous
+                        <p id="emoji">&#128533;</p>
+                    </label>
+                </div>
+            </div>
+            <div class="col- feedmoji">
+                <!-- Mad -->
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="emoji" id="mad" value="1" required>
+                    <label class="form-check-label" for="mad" title="Choose your mood. Is that what you think?"
+                        style="cursor: pointer;">
+                        Mad
+                        <p id="emoji">&#128545;</p>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <!-- About -->
+        <div class="row justify-content-center">
+            <h1>About:</h1>
+        </div>
+        <!-- Categrory -->
+        <div class="row justify-content-center" id="face_row">
+
+
+            <!-- Instructor -->
+            <div class="col- feedmoji">
+                <div class="form-check justify-content-center">
+                    <input class="form-check-input" name="elaborateNumber" type="radio" id="professor"
+                        value="Instructor/Professor" required>
+                    <label class="form-check-label" for="professor"
+                        title="What do you like or dislike about the professor?" style="cursor: pointer;">
+                        <span id="emojiaction">&#128116;</span>
+                        Instructor
+                    </label>
+                </div>
+            </div>
+
+            <div class="col- feedmoji">
+                <!-- Teaching style -->
+                <div class="form-check">
+                    <input class="form-check-input" name="elaborateNumber" type="radio" id="teaching"
+                        value="Teaching style" required>
+                    <label class="form-check-label" for="teaching"
+                        title="What do you like or dislike about the professor's teaching style?"
+                        style="cursor: pointer;">
+                        <span id="emojiaction">&#127891;</span>
+                        Teaching style
+                    </label>
+                </div>
+            </div>
+
+            <div class="col- feedmoji">
+                <!-- Topic -->
+                <div class="form-check">
+                    <input class="form-check-input block" name="elaborateNumber" type="radio" id="topic" value="Topic"
+                        required>
+                    <label class="form-check-label" for="topic" title="What do you like or dislike about the topic?"
+                        style="cursor: pointer;">
+                        <span id="emojiaction">&#128218;</span>
+                        Topic
+                    </label>
+                </div>
+            </div>
+
+            <div class="col- feedmoji">
+                <!-- Other -->
+                <div class="form-check">
+                    <input class="form-check-input block" name="elaborateNumber" type="radio" id="other" value="Other"
+                        required>
+                    <label class="form-check-label" for="other" title="What else do you like or dislike?"
+                        style="cursor: pointer;">
+                        <span id="emojiaction">&#128400;</span>
+                        Other
+                    </label>
+                </div>
+            </div>
+        </div>
+        <!-- End of catgeory -->
+
+        <!-- Input field -->
+        <div class="row justify-content-center">
+            <!-- Finger emoji -->
+            <div class="col-sm-6 btn-block">
+                <input class="form-control" type="text" placeholder="Elaborate your thoughts" name="elaborateText"
+                    class="form-control" id="emojifield" autofocus>
+            </div>
+        </div>
+
+
+</div>
+<div class="row justify-content-center">
+    <div class="col-sm-3">
+        <!-- Submit button -->
+        <div class="form-group">
+            <div>
+                <button type="submit" class="button btn btn-primary btn-block" id="feedback_button">Leave
+                    feedback</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</form>
+
+</div>

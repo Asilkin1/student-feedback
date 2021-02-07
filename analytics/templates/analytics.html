@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Analytics{% endblock %}
+
+{% block content %}
+<!-- Analytics stats -->
+
+<div class="container">
+    
+    <div class="container col-md-3 justify-content-center">
+        <form action="{{url_for('login', page=request.args.get('page'))}}">
+            <button class="btn btn-info">Back to Class Selection</a>
+        </form>
+    </div>
+
+    <body>
+        <div class='graph'>
+            <img src={{url_for('drawbar', classCode=request.args.get('ccode'), Category=request.args.get('category') )}}
+                alt="Image Placeholder" width="40%">
+            <p>{{display}}</p>
+            <div class="row">
+                <div class="column">
+                    <img src={{url_for('drawtimetoday', classCode=request.args.get('ccode'),
+                        Category=request.args.get('category') )}} alt="Image Placeholder" style="width:100%">
+                </div>
+                <div class="column">
+                    <img src={{url_for('drawtimeyest', classCode=request.args.get('ccode'),
+                        Category=request.args.get('category') )}} alt="Image Placeholder" style="width:100%">
+                </div>
+                <div class="column">
+                    <img src={{url_for('drawtimeweek', classCode=request.args.get('ccode'),
+                        Category=request.args.get('category') )}} alt="Image Placeholder" style="width:100%">
+                </div>
+            </div>
+        </div>
+        
+
+      
+        
+        <!-- Table begins  -->
+        <div class="table-responsive">
+            <table id="myTable" class="table table-striped  table-hover table-sm" cellspacing="0" width="100%">
+                <p class="display-4" style="padding-top: 5%;">Datatable</p>
+                <thead class="thead-dark lead">
+                    <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">Time</th>
+                        <th scope="col">Class Code</th>
+                        <th scope="col">Student Code</th>
+                        <th scope="col">Emoji</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Response</th>
+                        <th scope="col">In class?</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in data.index %}
+                    <tr>
+                        <td>{{data.at[row,'date']}}</td>
+                        <td>{{data.at[row,'time']}}</td>
+                        <td>{{data.at[row,'classCode']}}</td>
+                        <td>{{data.at[row,'studentCode']}}</td>
+                        <td>{{data.at[row,'emoji']}}</td>
+                        <td>{{data.at[row,'elaborateNumber']}}</td>
+                        <td>{{data.at[row,'elaborateText']}}</td>
+                        <td>
+                            <!-- Conditional rendering of the results -->
+                            {% if data.at[row,'inClass'] %}
+                                <h6><span class="badge badge-success">YES</span></h6>
+                            {% else %}
+                                <h6><span class="badge badge-danger">NO</span></h6>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+        </div>
+
+
+
+    </body>
+</div>
+
+<script>
+    $('#myTable').dataTable( {
+      "lengthMenu": [ 5, 10, 15, 20, 25 ]
+    } );
+</script>
+
+{% endblock %}

@@ -1,0 +1,17 @@
+<style>
+    .nounderline {
+        text-decoration: none !important
+    }
+</style>
+<div class="form-container container">
+    <div class="form">
+        <h1>Welcome to the feedback portal!</h1>
+        <h2>Select an option below to get started.</h2>
+        <a href="{{ url_for('auth_bp.login') }}" class="nounderline">
+            <button class="button btn-block" type="submit" name="submitButton" value="instructor">Instructor</button>
+        </a>
+        <a href="{{ url_for('student_bp.newstudent') }}" class="nounderline">
+            <button class="button btn-block" type="submit" name="submitButton" value="student">Student</button>
+        </a>
+    </div>
+</div>

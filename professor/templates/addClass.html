@@ -1,0 +1,167 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+{% with messages = get_flashed_messages()%}
+{% if messages %}
+
+<p>{{msg}}</p>
+
+{%endif%}
+{% endwith %}
+
+<!-- Typical approach to create any form with bootstrap  -->
+<div class="container col- mx-auto">
+    <h3>Add class</h3>
+    <!-- When submit button is clicked then the action should bring to previous page -->
+    <form action="{{ url_for('professor_bp.professor')}}" method="post">
+        <!-- Split form into two columns -->
+        <div class="row">
+            <!-- Left side -->
+            <div class="col">
+                <!-- Unite label and the field into a group -->
+                <div class="form-group">
+                    <label class="form-check-label" for="schoolName">
+                        School:
+                    </label>
+                    <input type="text" class="form-control" id="text" placeholder="Enter your school name"
+                        name="schoolName" required>
+                </div>
+
+                <!-- Department name field -->
+                <div class="form-group">
+                    <label class="form-check-label" for="departmentName">
+                        Department:
+                    </label>
+                    <input type="text" class="form-control" id="text" placeholder="Enter your department"
+                        name="departmentName">
+                </div>
+
+                 <!-- Type -->
+                 <div class="form-group">
+                    <label class="form-check-label" for="classMode">
+                        Mode:
+                    </label>
+                    <select name="classMode" class="form-control" for="classMode">
+                        <option selected disabled value="">Choose class mode</option>
+                        <option>Remote</option>
+                        <option>In-person</option>
+                        <option>Hybrid</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Center class/section/mode -->
+            <div class="col">
+                <!-- Class ID field -->
+                <div class="form-group">
+                    <label class="form-check-label" for="className">
+                        Class Name:
+                    </label>
+                    <input type="text" class="form-control" id="text" placeholder="Enter your class name" name="className"
+                        required>
+                </div>
+
+                <!-- Section name field -->
+                <div class="form-group">
+                    <label class="form-check-label" for="sectionName">
+                        Section:
+                    </label>
+                    <input oninput="this.value = this.value.toUpperCase()" type="text" class="form-control" id="text" placeholder="Enter your section name"
+                        name="sectionName" maxlength="4" required>
+                </div>
+
+                <!-- <input type="number" id="tentacles" name="tentacles"
+                min="10" max="100"> -->
+                <div class="form-group">
+                    <label class="form-check-label" for="size">
+                        Class size:
+                    </label>
+                    <input type="number" class="form-control" min="13" max="26" name="size" required>
+                    <span class="validity"></span>
+                </div>
+            </div>
+
+            <!-- Right column -->
+            <div class="col">
+                <!-- Start time -->
+                <div class="form-group">
+                    <label class="form-check-label" for="start">
+                        Start time:
+                    </label>
+                    <input type="time" id="appt" class="form-control" min="07:00" max="19:00" name="start" required>
+                    <span class="validity"></span>
+                </div>
+
+                <!-- End time -->
+                <div class="form-group">
+                    <label class="form-check-label" for="end">
+                        End time:
+                    </label>
+                    <input type="time" id="appt" class="form-control" min="07:00" max="19:00" name="end" required>
+                    <span class="validity"></span>
+                </div>
+
+            </div>
+
+        </div>
+        <!-- Days picker -->
+        <label class="form-check-label">
+            Days:
+        </label>
+        <div class="row justify-content-center">
+            <!-- Days -->
+            <div class="form-group">
+
+                <div class="row justify-content-center">
+                    <!-- Monday -->
+                    <div class="col-" id="face_row">
+                        <input name="day" class="form-check-input" type="checkbox" value="M" id="1">
+                        <label class="form-check-label" for="1">
+                            MO
+                        </label>
+                    </div>
+                    <!-- Tuesday -->
+                    <div class="col-" id="face_row">
+                        <input name="day" class="form-check-input" type="checkbox" value="T" id="2">
+                        <label class="form-check-label" for="2">
+                            TU
+                        </label>
+                    </div>
+                    <!-- Wed -->
+                    <div class="col-" id="face_row" id="face_row">
+                        <input name="day" class="form-check-input" type="checkbox" value="W" id="3">
+                        <label class="form-check-label" for="3">
+                            WE
+                        </label>
+                    </div>
+                    <!-- Thursday -->
+                    <div class="col-" id="face_row" id="face_row">
+                        <input name="day" class="form-check-input" type="checkbox" value="H" id="4">
+                        <label class="form-check-label" for="4">
+                            TH
+                        </label>
+                    </div>
+                    <!-- Friday -->
+                    <div class="col-" id="face_row" id="face_row">
+                        <input name="day" class="form-check-input" type="checkbox" value="F" id="5">
+                        <label class="form-check-label" for="5">
+                            FR
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <!-- Submit button -->
+        <div class="form-group">
+            <button class="button btn-block" type="submit" name="submitButton" value="dashboardSubmit">Generate Class
+                Code</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
