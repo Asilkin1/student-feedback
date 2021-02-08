@@ -5,7 +5,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.orm import sessionmaker
 from encryption import *
-from  datetime import datetime 
+from  datetime import datetime, date
 
 # Set database for specified environment
 engine = create_engine('sqlite:///united.db', echo=True,connect_args={"check_same_thread": False})  
@@ -89,6 +89,52 @@ class StudentCodes(Base):
     def __init__(self, code):
         self.code = code
 
+#---------------------------------------------------------------
+# Check date voted
+def check_date_voted(ccode):
+    """
+    @ccode - class code
+    """
+    # Date
+    dateNow = date.today()
+
+    # Time
+    currentTime = datetime.now()
+    timeNow = currentTime.strftime("%H:%M")
+        
+    currentDay = dateNow.weekday()
+
+    day = ""
+
+    # Monday
+    if currentDay == 0:
+        day = "M"
+    # Tuesday
+    if currentDay == 1:
+        day = "T"
+    # Wednesday
+    if currentDay == 2:
+        day = "W"
+    # Thursday
+    if currentDay == 3:
+        day = "H"
+    # Friday
+    if currentDay == 4:
+        day = "F"
+
+    query = databaseConnection.query(Account).filter(Account.classCode == ccode)
+    result = query.first()
+    classStart = result.start
+    classEnd = result.end
+    classDays = result.days
+    inClass = ''
+    
+    if (timeNow > classStart) and (timeNow < classEnd) and (day in classDays):
+        inClass = "Inside"
+    else:
+        inClass = "Outside"
+    
+    return inClass
 
 #----------------------------------------------------------------
 # Student code voted
@@ -129,8 +175,6 @@ def count_feedback_by_category(category,username):
 
         if feedbacks == category:
             category_count += 1
-            print('Category: ', category)
-            print('Count0-------: ',category_count)
 
     return category_count
 #----------------------------------------------------------------
