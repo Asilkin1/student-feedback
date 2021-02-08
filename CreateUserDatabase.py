@@ -6,9 +6,14 @@ from sqlalchemy.orm import relationship, backref
 from sqlalchemy.orm import sessionmaker
 from encryption import *
 from  datetime import datetime, date
+import os
+# db path OS dependant
+# Works on windows
+db_path = 'sqlite:///' + os.fspath(os.getcwd()) + '/united.db'
 
+print(db_path)
 # Set database for specified environment
-engine = create_engine('sqlite:///united.db', echo=True,connect_args={"check_same_thread": False})  
+engine = create_engine(db_path, echo=True,connect_args={"check_same_thread": False})  
 Session = sessionmaker(bind=engine)
 databaseConnection = Session()
 
