@@ -13,24 +13,20 @@ def newstudent():
     if request.method == "POST":
         # Get class code
         classCode = request.form.get('classCode')
-
         # Generate a unique code here
         studentCode = request.form.get('studentCode')
-
         # hash student code
         myCode = studentCode.encode('ascii')  # Convert code to binary
         # bcrypt.gensalt(rounds=16)   # used for hashing
         salt = b'$2b$16$MTSQ7iU1kQ/bz6tdBgjrqu'
-        print(salt)
+       
         hashed = bcrypt.hashpw(myCode, salt)  # hashing the code
-
-        print('Hashed code', myCode.decode())
         # Connect to the database
 
         query = databaseConnection.query(StudentCodes).filter(StudentCodes.code == hashed.decode())
         queryClass = databaseConnection.query(Account).filter(Account.classCode == classCode)
         # Searching for the code
-        print(hashed.decode())
+      
         result = query.first()
         resultClass = queryClass.first()
         
@@ -42,24 +38,11 @@ def newstudent():
             session['studentCode'] = studentCode
             session['logged_in'] = True
 
-            # Get some data about class votes
-            # Don't forget to get each row for current student code only once
-            yourCodeVotes = databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == session.get('classCode'),Feedback.studentCode == session.get('studentCode')).distinct()
-            yourVotedTimes = databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == session.get('classCode'),Feedback.studentCode == session.get('studentCode'))            
-            
-            distinctVoters = databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == session.get('classCode'),Feedback.studentCode != session.get('studentCode')).distinct()
-            notYoursFeedbacks = databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == session.get('classCode'),Feedback.studentCode != session.get('studentCode'))
-            classSize = databaseConnection.query(Account.size).filter(Account.classCode == session.get('classCode'))
-
-            # Use the query as an iterable for more efficiency
-            # Get all records without calling all() allow to interact with each object individually
-            # for voted in getSomeReward:
-            #     print('Resulttttttttt: ',voted)
-            print('This many times you voted: ',yourCodeVotes.count())
-            print('This many people voted: ',distinctVoters.count())
-            print('Size of the class: ',classSize.one())
-
-            return render_template('student.html', you=yourCodeVotes.count(), notYou = distinctVoters.count(), size=classSize.one()[0], voted = yourVotedTimes.count(), total=notYoursFeedbacks.count())
+            return render_template('student.html', you=you_voted(session.get('classCode'),session.get('studentCode')), 
+                                    notYou = get_total_voters(session.get('classCode'), session.get('studentCode')), 
+                                    size=get_class_size(session.get('classCode')), 
+                                    voted = you_voted(session.get('classCode'), session.get('studentCode')), 
+                                    total=not_your_votes(session.get('classCode'),session.get('studentCode')))
 
         # No records found
         elif result == None:
@@ -83,18 +66,15 @@ def studentRegistration():
         myCode = studentCode.encode('ascii')  # Convert code to binary
         # bcrypt.gensalt(rounds=16)   # used for hashing
         salt = b'$2b$16$MTSQ7iU1kQ/bz6tdBgjrqu'
-        print(salt)
+       
         hashed = bcrypt.hashpw(myCode, salt)  # hashing the code
 
-        print('Hashed code', myCode.decode())
+       
         # Connect to the database
         query = databaseConnection.query(StudentCodes).filter(
             StudentCodes.code == hashed.decode())
 
-        # Need redirect to login after signup
-
         # Searching for the code
-        print(hashed.decode())
         result = query.first()
 
         # Code exists
@@ -178,23 +158,13 @@ def student():
         databaseConnection.add(newFeedback)
         databaseConnection.commit()
 
-        # Get some data about class votes
-        # Don't forget to get each row for current student code only once
-        yourCodeVotes = databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == session.get('classCode'),Feedback.studentCode == session.get('studentCode')).distinct()
-        yourVotedTimes = databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == session.get('classCode'),Feedback.studentCode == session.get('studentCode'))            
-        
-        distinctVoters = databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == session.get('classCode'),Feedback.studentCode != session.get('studentCode')).distinct()
-        classSize = databaseConnection.query(Account.size).filter(Account.classCode == session.get('classCode'))
-
-        # Use the query as an iterable for more efficiency
-        # Get all records without calling all() allow to interact with each object individually
-        # for voted in getSomeReward:
-        #     print('Resulttttttttt: ',voted)
-        print('This many times you voted: ',yourCodeVotes.count())
-        print('This many people voted: ',distinctVoters.count())
-        print('Size of the class: ',classSize.one())
-
         # Message
         flash('Thank you for your feedback', 'info')
-        return render_template('student.html', title="student", you=yourCodeVotes.count(), notYou = distinctVoters.count(), size=classSize.one()[0], voted = yourVotedTimes.count())
+        return render_template('student.html', title="student", 
+                                you=you_voted(session.get('classCode'), session.get('studentCode')), 
+                                notYou = not_your_votes(session.get('classCode'), session.get('studentCode')), 
+                                size=get_class_size(session.get('classCode')), 
+                                voted = voted_times(session.get('classCode'),session.get('studentCode')),
+                                total=not_your_votes(session.get('classCode'),session.get('studentCode')))
+
     return render_template('student.html', title='student')

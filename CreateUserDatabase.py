@@ -4,7 +4,7 @@ from sqlalchemy import Column, Date, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.orm import sessionmaker
-
+from encryption import *
 from  datetime import datetime 
 
 # Set database for specified environment
@@ -89,11 +89,50 @@ class StudentCodes(Base):
     def __init__(self, code):
         self.code = code
 
+
+#----------------------------------------------------------------
+# Student code voted
+def you_voted(ccode,scode):
+     return databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == ccode,Feedback.studentCode == scode).distinct().count()
+
+#----------------------------------------------------------------
+# You voted times
+def voted_times(ccode,scode):
+    return databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == ccode,Feedback.studentCode == scode).count()
+
+#----------------------------------------------------------------
+# Get cass size
+def get_class_size(ccode):
+    return databaseConnection.query(Account.size).filter(Account.classCode == ccode).one()[0]
+
+#----------------------------------------------------------------
+# Not your votes
+def not_your_votes(ccode,scode):
+    return databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == ccode,Feedback.studentCode != scode).count()
+
+#----------------------------------------------------------------
+# Distinct voters
+def get_total_voters(ccode, scode):
+    return databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == ccode,Feedback.studentCode != scode).distinct().count()
+
 #----------------------------------------------------------------
 # Count feedback categories
 def count_feedback_by_category(category,username):
-    feedbackInstructor = databaseConnection.query(Account, Feedback).filter(Account.username == username,Account.classCode == Feedback.classCode,Feedback.elaborateNumber == category)
-    return feedbackInstructor.count()
+    query = databaseConnection.query(Account, Feedback).filter(Account.username == username,Account.classCode == Feedback.classCode,Feedback.elaborateNumber == category)
+    result = query.all()
+    category_count = 0
+
+    # Loop through the query results
+    for feedbacks in result:
+        # Decrypt the value where the table is Feedback and the column is elaborate number
+        feedbacks = mysql_aes_decrypt(feedbacks.Feedback.elaborateNumber, random_key)
+
+        if feedbacks == category:
+            category_count += 1
+            print('Category: ', category)
+            print('Count0-------: ',category_count)
+
+    return category_count
 #----------------------------------------------------------------
 # Load professor dashboard data
 def get_dashboard_data(username):
