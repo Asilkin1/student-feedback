@@ -113,15 +113,6 @@ def editClass(id):
                 Account.entryId == id)
     result = query.first()
 
-    # Query feedback table for class code
-    queryFeedBack = databaseConnection.query(Feedback).filter(Feedback.classCode == result.classCode)
-    resultFeedback = queryFeedBack.first()
-
-    # Parse for section in Feedback table
-    if resultFeedback != None:
-        parsingClassCode = resultFeedback.classCode.split("-")
-        sectionFeedBack = parsingClassCode[1]
-
     # Populate article form fields
     schoolName = result.schoolName
     departmentName = result.departmentName
@@ -138,6 +129,15 @@ def editClass(id):
     sectionName = parsingClassCode[1]
 
     if request.method == 'POST':
+        # Query feedback table for class code
+        queryFeedBack = databaseConnection.query(Feedback).filter(Feedback.classCode == result.classCode)
+        resultFeedback = queryFeedBack.first()
+
+        # Parse for section in Feedback table
+        if resultFeedback != None:
+            parsingClassCode = resultFeedback.classCode.split("-")
+            sectionFeedBack = parsingClassCode[1]
+        
         schoolName = request.form['schoolName']
         departmentName = request.form['departmentName']
         className = request.form['className']
@@ -174,6 +174,7 @@ def editClass(id):
             if sectionName != sectionFeedBack:
                 for results in queryFeedBack.all():
                     results.classCode = result.classCode
+        databaseConnection.commit()
 
         flash('Class Updated', 'success')
 

@@ -117,7 +117,8 @@ def student():
 
         # Elaborate text and encrypt it
         elaborateText = request.form.get('elaborateText')
-        elaborateText = mysql_aes_encrypt(elaborateText, random_key)
+        if elaborateText != "":
+            elaborateText = mysql_aes_encrypt(elaborateText, random_key)
 
         #create data in database
         newFeedback = Feedback(dateNow, timeNow, session['classCode'], session['studentCode'], emoji, elaborateNumber, elaborateText, check_date_voted(session.get('classCode')))
