@@ -1,6 +1,7 @@
 # All imports done
 from flask import Blueprint, render_template,request,session, flash 
 from CreateUserDatabase import * 
+from encryption import *
 
 auth_bp = Blueprint('auth_bp', __name__,
     template_folder='templates',
@@ -39,18 +40,34 @@ def login():
                 dashboardData = databaseConnection.query(Account).filter(
                     Account.username == session.get('username'))
 
-                feedbackInstructor = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Instructor/Professor')
-                feedbackTeachingStyle = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Teaching style')
-                feedbackTopic = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Topic')
-                feedbackOther = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Other')
+                query = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode)
+                result = query.all()
+                instructorCount = 0
+                teachingStyleCount = 0
+                topicCount = 0
+                otherCount = 0
+
+                # Loop through the query results
+                for feedbacks in result:
+                    # Decrypt the value where the table is Feedback and the column is elaborate number
+                    feedbacks = mysql_aes_decrypt(feedbacks.Feedback.elaborateNumber, random_key)
+
+                    if feedbacks == "Instructor/Professor":
+                        instructorCount += 1
+                    if feedbacks == "Teaching style":
+                        teachingStyleCount += 1
+                    if feedbacks == "Topic":
+                        topicCount += 1
+                    if feedbacks == "Other":
+                        otherCount += 1
 
                 return render_template('index.html',
                                        title='dashboard',
                                        data=dashboardData,
-                                       instructor=feedbackInstructor.count(),
-                                       topic=feedbackTopic.count(),
-                                       other=feedbackOther.count(),
-                                       teaching=feedbackTeachingStyle.count()
+                                       instructor=instructorCount,
+                                       topic=topicCount,
+                                       other=otherCount,
+                                       teaching=teachingStyleCount
                                        )
 
             else:
@@ -67,18 +84,35 @@ def login():
                 dashboardData = databaseConnection.query(Account).filter(
                     Account.username == session.get('username'))
 
-                feedbackInstructor = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Instructor/Professor')
-                feedbackTeachingStyle = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Teaching style')
-                feedbackTopic = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Topic')
-                feedbackOther = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Other')
+                query = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode)
+                result = query.all()
+                instructorCount = 0
+                teachingStyleCount = 0
+                topicCount = 0
+                otherCount = 0
 
-                return render_template('login.html', 
-                                        title='dashboard', 
+                # Loop through the query results
+                for feedbacks in result:
+                    # Decrypt the value where the table is Feedback and the column is elaborate number
+                    feedbacks = mysql_aes_decrypt(feedbacks.Feedback.elaborateNumber, random_key)
+
+                    if feedbacks == "Instructor/Professor":
+                        instructorCount += 1
+                    if feedbacks == "Teaching style":
+                        teachingStyleCount += 1
+                    if feedbacks == "Topic":
+                        topicCount += 1
+                    if feedbacks == "Other":
+                        otherCount += 1
+
+                return render_template('login.html',
+                                        title='dashboard',
                                         data=dashboardData,
-                                        instructor=feedbackInstructor.count(),
-                                        topic=feedbackTopic.count(),
-                                        other=feedbackOther.count(),
-                                        teaching=feedbackTeachingStyle.count())
+                                        instructor=instructorCount,
+                                        topic=topicCount,
+                                        other=otherCount,
+                                        teaching=teachingStyleCount
+                                        )
 
         else:
             flash('Check your username and password', 'error')
@@ -91,18 +125,35 @@ def login():
         # Get classes data for current username
         dashboardData = databaseConnection.query(Account).filter(Account.username == session.get('username'))
 
-        feedbackInstructor = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Instructor/Professor')
-        feedbackTeachingStyle = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Teaching style')
-        feedbackTopic = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Topic')
-        feedbackOther = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Other')
+        query = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode)
+        result = query.all()
+        instructorCount = 0
+        teachingStyleCount = 0
+        topicCount = 0
+        otherCount = 0
 
-        return render_template('/login.html', 
-                                title='dashboard', 
+        # Loop through the query results
+        for feedbacks in result:
+            # Decrypt the value where the table is Feedback and the column is elaborate number
+            feedbacks = mysql_aes_decrypt(feedbacks.Feedback.elaborateNumber, random_key)
+
+            if feedbacks == "Instructor/Professor":
+                instructorCount += 1
+            if feedbacks == "Teaching style":
+                teachingStyleCount += 1
+            if feedbacks == "Topic":
+                topicCount += 1
+            if feedbacks == "Other":
+                otherCount += 1
+
+        return render_template('/login.html',
+                                title='dashboard',
                                 data=dashboardData,
-                                instructor=feedbackInstructor.count(),
-                                topic=feedbackTopic.count(),
-                                other=feedbackOther.count(),
-                                teaching=feedbackTeachingStyle.count())
+                                instructor=instructorCount,
+                                topic=topicCount,
+                                other=otherCount,
+                                teaching=teachingStyleCount
+                                )
 
     else:
         return render_template('login.html')

@@ -23,19 +23,20 @@ def register():
                 user = User(username, password)
                 databaseConnection.add(user)
                 databaseConnection.commit()
-                flash('You are registered')
+                flash('You are registered. Please login to continue.')
+                return render_template('login.html', title="login")
 
         else:
-            flash('Password doesn\'t match')
+            flash('Password doesn\'t match.')
     else:
-        flash('Cannot be empty')
+        flash('Cannot be empty.')
     return render_template('register.html')
 
 
 @professor_bp.route('/professor', methods=["POST", "GET"])
 def instructor():
     if not session.get('logged_in'):
-        flash('Please log in to gain access to the website', 'info')
+        flash('Please log in to gain access to the website.', 'info')
         return render_template('login.html', title='submit')
     else:
         return render_template('professor.html')
