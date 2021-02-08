@@ -19,6 +19,16 @@
                 <input type="password" class="form-control" id="password" placeholder="Repeat your password" name="repassword">
             </div>
 
+            <!-- Password hints -->
+            <div class="form-group list-group">
+                <ul class="list">
+                    <li><h6>Minimum 8 characters</h6></li>
+                    <li><h6>1 digit or more</h6></li>
+                    <li><h6>1 symbol or more</h6></li>
+                    <li><h6>1 uppercase letter or more</h6></li>
+                </ul>
+            </div>
+
             <button type="submit" class="button btn-block">Register</button>
             <a href="{{ url_for('auth_bp.login') }}">
                 <h6>Or login</h6>
