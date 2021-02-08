@@ -2,6 +2,7 @@
 from flask import Blueprint, render_template,request, flash, session, redirect, url_for
 from CreateUserDatabase import * 
 import random
+import re
 
 professor_bp = Blueprint('professor_bp', __name__,
     template_folder='templates',
@@ -11,26 +12,80 @@ professor_bp = Blueprint('professor_bp', __name__,
 def register():
 
     if request.method == 'POST':
-        flash('You have registered', 'info')
         # Get username from the form
         username = request.form.get('username')
         password = request.form.get('password')
         repassword = request.form.get('repassword')
 
-        if username and password and repassword:
-            # Passwords should match
-            if str(password) == str(repassword):
-                user = User(username, password)
-                databaseConnection.add(user)
-                databaseConnection.commit()
-                flash('You are registered. Please login to continue.')
-                return render_template('login.html', title="login")
+        if password == "":
+            flash('Password cannot be empty.', 'error')
+        else: 
+            for error, boolean in password_check(password).items():
 
-        else:
-            flash('Password doesn\'t match.')
-    else:
-        flash('Cannot be empty.')
+                if error == 'length_error' and boolean:
+                    flash('Password length must contain at least 8 characters.', 'error')
+                    return render_template('register.html')
+                
+                if error == 'digit_error' and boolean:
+                    flash('Password must contain at least one digit.', 'error')
+                    return render_template('register.html')
+                
+                if error == 'uppercase_error' and boolean:
+                    flash('Password must contain at least one upper case letter', 'error')
+                    return render_template('register.html')
+                
+                if error == 'symbol_error' and boolean:
+                    flash('Password must contain at least one symbol.', 'error')
+                    return render_template('register.html')
+
+                if error == 'password_ok' and boolean:
+                    print(str(password) == str(repassword))
+                    # Passwords should match
+                    if str(password) == str(repassword):
+                        user = User(username, password)
+                        databaseConnection.add(user)
+                        databaseConnection.commit()
+                        flash('You have registered. Please login to continue.', 'error')
+                        return render_template('login.html', title="login")
+
+                    else:
+                        flash('Passwords doesn\'t match.', 'error')
+                        return render_template('register.html')
     return render_template('register.html')
+
+def password_check(password):
+    """
+    Verify the strength of 'password'
+    Returns a dictionary indicating the wrong criteria
+    A password is considered strong if:
+        8 characters length or more
+        1 digit or more
+        1 symbol or more
+        1 uppercase letter or more
+    """
+
+    # calculating the length
+    length_error = len(password) < 8
+
+    # searching for digits
+    digit_error = re.search(r"\d", password) is None
+
+    # searching for uppercase
+    uppercase_error = re.search(r"[A-Z]", password) is None
+
+    # searching for symbols
+    symbol_error = re.search(r"[ !#$%&'()*+,-./[\\\]^_`{|}~"+r'"]', password) is None
+
+    # overall result
+    password_ok = not ( length_error or digit_error or uppercase_error or symbol_error )
+
+    return {
+        'password_ok' : password_ok,
+        'length_error' : length_error,
+        'digit_error' : digit_error,
+        'uppercase_error' : uppercase_error,
+        'symbol_error' : symbol_error,
+    }
 
 
 @professor_bp.route('/professor', methods=["POST", "GET"])
