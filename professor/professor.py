@@ -45,7 +45,7 @@ def register():
                         user = User(username, password)
                         databaseConnection.add(user)
                         databaseConnection.commit()
-                        flash('You have registered. Please login to continue.', 'error')
+                        flash('You have registered. Please login to continue.', 'success')
                         return render_template('login.html', title="login")
 
                     else:
@@ -96,9 +96,11 @@ def instructor():
     else:
         return render_template('professor.html')
 
-@professor_bp.route("/professor/delete/<string:id>", methods=['GET', 'POST'])
-def deleteClass(id):
+@professor_bp.route("/professor/delete/<string:id>/<string:ccode>", methods=['GET', 'POST'])
+def deleteClass(id, ccode):
     databaseConnection.query(Account).filter(Account.entryId == id).delete()
+    databaseConnection.commit()
+    databaseConnection.query(Feedback).filter(Feedback.classCode == ccode).delete()
     databaseConnection.commit()
 
     flash('Class Deleted', 'success')
@@ -109,8 +111,15 @@ def editClass(id):
     
     query = databaseConnection.query(Account).filter(
                 Account.entryId == id)
-
     result = query.first()
+
+    # Query feedback table for class code
+    queryFeedBack = databaseConnection.query(Feedback).filter(Feedback.classCode == result.classCode)
+    resultFeedback = queryFeedBack.first()
+
+    # Parse for section in Feedback table
+    parsingClassCode = resultFeedback.classCode.split("-")
+    sectionFeedBack = parsingClassCode[1]
 
     # Populate article form fields
     schoolName = result.schoolName
@@ -155,6 +164,12 @@ def editClass(id):
         classCode = parsingClassCode[0]
 
         result.classCode = str(classCode) + '-' + sectionName
+        databaseConnection.commit()
+
+        # Update class code in feedback table if the section got changed
+        if sectionName != sectionFeedBack:
+            for results in queryFeedBack.all():
+                results.classCode = result.classCode
         
         databaseConnection.commit()
 
