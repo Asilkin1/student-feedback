@@ -30,12 +30,6 @@ def login():
                 session['username'] = send_username
                 flash('You have successfully logged in.', 'success')
 
-                # Category for ... ?
-                category = request.args.get('category')
-
-                # Filter professor by class codes, feedbacks and username
-                hasCodes = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode)
-
                 # Get classes data for current username
                 dashboardData = databaseConnection.query(Account).filter(
                     Account.username == session.get('username'))
@@ -77,9 +71,6 @@ def login():
                 dashboardData = databaseConnection.query(Account).filter(
                     Account.username == session.get('username'))
 
-                # Filter professor by class codes, feedbacks and username
-                hasCodes = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode)
-
                 # Get classes data for current username
                 dashboardData = databaseConnection.query(Account).filter(
                     Account.username == session.get('username'))
@@ -118,10 +109,6 @@ def login():
             flash('Check your username and password', 'error')
             return render_template('login.html')
     elif request.method == 'GET':
-        # Get classes data for current username
-        # Filter professor by class codes, feedbacks and username
-        hasCodes = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode)
-
         # Get classes data for current username
         dashboardData = databaseConnection.query(Account).filter(Account.username == session.get('username'))
 
