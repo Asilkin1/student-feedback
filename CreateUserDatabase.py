@@ -158,8 +158,13 @@ def not_your_votes(ccode,scode):
 
 #----------------------------------------------------------------
 # Distinct voters
+def get_distinct_voters(ccode, scode):
+    return databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == ccode, Feedback.studentCode != scode).distinct().count()
+
+#----------------------------------------------------------------
+# Total voters
 def get_total_voters(ccode, scode):
-    return databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == ccode,Feedback.studentCode != scode).distinct().count()
+    return databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == ccode).distinct().count()
 
 #----------------------------------------------------------------
 # Count feedback categories

@@ -3,6 +3,7 @@ import bcrypt
 from datetime import date, datetime, timedelta  # get date and time
 from encryption import *
 from CreateUserDatabase import *
+from sqlalchemy.sql import text
 
 student_bp = Blueprint('student_bp', __name__,
     template_folder='templates',
@@ -13,6 +14,7 @@ def newstudent():
     if request.method == "POST":
         # Get class code
         classCode = request.form.get('classCode')
+
         # Generate a unique code here
         studentCode = request.form.get('studentCode')
         # hash student code
@@ -29,20 +31,43 @@ def newstudent():
       
         result = query.first()
         resultClass = queryClass.first()
+
+        size = resultClass.size
+        alreadyIn = get_distinct_voters(classCode, studentCode)
         
         # Returning user
         if result and resultClass:
-            flash('Welcome! Remember your code for the future use','success')
-            flash(myCode.decode(),'info')
-            session['classCode'] = classCode
-            session['studentCode'] = studentCode
-            session['logged_in'] = True
+            print("already in ", alreadyIn)
+            if alreadyIn >= int(size):
+                queryStudent = databaseConnection.query(Feedback).filter(Feedback.classCode == classCode)
+                for results in queryStudent.all():
+                    if results.studentCode != studentCode:
+                        flash('The class is full. Please let your professor know and have him/her update the class size accordingly.', 'error')
+                        return redirect(url_for('student_bp.newstudent'))
+                    else:
+                        flash('Welcome! Remember your code for the future use','success')
+                        flash(myCode.decode(),'info')
+                        session['classCode'] = classCode
+                        session['studentCode'] = studentCode
+                        session['logged_in'] = True
 
-            return render_template('student.html', you=you_voted(session.get('classCode'),session.get('studentCode')), 
-                                    notYou = get_total_voters(session.get('classCode'), session.get('studentCode')), 
-                                    size=get_class_size(session.get('classCode')), 
-                                    voted = you_voted(session.get('classCode'), session.get('studentCode')), 
-                                    total=not_your_votes(session.get('classCode'),session.get('studentCode')))
+                        return render_template('student.html', you=you_voted(session.get('classCode'),session.get('studentCode')), 
+                                                notYou = get_total_voters(session.get('classCode'), session.get('studentCode')), 
+                                                size=get_class_size(session.get('classCode')), 
+                                                voted = you_voted(session.get('classCode'), session.get('studentCode')), 
+                                                total=not_your_votes(session.get('classCode'),session.get('studentCode')))
+            else:
+                flash('Welcome! Remember your code for the future use','success')
+                flash(myCode.decode(),'info')
+                session['classCode'] = classCode
+                session['studentCode'] = studentCode
+                session['logged_in'] = True
+
+                return render_template('student.html', you=you_voted(session.get('classCode'),session.get('studentCode')), 
+                                        notYou = get_total_voters(session.get('classCode'), session.get('studentCode')), 
+                                        size=get_class_size(session.get('classCode')), 
+                                        voted = you_voted(session.get('classCode'), session.get('studentCode')), 
+                                        total=not_your_votes(session.get('classCode'),session.get('studentCode')))
 
         # No records found
         elif result == None:
@@ -129,7 +154,7 @@ def student():
         flash('Thank you for your feedback', 'info')
         return render_template('student.html', title="student", 
                                 you=you_voted(session.get('classCode'), session.get('studentCode')), 
-                                notYou = not_your_votes(session.get('classCode'), session.get('studentCode')), 
+                                notYou = get_total_voters(session.get('classCode'), session.get('studentCode')), 
                                 size=get_class_size(session.get('classCode')), 
                                 voted = voted_times(session.get('classCode'),session.get('studentCode')),
                                 total=not_your_votes(session.get('classCode'),session.get('studentCode')))
