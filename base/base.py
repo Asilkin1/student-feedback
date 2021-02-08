@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template,request,session
-from CreateUserDatabase import * 
+from CreateUserDatabase import *
 
 # Define our blueprint with routes
 base_bp = Blueprint('base_bp', __name__,
@@ -10,24 +10,15 @@ base_bp = Blueprint('base_bp', __name__,
 def index():
     # Get classes data for current username
     dashboardData = databaseConnection.query(Account).filter(Account.username == session.get('username'))
-
     # Filter professor by class codes, feedbacks and username
-    hasCodes = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode)
+    #hasCodes = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode)
 
-    # Get classes data for current username
-    dashboardData = databaseConnection.query(Account).filter(
-    Account.username == session.get('username'))
-
-    feedbackInstructor = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Instructor/Professor')
-    feedbackTeachingStyle = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Teaching style')
-    feedbackTopic = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Topic')
-    feedbackOther = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode,Feedback.elaborateNumber == 'Other')
 
     return render_template('index.html', 
                         title='dashboard', 
-                        data=dashboardData,
-                        instructor=feedbackInstructor.count(),
-                        topic=feedbackTopic.count(),
-                        other=feedbackOther.count(),
-                        teaching=feedbackTeachingStyle.count()
+                        data=get_dashboard_data(session.get('username')),
+                        instructor=count_feedback_by_category('Instructor/Professor',session.get('username')),
+                        topic=count_feedback_by_category('Topic',session.get('username')),
+                        other=count_feedback_by_category('Other',session.get('username')),
+                        teaching=count_feedback_by_category('Teaching style',session.get('username'))
                         )

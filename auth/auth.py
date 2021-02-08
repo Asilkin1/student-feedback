@@ -1,6 +1,6 @@
 # All imports done
 from flask import Blueprint, render_template,request,session, flash 
-from CreateUserDatabase import * 
+from CreateUserDatabase import *
 
 auth_bp = Blueprint('auth_bp', __name__,
     template_folder='templates',

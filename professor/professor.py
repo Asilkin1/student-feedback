@@ -1,7 +1,7 @@
 # All router to professor pages
 from flask import Blueprint, render_template,request, flash, session, redirect, url_for
-from CreateUserDatabase import * 
 import random
+from CreateUserDatabase import *
 
 professor_bp = Blueprint('professor_bp', __name__,
     template_folder='templates',

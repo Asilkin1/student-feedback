@@ -1,8 +1,8 @@
 from flask import Blueprint, render_template,request, flash, session,Markup,redirect, url_for
 import bcrypt
 from datetime import date, datetime, timedelta  # get date and time
-from CreateUserDatabase import *
 from encryption import *
+from CreateUserDatabase import *
 
 student_bp = Blueprint('student_bp', __name__,
     template_folder='templates',
