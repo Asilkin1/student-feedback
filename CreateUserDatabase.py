@@ -1,14 +1,15 @@
 from sqlalchemy import *
-from sqlalchemy import create_engine, ForeignKey
+from sqlalchemy import create_engine, ForeignKey, event
 from sqlalchemy import Column, Date, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.orm import sessionmaker
+from encryption import *
+from  datetime import datetime 
 
-engine = create_engine('sqlite:///united.db', echo=True,connect_args={"check_same_thread": False})
-# Establish connection to the database
+# Set database for specified environment
+engine = create_engine('sqlite:///united.db', echo=True,connect_args={"check_same_thread": False})  
 Session = sessionmaker(bind=engine)
-# Provides connection to the database for any operations
 databaseConnection = Session()
 
 Base = declarative_base()
@@ -87,6 +88,85 @@ class StudentCodes(Base):
     code = Column(String, primary_key=True, nullable=False)
     def __init__(self, code):
         self.code = code
+
+
+#----------------------------------------------------------------
+# Student code voted
+def you_voted(ccode,scode):
+     return databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == ccode,Feedback.studentCode == scode).distinct().count()
+
+#----------------------------------------------------------------
+# You voted times
+def voted_times(ccode,scode):
+    return databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == ccode,Feedback.studentCode == scode).count()
+
+#----------------------------------------------------------------
+# Get cass size
+def get_class_size(ccode):
+    return databaseConnection.query(Account.size).filter(Account.classCode == ccode).one()[0]
+
+#----------------------------------------------------------------
+# Not your votes
+def not_your_votes(ccode,scode):
+    return databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == ccode,Feedback.studentCode != scode).count()
+
+#----------------------------------------------------------------
+# Distinct voters
+def get_total_voters(ccode, scode):
+    return databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == ccode,Feedback.studentCode != scode).distinct().count()
+
+#----------------------------------------------------------------
+# Count feedback categories
+def count_feedback_by_category(category,username):
+    query = databaseConnection.query(Account, Feedback).filter(Account.username == username,Account.classCode == Feedback.classCode,Feedback.elaborateNumber == category)
+    result = query.all()
+    category_count = 0
+
+    # Loop through the query results
+    for feedbacks in result:
+        # Decrypt the value where the table is Feedback and the column is elaborate number
+        feedbacks = mysql_aes_decrypt(feedbacks.Feedback.elaborateNumber, random_key)
+
+        if feedbacks == category:
+            category_count += 1
+            print('Category: ', category)
+            print('Count0-------: ',category_count)
+
+    return category_count
+#----------------------------------------------------------------
+# Load professor dashboard data
+def get_dashboard_data(username):
+     return databaseConnection.query(Account).filter(Account.username == username)
+
+# ------------------ Database event handler for update and insert
+# Inset and update event for the database
+def insert_update(mapper, connection, target):
+    tablename = mapper.mapped_table.name
+
+    data = {}
+    for name in mapper.c.keys():
+        v = getattr(target, name)
+        if isinstance(v,datetime):
+            v = v.astimezone(timezone.utc)
+        data[name] = v
+
+    print('Something changed in the database',tablename, 'Name:', v,' inserted or updated ')
+
+
+def delete_event_db_handler(mapper, connection,target):
+    '''Do something when entry is removed'''
+    print('Something removed from the database')
+    tablename = mapper.mapped_table.name
+    index = get_es_index(tablename)
+    doc_type = 'doc'
+    id = target.id
+    res = es.delete(index=index, doc_type=doc, id=id)
+    print('delete index', res)
+
+
+# Set event listener for Account table
+event.listen(Account, 'after_update',insert_update,propagate=True)
+event.listen(Account, 'after_delete',delete_event_db_handler,propagate=True)
 
 
 # create tables

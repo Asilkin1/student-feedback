@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template,request
+from datetime import date, datetime, timedelta
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
@@ -9,11 +10,7 @@ from matplotlib.figure import Figure
 import io
 
 from encryption import *
-
-# Connect to the database
-from sqlalchemy import create_engine
-engine = create_engine('sqlite:///united.db', echo=True,
-                       connect_args={"check_same_thread": False})  # Connect to Users database
+from CreateUserDatabase import *
 
 analytics_bp = Blueprint('analytics_bp', __name__,
     template_folder='templates',
