@@ -206,7 +206,47 @@ def insert_update(mapper, connection, target):
 
     print('Something changed in the database',tablename, 'Name:', v,' inserted or updated ')
 
-
+# Decrypt frame
+def decrypt_frame(Frame):
+    # Go through the columns and data in each column in the Frame
+    for (column, columnData) in Frame.iteritems():
+        # if the column is emoji
+        if column == "emoji":
+            # Go through the data in emoji column
+            for values in columnData.values:
+                # If it is decrypted, continue
+                if isinstance(values, str):
+                    continue
+                else:
+                    # If it isn't decrypted, decrypt it
+                    decryptValue = mysql_aes_decrypt(values, random_key)
+                    # Replace it everywhere in the column
+                    Frame[column] = Frame[column].replace(values, decryptValue)
+        # if the column is elaborateText
+        if column == "elaborateText":
+            # Go through the data in emoji column
+            for values in columnData.values:
+                # If it is decrypted, continue
+                if isinstance(values, str):
+                    continue
+                else:
+                    # If it isn't decrypted, decrypt it
+                    decryptValue = mysql_aes_decrypt(values, random_key)
+                    # Replace it everywhere in the column
+                    Frame[column] = Frame[column].replace(values, decryptValue)
+        # if the column is elaborateNumber
+        if column == "elaborateNumber":
+            # Go through the data in emoji column
+            for values in columnData.values:
+                # If it is decrypted, continue
+                if isinstance(values, str):
+                    continue
+                else:
+                    # If it isn't decrypted, decrypt it
+                    decryptValue = mysql_aes_decrypt(values, random_key)
+                    # Replace it everywhere in the column
+                    Frame[column] = Frame[column].replace(values, decryptValue)
+    return Frame
 def delete_event_db_handler(mapper, connection,target):
     '''Do something when entry is removed'''
     print('Something removed from the database')

@@ -69,15 +69,13 @@ def newstudent():
         query = databaseConnection.query(StudentCodes).filter(StudentCodes.code == hashed.decode())
         queryClass = databaseConnection.query(Account).filter(Account.classCode == classCode)
         # Searching for the code
-      
-        result = query.first()
-        resultClass = queryClass.first()
-
-        size = resultClass.size
-        alreadyIn = get_distinct_voters(classCode, studentCode)
         
         # Returning user
-        if result and resultClass:
+        if query.first() and queryClass.first():
+            resultClass = queryClass.first()
+            result = query.first()
+            size = resultClass.size
+            alreadyIn = get_distinct_voters(classCode, studentCode)
             print("already in ", alreadyIn)
             if alreadyIn >= int(size):
                 queryStudent = databaseConnection.query(Feedback).filter(Feedback.classCode == classCode)
@@ -98,10 +96,10 @@ def newstudent():
                 return redirect(url_for('student_bp.student'))
 
         # No records found
-        elif result == None:
+        elif query.first() == None:
             flash(Markup('The student code does not exist. Do you want to <a href="/student/registration">register</a>?'), 'error')
             return redirect(url_for('auth_bp.newstudent'))
-        elif resultClass == None:
+        elif queryClass.first() == None:
             flash(Markup('The class code does not exist. Please check in with your professor.'), 'error')
             return redirect(url_for('auth_bp.newstudent'))
 

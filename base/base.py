@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template,request,session
+from flask import Blueprint, render_template,request,session, redirect, url_for
 from CreateUserDatabase import *
 
 # Define our blueprint with routes
@@ -8,4 +8,9 @@ base_bp = Blueprint('base_bp', __name__,
 
 @base_bp.route('/', methods=["POST", "GET"])
 def index():
-    return render_template('index.html')
+    if session.get('username'):
+        return redirect(url_for('professor_bp.instructor'))
+    elif session.get('studentCode'):
+        return redirect(url_for('student_bp.student'))
+    else:
+        return render_template('index.html')
