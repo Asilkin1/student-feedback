@@ -50,9 +50,10 @@
             v1.0 open for public testing
         </header>
         <nav class="navbar navbar-dark  bg-disabled flex-md-nowrap p-0">
-             <!-- Conditional rendering of the  -->
+             <!-- Conditional rendering -->
+             <!-- Professor case -->
              {% if session['logged_in'] and not session['studentCode']%}
-             <a class="navbar-brand" href="{{url_for('auth_bp.login')}}">
+             <a class="navbar-brand" href="{{url_for('professor_bp.instructor')}}">
                  <img id="logo" src="/static/logo.png">
              </a>
  

@@ -1,13 +1,94 @@
 # All imports done
-from flask import Blueprint, render_template,request,session, flash 
+from flask import Blueprint, render_template,request,session, flash ,redirect, url_for
 from CreateUserDatabase import * 
 from encryption import *
+import re
 
 auth_bp = Blueprint('auth_bp', __name__,
     template_folder='templates',
     static_folder='static')
 
+# Register professor
+@auth_bp.route('/register', methods=['GET', 'POST'])
+def register():
 
+    if request.method == 'POST':
+        # Get username from the form
+        username = request.form.get('username')
+        password = request.form.get('password')
+        repassword = request.form.get('repassword')
+
+        if password == "":
+            flash('Password cannot be empty.', 'error')
+        else: 
+            for error, boolean in password_check(password).items():
+
+                if error == 'length_error' and boolean:
+                    flash('Password length must contain at least 8 characters.', 'error')
+                    return render_template('register.html')
+                
+                if error == 'digit_error' and boolean:
+                    flash('Password must contain at least one digit.', 'error')
+                    return render_template('register.html')
+                
+                if error == 'uppercase_error' and boolean:
+                    flash('Password must contain at least one upper case letter', 'error')
+                    return render_template('register.html')
+                
+                if error == 'symbol_error' and boolean:
+                    flash('Password must contain at least one symbol.', 'error')
+                    return render_template('register.html')
+
+                if error == 'password_ok' and boolean:
+                    print(str(password) == str(repassword))
+                    # Passwords should match
+                    if str(password) == str(repassword):
+                        user = User(username, password)
+                        databaseConnection.add(user)
+                        databaseConnection.commit()
+                        flash('You have registered. Please login to continue.', 'success')
+                        return render_template('login.html', title="login")
+
+                    else:
+                        flash('Passwords doesn\'t match.', 'error')
+                        return render_template('register.html')
+    return render_template('register.html')
+
+def password_check(password):
+    """
+    Verify the strength of 'password'
+    Returns a dictionary indicating the wrong criteria
+    A password is considered strong if:
+        8 characters length or more
+        1 digit or more
+        1 symbol or more
+        1 uppercase letter or more
+    """
+
+    # calculating the length
+    length_error = len(password) < 8
+
+    # searching for digits
+    digit_error = re.search(r"\d", password) is None
+
+    # searching for uppercase
+    uppercase_error = re.search(r"[A-Z]", password) is None
+
+    # searching for symbols
+    symbol_error = re.search(r"[ !#$%&'()*+,-./[\\\]^_`{|}~"+r'"]', password) is None
+
+    # overall result
+    password_ok = not ( length_error or digit_error or uppercase_error or symbol_error )
+
+    return {
+        'password_ok' : password_ok,
+        'length_error' : length_error,
+        'digit_error' : digit_error,
+        'uppercase_error' : uppercase_error,
+        'symbol_error' : symbol_error,
+    }
+
+# Login professor
 @auth_bp.route('/login/', methods=['GET', 'POST'])
 def login():
     # Sumbitting login form
@@ -30,118 +111,11 @@ def login():
                 session['username'] = send_username
                 flash('You have successfully logged in.', 'success')
 
-                # Get classes data for current username
-                dashboardData = databaseConnection.query(Account).filter(
-                    Account.username == session.get('username'))
-
-                query = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode)
-                result = query.all()
-                instructorCount = 0
-                teachingStyleCount = 0
-                topicCount = 0
-                otherCount = 0
-
-                # Loop through the query results
-                for feedbacks in result:
-                    # Decrypt the value where the table is Feedback and the column is elaborate number
-                    feedbacks = mysql_aes_decrypt(feedbacks.Feedback.elaborateNumber, random_key)
-
-                    if feedbacks == "Instructor/Professor":
-                        instructorCount += 1
-                    if feedbacks == "Teaching style":
-                        teachingStyleCount += 1
-                    if feedbacks == "Topic":
-                        topicCount += 1
-                    if feedbacks == "Other":
-                        otherCount += 1
-
-                return render_template('index.html',
-                                       title='dashboard',
-                                       data=dashboardData,
-                                       instructor=instructorCount,
-                                       topic=topicCount,
-                                       other=otherCount,
-                                       teaching=teachingStyleCount
-                                       )
-
+                # Show dashboard
+                return redirect(url_for('professor_bp.instructor'))
             else:
-                flash('Wrong password or username', 'error')
-
-                # Get classes data for current username
-                dashboardData = databaseConnection.query(Account).filter(
-                    Account.username == session.get('username'))
-
-                # Get classes data for current username
-                dashboardData = databaseConnection.query(Account).filter(
-                    Account.username == session.get('username'))
-
-                query = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode)
-                result = query.all()
-                instructorCount = 0
-                teachingStyleCount = 0
-                topicCount = 0
-                otherCount = 0
-
-                # Loop through the query results
-                for feedbacks in result:
-                    # Decrypt the value where the table is Feedback and the column is elaborate number
-                    feedbacks = mysql_aes_decrypt(feedbacks.Feedback.elaborateNumber, random_key)
-
-                    if feedbacks == "Instructor/Professor":
-                        instructorCount += 1
-                    if feedbacks == "Teaching style":
-                        teachingStyleCount += 1
-                    if feedbacks == "Topic":
-                        topicCount += 1
-                    if feedbacks == "Other":
-                        otherCount += 1
-
-                return render_template('login.html',
-                                        title='dashboard',
-                                        data=dashboardData,
-                                        instructor=instructorCount,
-                                        topic=topicCount,
-                                        other=otherCount,
-                                        teaching=teachingStyleCount
-                                        )
-
-        else:
-            flash('Check your username and password', 'error')
-            return render_template('login.html')
-    elif request.method == 'GET':
-        # Get classes data for current username
-        dashboardData = databaseConnection.query(Account).filter(Account.username == session.get('username'))
-
-        query = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode)
-        result = query.all()
-        instructorCount = 0
-        teachingStyleCount = 0
-        topicCount = 0
-        otherCount = 0
-
-        # Loop through the query results
-        for feedbacks in result:
-            # Decrypt the value where the table is Feedback and the column is elaborate number
-            feedbacks = mysql_aes_decrypt(feedbacks.Feedback.elaborateNumber, random_key)
-
-            if feedbacks == "Instructor/Professor":
-                instructorCount += 1
-            if feedbacks == "Teaching style":
-                teachingStyleCount += 1
-            if feedbacks == "Topic":
-                topicCount += 1
-            if feedbacks == "Other":
-                otherCount += 1
-
-        return render_template('/login.html',
-                                title='dashboard',
-                                data=dashboardData,
-                                instructor=instructorCount,
-                                topic=topicCount,
-                                other=otherCount,
-                                teaching=teachingStyleCount
-                                )
-
+                flash('Check your username and password', 'error')
+                return redirect(url_for('auth_bp.login'))
     else:
         return render_template('login.html')
 

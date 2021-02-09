@@ -1,7 +1,7 @@
 <div class="form-container container">
     <div class="form">
         <h1>Professor login</h1>
-        <form action="{{ url_for('auth_bp.login', page=request.args.get('page')) }}" method="POST">
+        <form action="{{ url_for('auth_bp.login')}}" method="POST">
             <div class="form-group">
                 <label class="form-check-label" for="username">Username</label>
                 <input type="text" class="form-control" id="username" name="username" placeholder="Enter username"
@@ -15,7 +15,7 @@
             </div>
             
             <button type="submit" class="button btn-block">Login</button>
-            <a href="{{ url_for('professor_bp.register') }}">
+            <a href="{{ url_for('auth_bp.register') }}">
                 <h6>Or signup</h6>
             </a>
         </form>
