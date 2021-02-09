@@ -32,13 +32,13 @@ def instructor():
             # Decrypt the value where the table is Feedback and the column is elaborate number
             feedbacks = mysql_aes_decrypt(feedbacks.Feedback.elaborateNumber, random_key)
 
-            if feedbacks == "Instructor/Professor":
+            if feedbacks == "1":
                 instructorCount += 1
-            if feedbacks == "Teaching style":
+            if feedbacks == "2":
                 teachingStyleCount += 1
-            if feedbacks == "Topic":
+            if feedbacks == "3":
                 topicCount += 1
-            if feedbacks == "Other":
+            if feedbacks == "4":
                 otherCount += 1
 
         return render_template('login.html',
