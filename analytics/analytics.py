@@ -91,7 +91,49 @@ def drawbar(classCode, Category):
     Frame = pd.read_sql_query("SELECT * from feedback", engine)
     Frame = decrypt_frame(Frame)
     Frame = Frame[Frame['classCode'] == classCode]
+
+    # Go through the columns and data in each column in the Frame
+    for (column, columnData) in Frame.iteritems():
+        # if the column is emoji
+        if column == "emoji":
+            # Go through the data in emoji column
+            for values in columnData.values:
+                # If it is decrypted, continue
+                if isinstance(values, int):
+                    continue
+                else:
+                    # If it isn't decrypted, decrypt it
+                    decryptValue = mysql_aes_decrypt(values, random_key)
+                    # Replace it everywhere in the column
+                    Frame[column] = Frame[column].replace(values, int(decryptValue))
+        # if the column is elaborateText
+        if column == "elaborateText":
+            # Go through the data in emoji column
+            for values in columnData.values:
+                # If it is decrypted, continue
+                if isinstance(values, str):
+                    continue
+                else:
+                    # If it isn't decrypted, decrypt it
+                    decryptValue = mysql_aes_decrypt(values, random_key)
+                    # Replace it everywhere in the column
+                    Frame[column] = Frame[column].replace(values, decryptValue)
+        # if the column is elaborateNumber
+        if column == "elaborateNumber":
+            # Go through the data in emoji column
+            for values in columnData.values:
+                # If it is decrypted, continue
+                if isinstance(values, str):
+                    continue
+                else:
+                    # If it isn't decrypted, decrypt it
+                    decryptValue = mysql_aes_decrypt(values, random_key)
+                    # Replace it everywhere in the column
+                    Frame[column] = Frame[column].replace(values, decryptValue)
+
     Frame = Frame[Frame['elaborateNumber'] == Category]
+
+    print(Frame)
 
     fig = Figure()
     axis = fig.add_subplot(1, 1, 1)
@@ -135,6 +177,46 @@ def calc(classCode, Category):
     Frame = pd.read_sql_query("SELECT * from feedback", engine)
     Frame = decrypt_frame(Frame)
     Frame = Frame[Frame['classCode'] == classCode]
+
+    # Go through the columns and data in each column in the Frame
+    for (column, columnData) in Frame.iteritems():
+        # if the column is emoji
+        if column == "emoji":
+            # Go through the data in emoji column
+            for values in columnData.values:
+                # If it is decrypted, continue
+                if isinstance(values, int):
+                    continue
+                else:
+                    # If it isn't decrypted, decrypt it
+                    decryptValue = mysql_aes_decrypt(values, random_key)
+                    # Replace it everywhere in the column
+                    Frame[column] = Frame[column].replace(values, int(decryptValue))
+        # if the column is elaborateText
+        if column == "elaborateText":
+            # Go through the data in emoji column
+            for values in columnData.values:
+                # If it is decrypted, continue
+                if isinstance(values, str):
+                    continue
+                else:
+                    # If it isn't decrypted, decrypt it
+                    decryptValue = mysql_aes_decrypt(values, random_key)
+                    # Replace it everywhere in the column
+                    Frame[column] = Frame[column].replace(values, decryptValue)
+        # if the column is elaborateNumber
+        if column == "elaborateNumber":
+            # Go through the data in emoji column
+            for values in columnData.values:
+                # If it is decrypted, continue
+                if isinstance(values, str):
+                    continue
+                else:
+                    # If it isn't decrypted, decrypt it
+                    decryptValue = mysql_aes_decrypt(values, random_key)
+                    # Replace it everywhere in the column
+                    Frame[column] = Frame[column].replace(values, decryptValue)
+
     Frame = Frame[Frame['elaborateNumber'] == Category]
 
     Frame = Frame['emoji']  # Get just the numbers
@@ -154,6 +236,46 @@ def drawtimetoday(classCode, Category):
     Frame = decrypt_frame(Frame)
     # This looks stil encrypted
     Frame = Frame[Frame['classCode'] == classCode]
+
+    # Go through the columns and data in each column in the Frame
+    for (column, columnData) in Frame.iteritems():
+        # if the column is emoji
+        if column == "emoji":
+            # Go through the data in emoji column
+            for values in columnData.values:
+                # If it is decrypted, continue
+                if isinstance(values, int):
+                    continue
+                else:
+                    # If it isn't decrypted, decrypt it
+                    decryptValue = mysql_aes_decrypt(values, random_key)
+                    # Replace it everywhere in the column
+                    Frame[column] = Frame[column].replace(values, int(decryptValue))
+        # if the column is elaborateText
+        if column == "elaborateText":
+            # Go through the data in emoji column
+            for values in columnData.values:
+                # If it is decrypted, continue
+                if isinstance(values, str):
+                    continue
+                else:
+                    # If it isn't decrypted, decrypt it
+                    decryptValue = mysql_aes_decrypt(values, random_key)
+                    # Replace it everywhere in the column
+                    Frame[column] = Frame[column].replace(values, decryptValue)
+        # if the column is elaborateNumber
+        if column == "elaborateNumber":
+            # Go through the data in emoji column
+            for values in columnData.values:
+                # If it is decrypted, continue
+                if isinstance(values, str):
+                    continue
+                else:
+                    # If it isn't decrypted, decrypt it
+                    decryptValue = mysql_aes_decrypt(values, random_key)
+                    # Replace it everywhere in the column
+                    Frame[column] = Frame[column].replace(values, decryptValue)
+
     Frame = Frame[Frame['elaborateNumber'] == Category]
 
     dateNow = date.today()  # Get today's date
@@ -202,9 +324,50 @@ def drawtimeyest(classCode, Category):
     elif(Category == 'Teaching-style'):
         Category = 'Teaching style'
 
+    # Get all items from database
     Frame = pd.read_sql_query("SELECT * from feedback", engine)
     Frame = decrypt_frame(Frame)
     Frame = Frame[Frame['classCode'] == classCode]
+
+    # Go through the columns and data in each column in the Frame
+    for (column, columnData) in Frame.iteritems():
+        # if the column is emoji
+        if column == "emoji":
+            # Go through the data in emoji column
+            for values in columnData.values:
+                # If it is decrypted, continue
+                if isinstance(values, int):
+                    continue
+                else:
+                    # If it isn't decrypted, decrypt it
+                    decryptValue = mysql_aes_decrypt(values, random_key)
+                    # Replace it everywhere in the column
+                    Frame[column] = Frame[column].replace(values, int(decryptValue))
+        # if the column is elaborateText
+        if column == "elaborateText":
+            # Go through the data in emoji column
+            for values in columnData.values:
+                # If it is decrypted, continue
+                if isinstance(values, str):
+                    continue
+                else:
+                    # If it isn't decrypted, decrypt it
+                    decryptValue = mysql_aes_decrypt(values, random_key)
+                    # Replace it everywhere in the column
+                    Frame[column] = Frame[column].replace(values, decryptValue)
+        # if the column is elaborateNumber
+        if column == "elaborateNumber":
+            # Go through the data in emoji column
+            for values in columnData.values:
+                # If it is decrypted, continue
+                if isinstance(values, str):
+                    continue
+                else:
+                    # If it isn't decrypted, decrypt it
+                    decryptValue = mysql_aes_decrypt(values, random_key)
+                    # Replace it everywhere in the column
+                    Frame[column] = Frame[column].replace(values, decryptValue)
+
     Frame = Frame[Frame['elaborateNumber'] == Category]
 
     dateNow = date.today()  # Get today's date
@@ -258,6 +421,46 @@ def drawtimeweek(classCode, Category):
     Frame = pd.read_sql_query("SELECT * from feedback", engine)
     Frame = decrypt_frame(Frame)
     Frame = Frame[Frame['classCode'] == classCode]
+
+    # Go through the columns and data in each column in the Frame
+    for (column, columnData) in Frame.iteritems():
+        # if the column is emoji
+        if column == "emoji":
+            # Go through the data in emoji column
+            for values in columnData.values:
+                # If it is decrypted, continue
+                if isinstance(values, int):
+                    continue
+                else:
+                    # If it isn't decrypted, decrypt it
+                    decryptValue = mysql_aes_decrypt(values, random_key)
+                    # Replace it everywhere in the column
+                    Frame[column] = Frame[column].replace(values, int(decryptValue))
+        # if the column is elaborateText
+        if column == "elaborateText":
+            # Go through the data in emoji column
+            for values in columnData.values:
+                # If it is decrypted, continue
+                if isinstance(values, str):
+                    continue
+                else:
+                    # If it isn't decrypted, decrypt it
+                    decryptValue = mysql_aes_decrypt(values, random_key)
+                    # Replace it everywhere in the column
+                    Frame[column] = Frame[column].replace(values, decryptValue)
+        # if the column is elaborateNumber
+        if column == "elaborateNumber":
+            # Go through the data in emoji column
+            for values in columnData.values:
+                # If it is decrypted, continue
+                if isinstance(values, str):
+                    continue
+                else:
+                    # If it isn't decrypted, decrypt it
+                    decryptValue = mysql_aes_decrypt(values, random_key)
+                    # Replace it everywhere in the column
+                    Frame[column] = Frame[column].replace(values, decryptValue)
+                
     Frame = Frame[Frame['elaborateNumber'] == Category]
 
     dateNow = date.today()  # Get today's date
