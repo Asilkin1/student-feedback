@@ -1,12 +1,112 @@
 # All imports done
-from flask import Blueprint, render_template,request,session, flash ,redirect, url_for
+from flask import Blueprint, render_template,request,session,Markup,flash ,redirect, url_for
 from CreateUserDatabase import * 
 from encryption import *
 import re
+import bcrypt
 
 auth_bp = Blueprint('auth_bp', __name__,
     template_folder='templates',
     static_folder='static')
+
+
+# Register students
+@auth_bp.route('/student/registration', methods=["POST", "GET"])
+def studentRegistration():
+
+    if request.method == "POST":
+        # Generate a unique code here
+        studentCode = request.form.get('studentCode')
+
+        # hash student code
+        myCode = studentCode.encode('ascii')  # Convert code to binary
+        # bcrypt.gensalt(rounds=16)   # used for hashing
+        salt = b'$2b$16$MTSQ7iU1kQ/bz6tdBgjrqu'
+       
+        hashed = bcrypt.hashpw(myCode, salt)  # hashing the code
+
+        # Connect to the database
+        query = databaseConnection.query(StudentCodes).filter(
+            StudentCodes.code == hashed.decode())
+
+        # Searching for the code
+        result = query.first()
+
+        # Code exists
+        if result:
+            flash('The code is already in use ', 'error')
+            return redirect(url_for('student_bp.newstudent'))
+            # Returning user
+
+        else:
+            flash(f"Your student code {studentCode}", 'info')
+            # Add new user to the database
+            newStudent = StudentCodes(hashed.decode())
+            databaseConnection.add(newStudent)
+            databaseConnection.commit()
+
+            return render_template('student_sign_up.html')
+
+    elif request.method == "GET":
+        return render_template('student_sign_in.html')
+
+@auth_bp.route('/newstudent', methods=['POST', 'GET'])
+def newstudent():
+    if request.method == "POST":
+        # Get class code
+        classCode = request.form.get('classCode')
+
+        # Generate a unique code here
+        studentCode = request.form.get('studentCode')
+        # hash student code
+        myCode = studentCode.encode('ascii')  # Convert code to binary
+        # bcrypt.gensalt(rounds=16)   # used for hashing
+        salt = b'$2b$16$MTSQ7iU1kQ/bz6tdBgjrqu'
+       
+        hashed = bcrypt.hashpw(myCode, salt)  # hashing the code
+        # Connect to the database
+
+        query = databaseConnection.query(StudentCodes).filter(StudentCodes.code == hashed.decode())
+        queryClass = databaseConnection.query(Account).filter(Account.classCode == classCode)
+        # Searching for the code
+      
+        result = query.first()
+        resultClass = queryClass.first()
+
+        size = resultClass.size
+        alreadyIn = get_distinct_voters(classCode, studentCode)
+        
+        # Returning user
+        if result and resultClass:
+            print("already in ", alreadyIn)
+            if alreadyIn >= int(size):
+                queryStudent = databaseConnection.query(Feedback).filter(Feedback.classCode == classCode)
+                for results in queryStudent.all():
+                    if results.studentCode != studentCode:
+                        flash('The class is full. Please let your professor know and have him/her update the class size accordingly.', 'error')
+                        return redirect(url_for('auth_bp.newstudent'))
+                    else:
+                        # Go to feedback page
+                        return redirect(url_for('student_bp.student'))
+            else:
+                flash('Welcome! Remember your code for the future use','success')
+                flash(myCode.decode(),'info')
+                session['classCode'] = classCode
+                session['studentCode'] = studentCode
+                session['logged_in'] = True
+                # Go to feedback page
+                return redirect(url_for('student_bp.student'))
+
+        # No records found
+        elif result == None:
+            flash(Markup('The student code does not exist. Do you want to <a href="/student/registration">register</a>?'), 'error')
+            return redirect(url_for('auth_bp.newstudent'))
+        elif resultClass == None:
+            flash(Markup('The class code does not exist. Please check in with your professor.'), 'error')
+            return redirect(url_for('auth_bp.newstudent'))
+
+    elif request.method == "GET":
+        return render_template('student_sign_up.html')
 
 # Register professor
 @auth_bp.route('/register', methods=['GET', 'POST'])
