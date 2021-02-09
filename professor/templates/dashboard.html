@@ -52,10 +52,15 @@
                       <option>Other</option>
                     </select>
                   </div>
-                  <button name="check" id="check" href="{{ url_for('auth_bp.login', page=request.args.get('page')) }}" class="btn btn-block btn-dark" type="submit">Check</button>
+                  <button name="check" id="check" href="{{ url_for('auth_bp.login') }}" class="btn btn-block btn-dark" type="submit">Check</button>
                 </td>
                 <td>
                   <table style="border: none;">
+                    <td style="border: none;">
+                      <form action="/analytics/" method="GET">
+                        <a href="{{ url_for('analytics_bp.analytics', classCode=row.classCode)}}" class="btn btn-outline-primary">View All Feedback</a>
+                      </form>
+                    </td>
                     <td style="border: none;">
                       <div class="form-group">
                         <a href="/professor/edit/{{row.entryId}}" class="btn btn-outline-success">Edit</a>
