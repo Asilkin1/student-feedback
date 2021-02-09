@@ -7,7 +7,7 @@
 <div class="container">
     
     <div class="container col-md-3 justify-content-center">
-        <form action="{{url_for('auth_bp.login', page=request.args.get('page'))}}">
+        <form action="{{ url_for('professor_bp.instructor')}}">
             <button class="btn btn-info">Back to Class Selection</a>
         </form>
     </div>
@@ -32,10 +32,7 @@
                 </div>
             </div>
         </div>
-        
-
-      
-        
+          
         <!-- Table begins  -->
         <div class="table-responsive">
             <table id="myTable" class="table table-striped  table-hover table-sm" cellspacing="0" width="100%">
@@ -65,9 +62,9 @@
                         <td>
                             <!-- Conditional rendering of the results -->
                             {% if data.at[row,'inClass'] %}
-                                <h6><span class="badge badge-success">YES</span></h6>
+                            <h6><span class="badge badge-danger">NO</span></h6>
                             {% else %}
-                                <h6><span class="badge badge-danger">NO</span></h6>
+                            <h6><span class="badge badge-success">YES</span></h6>
                             {% endif %}
                         </td>
                     </tr>

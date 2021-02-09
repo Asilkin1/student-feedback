@@ -186,6 +186,7 @@ def drawtimetoday(classCode, Category):
         Category = 'Teaching style'
 
     Frame = pd.read_sql_query("SELECT * from feedback", engine)
+    # This looks stil encrypted
     Frame = Frame[Frame['classCode'] == classCode]
     Frame = Frame[Frame['elaborateNumber'] == Category]
 

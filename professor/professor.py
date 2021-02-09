@@ -2,99 +2,53 @@
 from flask import Blueprint, render_template,request, flash, session, redirect, url_for
 import random
 from CreateUserDatabase import *
-import re
 
 professor_bp = Blueprint('professor_bp', __name__,
     template_folder='templates',
     static_folder='static')
 
-@professor_bp.route('/register', methods=['GET', 'POST'])
-def register():
-
-    if request.method == 'POST':
-        # Get username from the form
-        username = request.form.get('username')
-        password = request.form.get('password')
-        repassword = request.form.get('repassword')
-
-        if password == "":
-            flash('Password cannot be empty.', 'error')
-        else: 
-            for error, boolean in password_check(password).items():
-
-                if error == 'length_error' and boolean:
-                    flash('Password length must contain at least 8 characters.', 'error')
-                    return render_template('register.html')
-                
-                if error == 'digit_error' and boolean:
-                    flash('Password must contain at least one digit.', 'error')
-                    return render_template('register.html')
-                
-                if error == 'uppercase_error' and boolean:
-                    flash('Password must contain at least one upper case letter', 'error')
-                    return render_template('register.html')
-                
-                if error == 'symbol_error' and boolean:
-                    flash('Password must contain at least one symbol.', 'error')
-                    return render_template('register.html')
-
-                if error == 'password_ok' and boolean:
-                    print(str(password) == str(repassword))
-                    # Passwords should match
-                    if str(password) == str(repassword):
-                        user = User(username, password)
-                        databaseConnection.add(user)
-                        databaseConnection.commit()
-                        flash('You have registered. Please login to continue.', 'success')
-                        return render_template('login.html', title="login")
-
-                    else:
-                        flash('Passwords doesn\'t match.', 'error')
-                        return render_template('register.html')
-    return render_template('register.html')
-
-def password_check(password):
-    """
-    Verify the strength of 'password'
-    Returns a dictionary indicating the wrong criteria
-    A password is considered strong if:
-        8 characters length or more
-        1 digit or more
-        1 symbol or more
-        1 uppercase letter or more
-    """
-
-    # calculating the length
-    length_error = len(password) < 8
-
-    # searching for digits
-    digit_error = re.search(r"\d", password) is None
-
-    # searching for uppercase
-    uppercase_error = re.search(r"[A-Z]", password) is None
-
-    # searching for symbols
-    symbol_error = re.search(r"[ !#$%&'()*+,-./[\\\]^_`{|}~"+r'"]', password) is None
-
-    # overall result
-    password_ok = not ( length_error or digit_error or uppercase_error or symbol_error )
-
-    return {
-        'password_ok' : password_ok,
-        'length_error' : length_error,
-        'digit_error' : digit_error,
-        'uppercase_error' : uppercase_error,
-        'symbol_error' : symbol_error,
-    }
-
+# Ask to login for any routes in professor
+@professor_bp.before_request
+def before_request():
+    if not session.get('logged_in'):
+        flash('Please log in to gain access to the website.', 'info')
+        print('You have to be logged in')
+        return render_template('login.html')
 
 @professor_bp.route('/professor', methods=["POST", "GET"])
 def instructor():
-    if not session.get('logged_in'):
-        flash('Please log in to gain access to the website.', 'info')
-        return render_template('login.html', title='submit')
-    else:
-        return render_template('professor.html')
+     # Get classes data for current username
+        dashboardData = databaseConnection.query(Account).filter(Account.username == session.get('username'))
+
+        query = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode)
+        result = query.all()
+        instructorCount = 0
+        teachingStyleCount = 0
+        topicCount = 0
+        otherCount = 0
+
+        # Loop through the query results
+        for feedbacks in result:
+            # Decrypt the value where the table is Feedback and the column is elaborate number
+            feedbacks = mysql_aes_decrypt(feedbacks.Feedback.elaborateNumber, random_key)
+
+            if feedbacks == "Instructor/Professor":
+                instructorCount += 1
+            if feedbacks == "Teaching style":
+                teachingStyleCount += 1
+            if feedbacks == "Topic":
+                topicCount += 1
+            if feedbacks == "Other":
+                otherCount += 1
+
+        return render_template('login.html',
+                                title='dashboard',
+                                data=dashboardData,
+                                instructor=instructorCount,
+                                topic=topicCount,
+                                other=otherCount,
+                                teaching=teachingStyleCount
+                                )
 
 @professor_bp.route("/professor/delete/<string:id>/<string:ccode>", methods=['GET', 'POST'])
 def deleteClass(id, ccode):
@@ -104,7 +58,7 @@ def deleteClass(id, ccode):
     databaseConnection.commit()
 
     flash('Class Deleted', 'success')
-    return redirect(url_for('auth_bp.login'))
+    return redirect(url_for('professor_bp.instructor'))
 
 @professor_bp.route("/professor/edit/<string:id>", methods=['GET', 'POST'])
 def editClass(id):
@@ -178,7 +132,8 @@ def editClass(id):
 
         flash('Class Updated', 'success')
 
-        return redirect(url_for('auth_bp.login'))
+        # Go back to the dashboard
+        return redirect(url_for('professor_bp.instructor'))
 
     return render_template('editClass.html', entryId=id, schoolName=schoolName, departmentName=departmentName, className=className,
                                                     sectionName=sectionName, days=days, start=start, end=end, size=size, classMode=mode)
@@ -243,6 +198,6 @@ def professor():
         except:
             databaseConnection.rollback()
             
-        return redirect(url_for('auth_bp.login'))
+        return redirect(url_for('professor_bp.instructor'))
 
     return render_template('addClass.html', title='professor')
