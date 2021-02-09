@@ -35,7 +35,7 @@ def studentRegistration():
         # Code exists
         if result:
             flash('The code is already in use ', 'error')
-            return redirect(url_for('student_bp.newstudent'))
+            return redirect(url_for('student_bp.student'))
             # Returning user
 
         else:
