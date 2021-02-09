@@ -27,8 +27,6 @@ def mysql_aes_encrypt(val, key):
     return v
 
 # Decryption
-
-
 def mysql_aes_decrypt(val, key):
     val = binascii.unhexlify(bytearray(val))
 
@@ -46,16 +44,45 @@ def mysql_aes_decrypt(val, key):
 
     return v
 
-def decryption(classCode, Category):
-    Frame = pd.read_sql_query("SELECT * from feedback", databaseConnection)
-
-    for row in range(0, len(Frame.index)):
-        Frame.at[row, 'emoji'] = mysql_aes_decrypt(
-            Frame.at[row, 'emoji'], random_key)
-        Frame.at[row, 'elaborateNumber'] = mysql_aes_decrypt(
-            Frame.at[row, 'elaborateNumber'], random_key)
-        Frame.at[row, 'elaborateText'] = mysql_aes_decrypt(
-            Frame.at[row, 'elaborateText'], random_key)
-
+#----------------------------------------------------------------
+# Decrypt frame
+def decrypt_frame(Frame):
+    # Go through the columns and data in each column in the Frame
+    for (column, columnData) in Frame.iteritems():
+        # if the column is emoji
+        if column == "emoji":
+            # Go through the data in emoji column
+            for values in columnData.values:
+                # If it is decrypted, continue
+                if isinstance(values, int):
+                    continue
+                else:
+                    # If it isn't decrypted, decrypt it
+                    decryptValue = mysql_aes_decrypt(values, random_key)
+                    # Replace it everywhere in the column
+                    Frame[column] = Frame[column].replace(values, int(decryptValue))
+        # if the column is elaborateText
+        if column == "elaborateText":
+            # Go through the data in emoji column
+            for values in columnData.values:
+                # If it is decrypted, continue
+                if isinstance(values, str):
+                    continue
+                else:
+                    # If it isn't decrypted, decrypt it
+                    decryptValue = mysql_aes_decrypt(values, random_key)
+                    # Replace it everywhere in the column
+                    Frame[column] = Frame[column].replace(values, decryptValue)
+        # if the column is elaborateNumber
+        if column == "elaborateNumber":
+            # Go through the data in emoji column
+            for values in columnData.values:
+                # If it is decrypted, continue
+                if isinstance(values, str):
+                    continue
+                else:
+                    # If it isn't decrypted, decrypt it
+                    decryptValue = mysql_aes_decrypt(values, random_key)
+                    # Replace it everywhere in the column
+                    Frame[column] = Frame[column].replace(values, decryptValue)
     return Frame
-

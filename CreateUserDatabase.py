@@ -217,49 +217,6 @@ def delete_event_db_handler(mapper, connection,target):
     res = es.delete(index=index, doc_type=doc, id=id)
     print('delete index', res)
 
-#----------------------------------------------------------------
-# Decrypt frame
-def decrypt_frame(Frame):
-    # Go through the columns and data in each column in the Frame
-    for (column, columnData) in Frame.iteritems():
-        # if the column is emoji
-        if column == "emoji":
-            # Go through the data in emoji column
-            for values in columnData.values:
-                # If it is decrypted, continue
-                if isinstance(values, str):
-                    continue
-                else:
-                    # If it isn't decrypted, decrypt it
-                    decryptValue = mysql_aes_decrypt(values, random_key)
-                    # Replace it everywhere in the column
-                    Frame[column] = Frame[column].replace(values, decryptValue)
-        # if the column is elaborateText
-        if column == "elaborateText":
-            # Go through the data in emoji column
-            for values in columnData.values:
-                # If it is decrypted, continue
-                if isinstance(values, str):
-                    continue
-                else:
-                    # If it isn't decrypted, decrypt it
-                    decryptValue = mysql_aes_decrypt(values, random_key)
-                    # Replace it everywhere in the column
-                    Frame[column] = Frame[column].replace(values, decryptValue)
-        # if the column is elaborateNumber
-        if column == "elaborateNumber":
-            # Go through the data in emoji column
-            for values in columnData.values:
-                # If it is decrypted, continue
-                if isinstance(values, str):
-                    continue
-                else:
-                    # If it isn't decrypted, decrypt it
-                    decryptValue = mysql_aes_decrypt(values, random_key)
-                    # Replace it everywhere in the column
-                    Frame[column] = Frame[column].replace(values, decryptValue)
-    return Frame
-
 # Set event listener for Account table
 event.listen(Account, 'after_update',insert_update,propagate=True)
 event.listen(Account, 'after_delete',delete_event_db_handler,propagate=True)
