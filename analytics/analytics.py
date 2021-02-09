@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template,request
+from flask import Blueprint, render_template,request,make_response
 from datetime import date, datetime, timedelta
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -27,6 +27,7 @@ def check():
             Category = 'Instructor/Professor'
     elif(Category == 'Teaching-style'):
         Category = 'Teaching style'
+
 
     Frame = pd.read_sql_query("SELECT * from Feedback", engine)
     Frame = Frame[Frame['classCode']==ccode]
@@ -123,6 +124,7 @@ def drawbar(classCode, Category):
     elif(Category == 'Teaching-style'):
         Category = 'Teaching style'
 
+    # Should have decryption here?
     Frame = pd.read_sql_query("SELECT * from feedback", engine)
     Frame = Frame[Frame['classCode'] == classCode]
     Frame = Frame[Frame['elaborateNumber'] == Category]
