@@ -48,6 +48,9 @@
         <header>
             v1.0 open for public testing
         </header>
+        <div id="socketData">
+
+        </div>
         <nav class="navbar navbar-dark  bg-disabled flex-md-nowrap p-0">
              <!-- Conditional rendering -->
              <!-- Professor case -->
@@ -117,27 +120,5 @@
     
 </footer>
 </html>
-<script>
-    // $(document).ready(function(){
-
-    //     $(document).on('click', '.page-link', function(event){
-    //         let link = $(this).attr('href');
-    //         next(link);         // Next page link ?page=2
-    //         event.preventDefault(); // Should not reload the page
-    //     });
-    // });
-
-    // let next = function(link){
-    //     req = $.ajax({
-    //         data:{
-    //             pageOne: $('input[dpage=1]').val()
-    //         },
-    //         type: 'POST',
-    //         url: link
-    //     });
-    //     req.done(function(data){
-    //         console.log('Next page');
-    //         $('#results').html(data);
-    //     })
-    // }
-</script>
+<script src="https://cdn.socket.io/3.1.1/socket.io.min.js"></script>
+<script src="{{ url_for('static', filename='/js/socket.js')}}"></script>
