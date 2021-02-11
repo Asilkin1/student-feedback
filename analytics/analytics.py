@@ -23,15 +23,11 @@ def check():
     ccode = request.args.get('ccode')
     Category = request.args.get('category')
 
-    if(Category == 'Instructor'):
-        Category = '1'
-    elif(Category == 'Teaching-style'):
-        Category = '2'
-    elif(Category == 'Topic'):
-        Category = '3'
-    elif(Category == 'Other'):
-        Category = '4'
+    query = databaseConnection.query(Categories).filter(Categories.category == Category)
+    result = query.first()
 
+    Category = result.number
+    print(Category)
 
     Frame = pd.read_sql_query("SELECT * from Feedback", engine)
     Frame = Frame[Frame['classCode']==ccode]
@@ -48,33 +44,10 @@ def check():
     # Checks the size of the data depending on what category
     else:
         Show = calc(ccode, Category)
-        if(Category == '1'):
-            Frame = Frame[Frame['elaborateNumber'] == "1"]
+        if Category:
+            Frame = Frame[Frame['elaborateNumber'] == Category]
             PassFrame = Frame
-            if(len(Frame.index) < 10):
-                return render_template('notEnoughData.html', title='NED', data=PassFrame)
-            else:
-                return render_template('analytics.html',title='data', data=PassFrame, display=Show)
-        
-        elif(Category == '2'):
-            Frame = Frame[Frame['elaborateNumber'] == "2"]
-            PassFrame = Frame
-            if(len(Frame.index) < 10):
-                return render_template('notEnoughData.html', title='NED', data=PassFrame)
-            else:
-                return render_template('analytics.html',title='data', data=PassFrame, display=Show)
-        
-        elif(Category == '3'):
-            Frame = Frame[Frame['elaborateNumber'] == "3"]
-            PassFrame = Frame
-            if(len(Frame.index) < 10):
-                return render_template('notEnoughData.html', title='NED', data=PassFrame)
-            else:
-                return render_template('analytics.html',title='data', data=PassFrame, display=Show)
-        
-        elif(Category == '4'):
-            Frame = Frame[Frame['elaborateNumber'] == "4"]
-            PassFrame = Frame
+            print(PassFrame)
             if(len(Frame.index) < 10):
                 return render_template('notEnoughData.html', title='NED', data=PassFrame)
             else:
@@ -84,16 +57,10 @@ def check():
 @analytics_bp.route('/analytics/plot/<classCode>&<Category>', methods=["POST", "GET"])
 # Called by analytics.html
 def drawbar(classCode, Category):
+    query = databaseConnection.query(Categories).filter(Categories.category == Category)
+    result = query.first()
 
-    # Match the category var to database names
-    if(Category == 'Instructor'):
-        Category = '1'
-    elif(Category == 'Teaching-style'):
-        Category = '2'
-    elif(Category == 'Topic'):
-        Category = '3'
-    elif(Category == 'Other'):
-        Category = '4'
+    Category = result.number
 
     # Should have decryption here?
     Frame = pd.read_sql_query("SELECT * from feedback", engine)
@@ -139,15 +106,6 @@ def drawbar(classCode, Category):
 @analytics_bp.route('/analytics/calc/<classCode>&<Category>', methods=["POST", "GET"])
 # Called by Analytics.html
 def calc(classCode, Category):
-    if(Category == 'Instructor'):
-        Category = '1'
-    elif(Category == 'Teaching-style'):
-        Category = '2'
-    elif(Category == 'Topic'):
-        Category = '3'
-    elif(Category == 'Other'):
-        Category = '4'
-
     Frame = pd.read_sql_query("SELECT * from feedback", engine)
     Frame = Frame[Frame['classCode'] == classCode]
 
@@ -161,22 +119,16 @@ def calc(classCode, Category):
 @analytics_bp.route('/analytics/plottime/today/<classCode>&<Category>', methods=["POST", "GET"])
 # Called by Analytics.html
 def drawtimetoday(classCode, Category):
+    query = databaseConnection.query(Categories).filter(Categories.category == Category)
+    result = query.first()
 
-    # Match the category var to database names
-    if(Category == 'Instructor'):
-        Category = '1'
-    elif(Category == 'Teaching-style'):
-        Category = '2'
-    elif(Category == 'Topic'):
-        Category = '3'
-    elif(Category == 'Other'):
-        Category = '4'
+    Category = result.number
 
     Frame = pd.read_sql_query("SELECT * from feedback", engine)
     # This looks stil encrypted
     Frame = Frame[Frame['classCode'] == classCode]
-    Frame = decrypt_frame(Frame)
 
+    Frame = decrypt_frame(Frame)
     Frame = Frame[Frame['elaborateNumber'] == Category]
 
     dateNow = date.today()  # Get today's date
@@ -218,21 +170,15 @@ def drawtimetoday(classCode, Category):
 @analytics_bp.route('/analytics/plottime/yesterday/<classCode>&<Category>', methods=["POST", "GET"])
 # Called by Analytics.html
 def drawtimeyest(classCode, Category):
+    query = databaseConnection.query(Categories).filter(Categories.category == Category)
+    result = query.first()
 
-    # Match the category var to database names
-    if(Category == 'Instructor'):
-        Category = '1'
-    elif(Category == 'Teaching-style'):
-        Category = '2'
-    elif(Category == 'Topic'):
-        Category = '3'
-    elif(Category == 'Other'):
-        Category = '4'
+    Category = result.number
 
     # Get all items from database
     Frame = pd.read_sql_query("SELECT * from feedback", engine)
     Frame = Frame[Frame['classCode'] == classCode]
-    
+
     Frame = decrypt_frame(Frame)
 
     Frame = Frame[Frame['elaborateNumber'] == Category]
@@ -278,16 +224,10 @@ def drawtimeyest(classCode, Category):
 @analytics_bp.route('/analytics/plottime/week/<classCode>&<Category>', methods=["POST", "GET"])
 # Called by Analytics.html
 def drawtimeweek(classCode, Category):
+    query = databaseConnection.query(Categories).filter(Categories.category == Category)
+    result = query.first()
 
-    # Match the category var to database names
-    if(Category == 'Instructor'):
-        Category = '1'
-    elif(Category == 'Teaching-style'):
-        Category = '2'
-    elif(Category == 'Topic'):
-        Category = '3'
-    elif(Category == 'Other'):
-        Category = '4'
+    Category = result.number
 
     Frame = pd.read_sql_query("SELECT * from feedback", engine)
     Frame = Frame[Frame['classCode'] == classCode]

@@ -127,9 +127,9 @@
             <div class="col- feedmoji">
                 <!-- Category -->
                 <div class="form-check">
-                    <input class="form-check-input block" name="elaborateNumber" type="radio" id="topic" value={{row.number}}
+                    <input class="form-check-input block" name="elaborateNumber" id={{row.category}} type="radio" value={{row.number}}
                         required>
-                    <label class="form-check-label" for="topic" style="cursor: pointer;">
+                    <label class="form-check-label" for={{row.category}} style="cursor: pointer;">
                         {{ row.category}}
                     </label>
                 </div>

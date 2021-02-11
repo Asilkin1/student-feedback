@@ -229,13 +229,13 @@ def decrypt_frame(Frame):
             # Go through the data in emoji column
             for values in columnData.values:
                 # If it is decrypted, continue
-                if isinstance(values, str):
+                if isinstance(values, int):
                     continue
                 else:
                     # If it isn't decrypted, decrypt it
                     decryptValue = mysql_aes_decrypt(values, random_key)
                     # Replace it everywhere in the column
-                    Frame[column] = Frame[column].replace(values, decryptValue)
+                    Frame[column] = Frame[column].replace(values, int(decryptValue))
         # if the column is elaborateText
         if column == "elaborateText":
             # Go through the data in emoji column
