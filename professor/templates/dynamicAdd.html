@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+
+{% with messages = get_flashed_messages()%}
+{% if messages %}
+
+<p>{{msg}}</p>
+
+{%endif%}
+{% endwith %}
+
+<!-- Typical approach to create any form with bootstrap  -->
+<div class="container col- mx-auto">
+    <h3>Add class</h3>
+    <!-- When submit button is clicked then the action should bring to previous page -->
+    <form action="{{ url_for('professor_bp.professor')}}" method="post">
+
+        <div class="row justify-content-center">
+            <div class="table-responsive">  
+                <table class="table table-bordered" name="dynamic_field" id="dynamic_field">  
+                     <tr>  
+                          <td><input type="text" name="name[]" placeholder="Enter your Name" class="form-control name_list" /></td>  
+                          <td><button type="button" name="add" id="add" class="btn btn-success">Add More</button></td>  
+                     </tr>  
+                </table> 
+           </div>
+        </div>
+    </form>
+</div>
+
+<script>  
+    $(document).ready(function(){  
+         var i=1;  
+         $('#add').click(function(){  
+              i++;  
+              $('#dynamic_field').append('<tr id="row'+i+'"><td><input type="text" name="name[]" placeholder="Enter your Name" class="form-control name_list" /></td><td><button type="button" name="remove" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');  
+         });  
+         $(document).on('click', '.btn_remove', function(){  
+              var button_id = $(this).attr("id");   
+              $('#row'+button_id+'').remove();  
+         });  
+    });  
+ </script>
+{% endblock %}

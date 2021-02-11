@@ -1,5 +1,5 @@
 # All router to professor pages
-from flask import Blueprint, render_template,request, flash, session, redirect, url_for
+from flask import Blueprint, render_template,request, flash, session, redirect, url_for, jsonify
 import random
 from CreateUserDatabase import *
 
@@ -179,7 +179,12 @@ def professor():
 
         # Class size
         classSize = str(request.form.get('size'))
-        
+
+        addname= request.form.get('add_name')
+        print("what is happening: ", addname)
+        if addname:
+            print(jsonify({'add_name': addname}))
+
         #days
         days = request.form.getlist('day')
         saveDays = ''
