@@ -1,6 +1,6 @@
 from sqlalchemy import *
 from sqlalchemy import create_engine, ForeignKey, event
-from sqlalchemy import Column, Date, Integer, String
+from sqlalchemy import Column, Date, Integer, String, Text
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.orm import sessionmaker
@@ -31,6 +31,20 @@ class User(Base):
     def __init__(self, username, password):
         self.username = username
         self.password = password
+
+# Categories table
+class Categories(Base):
+    __tablename__ = 'categories'
+
+    id = Column(Integer, primary_key=True)
+    classCode = Column(Text, nullable=False)
+    category = Column(Text, nullable=False)
+    number = Column(Text, nullable=False)
+
+    def __init__(self, classCode,category,number):
+        self.classCode = classCode
+        self.category = category
+        self.number = number
 
 
 #Feedback database(feedback)
@@ -263,4 +277,4 @@ event.listen(Account, 'after_delete',delete_event_db_handler,propagate=True)
 
 
 # create tables
-#Base.metadata.create_all(engine)
+Base.metadata.create_all(engine)
