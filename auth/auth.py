@@ -39,7 +39,7 @@ def studentRegistration():
             # Returning user
 
         else:
-            flash(f"Your student code {studentCode}", 'info')
+            flash(f"Your student code is {studentCode}.", 'info')
             # Add new user to the database
             newStudent = StudentCodes(hashed.decode())
             databaseConnection.add(newStudent)

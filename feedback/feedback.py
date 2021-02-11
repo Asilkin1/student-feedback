@@ -19,10 +19,15 @@ def before_request():
 
 @student_bp.route('/student/', methods=["POST", "GET"])
 def student():
-
     if request.method == 'GET':
+        classCode = str(session.get('classCode'))
+        query = databaseConnection.query(Categories).filter(Categories.classCode == classCode)
+        categories = query.all()
+        print(categories)
+
         # Show incentive data
-        return render_template('student.html', you=you_voted(session.get('classCode'),session.get('studentCode')), 
+        return render_template('student.html', categories=categories,
+                                                you=you_voted(session.get('classCode'),session.get('studentCode')), 
                                                 notYou = get_total_voters(session.get('classCode'), session.get('studentCode')), 
                                                 size=get_class_size(session.get('classCode')), 
                                                 voted = you_voted(session.get('classCode'), session.get('studentCode')), 
@@ -52,9 +57,14 @@ def student():
         databaseConnection.add(newFeedback)
         databaseConnection.commit()
 
+        classCode = str(session.get('classCode'))
+        query = databaseConnection.query(Categories).filter(Categories.classCode == classCode)
+        categories = query.all()
+
         # Message
         flash('Thank you for your feedback', 'info')
         return render_template('student.html', title="student", 
+                                categories=categories,
                                 you=you_voted(session.get('classCode'), session.get('studentCode')), 
                                 notYou = get_total_voters(session.get('classCode'), session.get('studentCode')), 
                                 size=get_class_size(session.get('classCode')), 

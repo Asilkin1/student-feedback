@@ -18,43 +18,47 @@ def before_request():
 @professor_bp.route('/professor', methods=["POST", "GET"])
 def instructor():
      # Get classes data for current username
-        dashboardData = databaseConnection.query(Account).filter(Account.username == session.get('username'))
+    dashboardData = databaseConnection.query(Account).filter(Account.username == session.get('username'))
+    categoryData = databaseConnection.query(Categories).filter(Categories.classCode == Account.classCode)
 
-        query = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode)
-        result = query.all()
-        instructorCount = 0
-        teachingStyleCount = 0
-        topicCount = 0
-        otherCount = 0
+    query = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode)
+    result = query.all()
+    instructorCount = 0
+    teachingStyleCount = 0
+    topicCount = 0
+    otherCount = 0
 
-        # Loop through the query results
-        for feedbacks in result:
-            # Decrypt the value where the table is Feedback and the column is elaborate number
-            feedbacks = mysql_aes_decrypt(feedbacks.Feedback.elaborateNumber, random_key)
+    # Loop through the query results
+    for feedbacks in result:
+        # Decrypt the value where the table is Feedback and the column is elaborate number
+        feedbacks = mysql_aes_decrypt(feedbacks.Feedback.elaborateNumber, random_key)
 
-            if feedbacks == "1":
-                instructorCount += 1
-            if feedbacks == "2":
-                teachingStyleCount += 1
-            if feedbacks == "3":
-                topicCount += 1
-            if feedbacks == "4":
-                otherCount += 1
+        if feedbacks == "1":
+            instructorCount += 1
+        if feedbacks == "2":
+            teachingStyleCount += 1
+        if feedbacks == "3":
+            topicCount += 1
+        if feedbacks == "4":
+            otherCount += 1
 
-        return render_template('login.html',
-                                title='dashboard',
-                                data=dashboardData,
-                                instructor=instructorCount,
-                                topic=topicCount,
-                                other=otherCount,
-                                teaching=teachingStyleCount
-                                )
+    return render_template('login.html',
+                            title='dashboard',
+                            data=dashboardData,
+                            categoryData=categoryData,
+                            instructor=instructorCount,
+                            topic=topicCount,
+                            other=otherCount,
+                            teaching=teachingStyleCount
+                            )
 
 @professor_bp.route("/professor/delete/<string:id>/<string:ccode>", methods=['GET', 'POST'])
 def deleteClass(id, ccode):
     databaseConnection.query(Account).filter(Account.entryId == id).delete()
     databaseConnection.commit()
     databaseConnection.query(Feedback).filter(Feedback.classCode == ccode).delete()
+    databaseConnection.commit()
+    databaseConnection.query(Categories).filter(Categories.classCode == ccode).delete()
     databaseConnection.commit()
 
     flash('Class Deleted', 'success')
@@ -180,15 +184,14 @@ def professor():
         # Class size
         classSize = str(request.form.get('size'))
 
-        addname= request.form.get('add_name')
-        print("what is happening: ", addname)
-        if addname:
-            print(jsonify({'add_name': addname}))
-
         #days
         days = request.form.getlist('day')
         saveDays = ''
         print('Days picked: ', days)
+
+        #categories
+        categories = request.form.getlist('categories')
+        print("what is happening now ", categories)
 
         # Combined section and class code
         classAndSection = str(classCode) + '-' + sectionName
@@ -202,6 +205,13 @@ def professor():
             databaseConnection.commit()
         except:
             databaseConnection.rollback()
+
+        i = 1
+        for category in categories:
+            newCategory = Categories(classAndSection, category, str(i))
+            databaseConnection.add(newCategory)
+            i += 1
+        databaseConnection.commit()
             
         return redirect(url_for('professor_bp.instructor'))
 

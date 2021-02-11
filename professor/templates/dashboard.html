@@ -46,10 +46,11 @@
                 <td>
                   <div class="form-group">
                     <select name="category" id="category" class="form-control" required>
-                      <option>Instructor</option>
-                      <option>Teaching-style</option>
-                      <option>Topic</option>
-                      <option>Other</option>
+                      {% for category in categoryData %}
+                      {% if row.classCode == category.classCode %}
+                      <option>{{category.category}}</option>
+                      {% endif %}
+                      {% endfor %}
                     </select>
                   </div>
                   <button name="check" id="check" href="{{ url_for('auth_bp.login') }}" class="btn btn-block btn-dark" type="submit">Check</button>

@@ -122,64 +122,19 @@
         <div class="row justify-content-center">
             <h1>About:</h1>
         </div>
-        <!-- Categrory -->
-        <div class="row justify-content-center" id="face_row">
 
-
-            <!-- Instructor -->
+        {% for row in categories %}
             <div class="col- feedmoji">
-                <div class="form-check justify-content-center">
-                    <input class="form-check-input" name="elaborateNumber" type="radio" id="professor"
-                        value="1" required>
-                    <label class="form-check-label" for="professor"
-                        title="What do you like or dislike about the professor?" style="cursor: pointer;">
-                        <span id="emojiaction">&#128116;</span>
-                        Instructor
-                    </label>
-                </div>
-            </div>
-
-            <div class="col- feedmoji">
-                <!-- Teaching style -->
+                <!-- Category -->
                 <div class="form-check">
-                    <input class="form-check-input" name="elaborateNumber" type="radio" id="teaching"
-                        value="2" required>
-                    <label class="form-check-label" for="teaching"
-                        title="What do you like or dislike about the professor's teaching style?"
-                        style="cursor: pointer;">
-                        <span id="emojiaction">&#127891;</span>
-                        Teaching style
-                    </label>
-                </div>
-            </div>
-
-            <div class="col- feedmoji">
-                <!-- Topic -->
-                <div class="form-check">
-                    <input class="form-check-input block" name="elaborateNumber" type="radio" id="topic" value="3"
+                    <input class="form-check-input block" name="elaborateNumber" type="radio" id="topic" value={{row.number}}
                         required>
-                    <label class="form-check-label" for="topic" title="What do you like or dislike about the topic?"
-                        style="cursor: pointer;">
-                        <span id="emojiaction">&#128218;</span>
-                        Topic
+                    <label class="form-check-label" for="topic" style="cursor: pointer;">
+                        {{ row.category}}
                     </label>
                 </div>
             </div>
-
-            <div class="col- feedmoji">
-                <!-- Other -->
-                <div class="form-check">
-                    <input class="form-check-input block" name="elaborateNumber" type="radio" id="other" value="4"
-                        required>
-                    <label class="form-check-label" for="other" title="What else do you like or dislike?"
-                        style="cursor: pointer;">
-                        <span id="emojiaction">&#128400;</span>
-                        Other
-                    </label>
-                </div>
-            </div>
-        </div>
-        <!-- End of catgeory -->
+        {% endfor%}
 
         <!-- Input field -->
         <div class="row justify-content-center">
