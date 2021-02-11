@@ -263,4 +263,4 @@ event.listen(Account, 'after_delete',delete_event_db_handler,propagate=True)
 
 
 # create tables
-Base.metadata.create_all(engine)
+#Base.metadata.create_all(engine)
