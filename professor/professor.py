@@ -42,13 +42,13 @@ def instructor():
         if feedbacks == "4":
             otherCount += 1
 
-        # categories existed for this professor
-        presentCategories = []
+    # categories existed for this professor
+    presentCategories = []
 
-        for category in categoryData:
-            presentCategories.append(category.category)
+    for category in categoryData:
+        presentCategories.append(category.category)
 
-        print('Categories =--------',presentCategories)
+    print('Categories =--------',presentCategories)
 
     return render_template('login.html',
                             title='dashboard',

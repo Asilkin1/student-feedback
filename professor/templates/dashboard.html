@@ -107,19 +107,18 @@
 <!-- Draw bar chart -->
 <script>
   // Somehow loop over the length
-  let myCategories = ["{{ categoryData[0].category }}", "{{ categoryData[1].category}}"];
+  let myCategories = {{ present|tojson}};
 
-  console.log("{{ present }}");
 
   let ctx = document.getElementById('myChart').getContext('2d');
-var myChart = new Chart(ctx, {
+  var myChart = new Chart(ctx, {
     type: 'bar',
     data: {
-        labels: "{{ present }}",
+        labels: myCategories,
         datasets: [{
            
             label: 'Feedback count by category',
-            data: ["{{ instructor }}", "{{ teaching }}"],
+            data: ["{{ instructor }}", "{{ teaching }}","{{ topic}}","{{ other }}"],
             backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
                 'rgba(54, 162, 235, 0.2)',
