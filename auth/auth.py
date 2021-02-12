@@ -223,14 +223,7 @@ def signup():
 
 @auth_bp.route('/logout')
 def logout():
-    # User is logged out
-    session['logged_in'] = False
-    # User is removed from the session
-    session.pop('username', None)
-    # Remove student codes and class code
-    session.pop('classCode', None)
-    session.pop('studentCode', None)
-
+    session.clear()
     # Feedback message
     flash('You have successfully logged out', 'success')
     return render_template('index.html')
