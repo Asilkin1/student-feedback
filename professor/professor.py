@@ -8,18 +8,6 @@ professor_bp = Blueprint('professor_bp', __name__,
     template_folder='templates',
     static_folder='static')
 
-
-def get_categories(query, decryptFunction):
-    '''get categories for each professor'''
-    count_categories = {}
-
-    for c in query.all():
-        # decrypt each category
-        c = decryptFunction
-        count_categories[str(c)] += 1
-    # Return Category name as a KEY and count as VALUE
-    return count_categories
-
 # generate feedbacks data
 def generate_feedbacks_by_category():
      # Get classes data for current username
