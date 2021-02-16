@@ -30,19 +30,15 @@ def generate_feedbacks_by_category():
 
     # Get each category name
     for i in categoryData:
-        print('-------',i.number)
-        # Add the category
+        # Add a key to the dict with a value of 0
         wN[int(i.number)] = 0
 
     for feedbacks in result:
         feedbacks = mysql_aes_decrypt(feedbacks.Feedback.elaborateNumber, random_key)
-        print('feedback loop', feedbacks)
         if int(feedbacks) in wN:
-            print('Increment')
+            # Can increment that value later
             wN[int(feedbacks)] += 1
         
-    print('RESULT',wN)
-
     yield render_template('login.html',
                             title='dashboard',
                             data=dashboardData,
@@ -53,7 +49,6 @@ def generate_feedbacks_by_category():
                             )
 
 def generate_realtime_class(classCode):
-   print(classCode)
    Frame = pd.read_sql_query("SELECT * from Feedback",engine)
    Frame = Frame[Frame['classCode'] == classCode]
    Frame = decrypt_frame(Frame)
@@ -71,7 +66,6 @@ def realtime_professor(classCode):
 def before_request():
     if not session.get('logged_in'):
         flash('Please log in to gain access to the website.', 'info')
-        print('You have to be logged in')
         return render_template('login.html')
 
 @professor_bp.route('/professor', methods=["POST", "GET"])
@@ -101,7 +95,6 @@ def editClass(id):
     schoolName = result.schoolName
     departmentName = result.departmentName
     className = result.className
-    print('class name :', className)
     start = result.start 
     end = result.end
     days = result.days
@@ -177,7 +170,6 @@ def professor():
         while(inData):
             # Professors unique class code (Randomly generated between x, and y with z being the amount generated)
             classCode = random.randrange(1, 3000, 1)
-            print(classCode)
 
             query = databaseConnection.query(Account).filter(
                 Account.classCode == classCode)
@@ -188,7 +180,6 @@ def professor():
 
         # Schools Name
         schoolName = request.form.get('schoolName')
-        print(schoolName)
         
         # Departments Name
         departmentName = request.form.get('departmentName')
@@ -213,11 +204,9 @@ def professor():
         #days
         days = request.form.getlist('day')
         saveDays = ''
-        print('Days picked: ', days)
 
         #categories
         categories = request.form.getlist('categories')
-        print("what is happening now ", categories)
 
         # Combined section and class code
         classAndSection = str(classCode) + '-' + sectionName
