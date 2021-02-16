@@ -76,7 +76,6 @@ def newstudent():
             result = query.first()
             size = resultClass.size
             alreadyIn = get_distinct_voters(classCode, studentCode)
-            print("already in ", alreadyIn)
             if alreadyIn >= int(size):
                 queryStudent = databaseConnection.query(Feedback).filter(Feedback.classCode == classCode)
                 for results in queryStudent.all():
@@ -138,7 +137,6 @@ def register():
                     return render_template('register.html')
 
                 if error == 'password_ok' and boolean:
-                    print(str(password) == str(repassword))
                     # Passwords should match
                     if str(password) == str(repassword):
                         user = User(username, password)
