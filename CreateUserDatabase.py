@@ -207,7 +207,7 @@ def get_dashboard_data(username):
      return databaseConnection.query(Account).filter(Account.username == username)
 
 # ------------------ Database event handler for update and insert
-# Inset and update event for the database
+# Insert and update event for the database
 def insert_update(mapper, connection, target):
     tablename = mapper.mapped_table.name
 
@@ -270,6 +270,9 @@ def delete_event_db_handler(mapper, connection,target):
     id = target.id
     res = es.delete(index=index, doc_type=doc, id=id)
     print('delete index', res)
+
+def new_feedback_added(mapper, connection,target):
+    print('Feedback added')
 
 # Set event listener for Account table
 event.listen(Account, 'after_update',insert_update,propagate=True)

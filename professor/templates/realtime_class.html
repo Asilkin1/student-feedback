@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+{% block title %}Analytics{% endblock %}
+
+{% block content %}
+<div class="container col- mx-auto">
+    <div lass="row">
+      <p class="display-4">Classes statistic</p>
+      <div class="container col-">
+      </div>
+          <div class="btn-toolbar mb-2 mb-md-0">
+   
+          </div>
+    </div>
+    <div class="row">
+      <!-- Put Chart -->
+      <div class="col">
+        
+        <!-- Put chart here -->
+        <canvas id="myChart"></canvas>
+  
+      </div>
+  
+      <!-- Table begins  -->
+      <div class="table-responsive">
+        <table id="myTable" class="table table-striped  table-hover table-sm" cellspacing="0" width="100%">
+            <p class="display-4" style="padding-top: 5%;">Datatable</p>
+            <thead class="thead-dark lead">
+                <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Time</th>
+                    <th scope="col">Class Code</th>
+                    <th scope="col">Student Code</th>
+                    <th scope="col">Emoji</th>
+                    <th scope="col">Category</th>
+                    <th scope="col">Response</th>
+                    <th scope="col">In class?</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in data.index %}
+                <tr>
+                    <td>{{data.at[row,'date']}}</td>
+                    <td>{{data.at[row,'time']}}</td>
+                    <td>{{data.at[row,'classCode']}}</td>
+                    <td>{{data.at[row,'studentCode']}}</td>
+                    <td>{{data.at[row,'emoji']}}</td>
+                    <td>{{data.at[row,'elaborateNumber']}}</td>
+                    <td>{{data.at[row,'elaborateText']}}</td>
+                    <td>
+                        <!-- Conditional rendering of the results -->
+                        {% if data.at[row,'inClass'] %}
+                        <h6><span class="badge badge-danger">NO</span></h6>
+                        {% else %}
+                        <h6><span class="badge badge-success">YES</span></h6>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+      </div>
+    </div>
+  </div>
+    
+  
+  <!-- Draw bar chart -->
+  <script>
+      let myCategories = ['1','2','3','4','5'];
+      let numbers = [2,3,5,6]
+  
+    let ctx = document.getElementById('myChart').getContext('2d');
+    var myChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+          labels: myCategories,
+          datasets: [{
+             
+              label: 'Feedback count by category',
+              data: numbers,
+              backgroundColor: [
+                  'rgba(255, 99, 132, 0.2)',
+                  'rgba(54, 162, 235, 0.2)',
+                  'rgba(255, 206, 86, 0.2)',
+                  'rgba(75, 192, 192, 0.2)',
+                  'rgba(153, 102, 255, 0.2)',
+                  'rgba(255, 159, 64, 0.2)'
+              ],
+              borderColor: [
+                  'rgba(255, 99, 132, 1)',
+                  'rgba(54, 162, 235, 1)',
+                  'rgba(255, 206, 86, 1)',
+                  'rgba(75, 192, 192, 1)',
+                  'rgba(153, 102, 255, 1)',
+                  'rgba(255, 159, 64, 1)'
+              ],
+              borderWidth: 1
+          }]
+      },
+      options: {
+        labels: {
+                // This more specific font property overrides the global property
+                fontColor: 'black',
+                defaultFontSize: 20
+            },
+            
+        events: ['click'],
+          scales: {
+              yAxes: [{
+                  ticks: {
+                      beginAtZero: true
+                  }
+              }]
+          }
+      }
+  });
+  </script>
+  
+  <script>
+  $('#classTable').dataTable( {
+    "lengthMenu": [ 5, 10, 15, 20, 25 ]
+  } );
+  </script>
+  
+  <script>
+    $('#myModal').on('shown.bs.modal', function () {
+    })
+  </script>
+
+{% endblock %}

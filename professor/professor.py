@@ -1,11 +1,82 @@
 # All router to professor pages
-from flask import Blueprint, render_template,request, flash, session, redirect, url_for, jsonify
+from flask import Blueprint, stream_with_context,Response, render_template,request, flash, session, redirect, url_for, jsonify
 import random
+import pandas as pd
 from CreateUserDatabase import *
 
 professor_bp = Blueprint('professor_bp', __name__,
     template_folder='templates',
     static_folder='static')
+
+
+def get_categories(query, decryptFunction):
+    '''get categories for each professor'''
+    count_categories = {}
+
+    for c in query.all():
+        # decrypt each category
+        c = decryptFunction
+        count_categories[str(c)] += 1
+    # Return Category name as a KEY and count as VALUE
+    return count_categories
+
+# generate feedbacks data
+def generate_feedbacks_by_category():
+     # Get classes data for current username
+    dashboardData = databaseConnection.query(Account).filter(Account.username == session.get('username'))
+    categoryData = databaseConnection.query(Categories).filter(Categories.classCode == Account.classCode)
+
+    # categories existed for this professor
+    presentCategories = []
+    wN = {}
+
+    for category in categoryData:
+        for classCode in dashboardData:
+            if classCode.classCode == category.classCode:
+                presentCategories.append(category.category + ' (' + classCode.classCode + ')')
+
+    
+
+    query = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode)
+    result = query.all()
+
+    # Get each category name
+    for i in categoryData:
+        print('-------',i.number)
+        # Add the category
+        wN[int(i.number)] = 0
+
+    for feedbacks in result:
+        feedbacks = mysql_aes_decrypt(feedbacks.Feedback.elaborateNumber, random_key)
+        print('feedback loop', feedbacks)
+        if int(feedbacks) in wN:
+            print('Increment')
+            wN[int(feedbacks)] += 1
+        
+    print('RESULT',wN)
+
+    yield render_template('login.html',
+                            title='dashboard',
+                            data=dashboardData,
+                            categoryData=categoryData,
+                            categoryCount=categoryData.count(),
+                            present=presentCategories,
+                            wN = wN
+                            )
+
+def generate_realtime_class(classCode):
+   print(classCode)
+   Frame = pd.read_sql_query("SELECT * from Feedback",engine)
+   Frame = Frame[Frame['classCode'] == classCode]
+   Frame = decrypt_frame(Frame)
+   
+   yield render_template('realtime_class.html',
+                            title='reaaltime class',
+                            data=Frame)
+
+@professor_bp.route('/professor/<classCode>', methods=['POST','GET'])
+def realtime_professor(classCode):
+    return Response(stream_with_context(generate_realtime_class(classCode)))
 
 # Ask to login for any routes in professor
 @professor_bp.before_request
@@ -17,50 +88,7 @@ def before_request():
 
 @professor_bp.route('/professor', methods=["POST", "GET"])
 def instructor():
-     # Get classes data for current username
-    dashboardData = databaseConnection.query(Account).filter(Account.username == session.get('username'))
-    categoryData = databaseConnection.query(Categories).filter(Categories.classCode == Account.classCode)
-
-    query = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode)
-    result = query.all()
-    instructorCount = 0
-    teachingStyleCount = 0
-    topicCount = 0
-    otherCount = 0
-
-    # Loop through the query results
-    for feedbacks in result:
-        # Decrypt the value where the table is Feedback and the column is elaborate number
-        feedbacks = mysql_aes_decrypt(feedbacks.Feedback.elaborateNumber, random_key)
-
-        if feedbacks == "1":
-            instructorCount += 1
-        if feedbacks == "2":
-            teachingStyleCount += 1
-        if feedbacks == "3":
-            topicCount += 1
-        if feedbacks == "4":
-            otherCount += 1
-
-    # categories existed for this professor
-    presentCategories = []
-
-    for category in categoryData:
-        presentCategories.append(category.category)
-
-    print('Categories =--------',presentCategories)
-
-    return render_template('login.html',
-                            title='dashboard',
-                            data=dashboardData,
-                            categoryData=categoryData,
-                            categoryCount=categoryData.count(),
-                            present=presentCategories,
-                            instructor=instructorCount,
-                            topic=topicCount,
-                            other=otherCount,
-                            teaching=teachingStyleCount
-                            )
+    return Response(stream_with_context(generate_feedbacks_by_category()))
 
 @professor_bp.route("/professor/delete/<string:id>/<string:ccode>", methods=['GET', 'POST'])
 def deleteClass(id, ccode):

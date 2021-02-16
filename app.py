@@ -3,8 +3,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session, app, abort, flash, make_response, Response, render_template_string
 from flask_session.__init__ import Session as flaskGlobalSession
 
-# Add flask sockets for some dynamic data insertion
-from flask_socketio import SocketIO, send, emit
 
 # ------------BLUEPRINTS-------------------
 from analytics.analytics import analytics_bp
@@ -19,25 +17,22 @@ app.register_blueprint(professor_bp)
 app.register_blueprint(student_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(base_bp)
-# Initialize SocketIO in flask app
-socketio = SocketIO(app)
 
-# Let web client to know the event name
-@socketio.event('message')
-def message_received(message):
-    print(message)
-    # Send something we can show in the webbrowser
-    send('Message from flask')
+# Stream any template with the context
+def stream_template(template_name, **context):
+    app.update_template_context(context)
+    t = app.jinja_env.get_template(template_name)
+    rv = t.stream(context)
+    rv.enable_buffering(5)
+    return rv
 
-# Only call it on professor dashboard
-@socketio.event('dashboard')
-def message_received(dashboard):
-    # Send to the webbrowser
-    emit('data for professor dashboard: ',dashboard)
+# generate feedbacks data
+def generate_feedbacks_by_category():
+    yield render_template(stream_template('login.html'))
 
-@socketio.on('connect')
-def test_connect():
-    send('Conneted message send to the client')
+@professor_bp.route('/professor/realtime', methods=['POST','GET'])
+def realtime_professor():
+    return Response(generate_feedbacks_by_category())
 
 if __name__ == '__main__':
     # This secret if for local development environment
@@ -49,5 +44,4 @@ if __name__ == '__main__':
     app.config['DEBUG'] = True
     weirdsession = flaskGlobalSession()
     weirdsession.init_app(app)
-    # Run sockets
-    socketio.run(app)
+    app.run()
