@@ -27,7 +27,6 @@ def check():
     result = query.first()
 
     Category = result.number
-    print(Category)
 
     Frame = pd.read_sql_query("SELECT * from Feedback", engine)
     Frame = Frame[Frame['classCode']==ccode]
@@ -47,7 +46,6 @@ def check():
         if Category:
             Frame = Frame[Frame['elaborateNumber'] == Category]
             PassFrame = Frame
-            print(PassFrame)
             if(len(Frame.index) < 10):
                 return render_template('notEnoughData.html', title='NED', data=PassFrame)
             else:
@@ -69,8 +67,6 @@ def drawbar(classCode, Category):
     Frame = decrypt_frame(Frame)
 
     Frame = Frame[Frame['elaborateNumber'] == Category]
-
-    print(Frame)
 
     fig = Figure()
     axis = fig.add_subplot(1, 1, 1)
@@ -276,7 +272,6 @@ def drawtimeweek(classCode, Category):
 
 @analytics_bp.route('/professor/analytics/<classCode>', methods=["POST", "GET"])
 def analytics(classCode):
-    print(classCode)
     Frame = pd.read_sql_query("SELECT * from Feedback", engine)
     Frame = Frame[Frame['classCode']==classCode]
     # This should be decrypted now

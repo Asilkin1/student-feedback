@@ -14,7 +14,6 @@ student_bp = Blueprint('student_bp', __name__,
 def before_request():
     if not session.get('studentCode'):
         flash('Please log in to gain access to the website.', 'info')
-        print('You have to be logged in as a student')
         return render_template('student_sign_up.html')
 
 @student_bp.route('/student/', methods=["POST", "GET"])
@@ -23,7 +22,6 @@ def student():
         classCode = str(session.get('classCode'))
         query = databaseConnection.query(Categories).filter(Categories.classCode == classCode)
         categories = query.all()
-        print(categories)
 
         # Show incentive data
         return render_template('student.html', categories=categories,
