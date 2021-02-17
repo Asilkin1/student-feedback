@@ -76,6 +76,7 @@
              </a>
              <div class="col">
              <a class="btn btn-outline-grey" href="{{ url_for('base_bp.index')}}">Home</a>
+             <h4>Welcome {{ session['studentCode'] }}. Your class code is: {{ session['classCode'] }}</h4>
              </div>
              
              {% else %}
