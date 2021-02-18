@@ -5,7 +5,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship, backref
 from sqlalchemy.orm import sessionmaker
 from encryption import *
-from  datetime import datetime, date
+from  datetime import datetime, date, timezone
 import os
 # db path OS dependant
 # Works on windows

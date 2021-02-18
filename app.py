@@ -40,8 +40,8 @@ if __name__ == '__main__':
     # app configuration
     app.config['SESSION_TYPE'] = 'filesystem'
     app.config['ENV'] = 'dev'    
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////var/www/student-feedback/student-feedback/united.db'
+    #app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////var/www/student-feedback/student-feedback/united.db'
     app.config['DEBUG'] = True
     weirdsession = flaskGlobalSession()
     weirdsession.init_app(app)
-    app.run()
+    app.run(threaded=True)

@@ -2,7 +2,9 @@
 from flask import Blueprint, stream_with_context,Response, render_template,request, flash, session, redirect, url_for, jsonify
 import random
 import pandas as pd
+import time
 from CreateUserDatabase import *
+import json
 
 professor_bp = Blueprint('professor_bp', __name__,
     template_folder='templates',
@@ -22,8 +24,6 @@ def generate_feedbacks_by_category():
         for classCode in dashboardData:
             if classCode.classCode == category.classCode:
                 presentCategories.append(category.category + ' (' + classCode.classCode + ')')
-
-    
 
     query = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode)
     result = query.all()
@@ -48,14 +48,26 @@ def generate_feedbacks_by_category():
                             wN = wN
                             )
 
+# Generate data for realtime class page
 def generate_realtime_class(classCode):
-   Frame = pd.read_sql_query("SELECT * from Feedback",engine)
-   Frame = Frame[Frame['classCode'] == classCode]
-   Frame = decrypt_frame(Frame)
-   
-   yield render_template('realtime_class.html',
-                            title='reaaltime class',
-                            data=Frame)
+   while True:
+       Frame = pd.read_sql_query("SELECT * from Feedback",engine)
+       Frame = Frame[Frame['classCode'] == classCode]
+       Frame = decrypt_frame(Frame)
+       print('FRAAAAAAAME: ',Frame)
+       time.sleep(5)
+       yield b'Frame'
+
+@professor_bp.route('/chart-data')
+def chart_data():
+    def generate_random_data():
+        while True:
+            json_data = json.dumps(
+                {'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 'value': random.random() * 100})
+            yield json_data
+            time.sleep(1)
+
+    return Response(generate_random_data(), mimetype='text/event-stream')
 
 @professor_bp.route('/professor/<classCode>', methods=['POST','GET'])
 def realtime_professor(classCode):
