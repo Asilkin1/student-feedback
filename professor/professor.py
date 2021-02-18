@@ -3,8 +3,10 @@ from flask import Blueprint, stream_with_context,Response, render_template,reque
 import random
 import pandas as pd
 import time
+from datetime import datetime
 from CreateUserDatabase import *
 import json
+random.seed()
 
 professor_bp = Blueprint('professor_bp', __name__,
     template_folder='templates',
@@ -58,16 +60,22 @@ def generate_realtime_class(classCode):
        time.sleep(5)
        yield b'Frame'
 
+# Streams only the data
 @professor_bp.route('/chart-data')
 def chart_data():
     def generate_random_data():
         while True:
             json_data = json.dumps(
                 {'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 'value': random.random() * 100})
-            yield json_data
+            yield f"data:{json_data}\n\n"
             time.sleep(1)
 
     return Response(generate_random_data(), mimetype='text/event-stream')
+
+# Show page which will get the data
+@professor_bp.route('/get-chart')
+def get_chart():
+    return render_template('test_stream.html')
 
 @professor_bp.route('/professor/<classCode>', methods=['POST','GET'])
 def realtime_professor(classCode):
