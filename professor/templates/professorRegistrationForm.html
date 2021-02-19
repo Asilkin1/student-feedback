@@ -60,7 +60,7 @@
 
             <div class="form-group">
                 <label class="form-check-label" for="username">Username</label>
-                <input type="text" class="form-control" placeholder="Enter your username" name="username">
+                <input type="text" maxlength="10" class="form-control" placeholder="Enter your username" name="username">
             </div>
 
             <div class="form-group">
@@ -99,7 +99,7 @@ $(document).ready(function() {
 function passwordStrengthCheck(password, password2, passwordsInfo)
 {
     //Must contain 5 characters or more
-    var WeakPass = /(?=.{5,}).*/;
+    var WeakPass = /^([^0-9]*).{5,}$/;
     //Must contain lower case letters and at least one digit.
     var MediumPass = /^(?=\S*?[a-z])(?=\S*?[0-9])\S{5,}$/;
     //Must contain at least one upper case letter, one lower case letter and one digit.
@@ -121,7 +121,8 @@ function passwordStrengthCheck(password, password2, passwordsInfo)
             passwordsInfo.removeClass().addClass('goodpass').html("Good! Enter uppercase letter to make strong.");
         }
         else if(WeakPass.test(password.val()))
-        {
+        {   
+            console.log(WeakPass.test(password.val()));
             passwordsInfo.removeClass().addClass('stillweakpass').html("Still Weak! Enter digits to make good password.");
         }
         else

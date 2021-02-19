@@ -193,7 +193,7 @@ def login():
         send_password = request.form.get('password')
 
         # If the password and username is provided
-        if send_password and send_username:
+        if send_password and len(send_username) <= 10:
             # Compare professor credentials with the records in the databse
             query = databaseConnection.query(User).filter(User.username.in_(
                 [send_username]), User.password.in_([send_password]))

@@ -7,6 +7,7 @@ from datetime import datetime
 from CreateUserDatabase import *
 import json
 random.seed()
+from sqlalchemy import event
 
 professor_bp = Blueprint('professor_bp', __name__,
     template_folder='templates',
@@ -50,6 +51,15 @@ def generate_feedbacks_by_category():
                             wN = wN
                             )
 
+
+def my_before_insert_listener(mapper, connection, target):
+    # execute a stored procedure upon INSERT,
+    # apply the value to the row to be inserted
+    print('Something added to the feedbacks')
+
+
+
+
 # Generate data for realtime class page
 def generate_realtime_class(classCode):
    while True:
@@ -60,25 +70,43 @@ def generate_realtime_class(classCode):
        time.sleep(5)
        yield b'Frame'
 
+def get_emoji(classCode):
+    query = databaseConnection.query(Feedback).filter(Feedback.classCode == classCode).order_by(Feedback.id.desc())
+    result = query.first()
+    id = result.id
+    emoji = mysql_aes_decrypt(result.emoji,random_key)
+    return emoji, id
+
+
+#event.listen(Feedback, 'after_insert', get_emoji('2695-TIME'))
+
 # Streams only the data
 @professor_bp.route('/chart-data/<classCode>')
 def chart_data(classCode):
-    def generate_random_data(classCode):
-        while True:
-            print('Classssssssss code#########')
+    query = databaseConnection.query(Feedback).filter(Feedback.classCode == classCode).order_by(Feedback.id.desc())
+    result = query.first()
+    id = result.id
+    def generate_random_data(classCode,id):
+        print('ID: ', id)
+        emoji, idnow = get_emoji(classCode)
+        while id != idnow:
             json_data = json.dumps(
-                 {'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 
-                'value': random.random() * 100,
+                    {'time': 'sdfsdf', 
+                'value': emoji,
                 'emoji': 1234})
+            
+            id = idnow
             yield f"data:{json_data}\n\n"
+           
             time.sleep(1)
-
-    return Response(generate_random_data(classCode), mimetype='text/event-stream')
-
+            
+    return Response(generate_random_data(classCode,id), mimetype='text/event-stream')
+    
+    
 # Show page which will get the data
 @professor_bp.route('/get-chart/<classCode>')
 def get_chart(classCode):
-    return render_template('test_stream.html', classCode=request.args.get('classCode'))
+    return render_template('test_stream.html', classCode=classCode)
 
 @professor_bp.route('/professor/<classCode>', methods=['POST','GET'])
 def realtime_professor(classCode):

@@ -58,7 +58,7 @@ class Feedback(Base):
     studentCode = Column(String, nullable=False)
     emoji = Column(Integer, nullable=False)
     elaborateNumber = Column(Integer,nullable=False)
-    elaborateText = Column(String,nullable=False)
+    elaborateText = Column(String(140),nullable=False)
     inClass = Column(String, nullable=False)
 
     def __init__(self, date, time, classCode,studentCode,emoji,elaborateNumber, elaborateText, inClass):

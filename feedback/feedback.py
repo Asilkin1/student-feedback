@@ -32,7 +32,7 @@ def student():
                                                 you=you_voted(session.get('classCode'),session.get('studentCode')), 
                                                 notYou = get_total_voters(session.get('classCode'), session.get('studentCode')), 
                                                 size=get_class_size(session.get('classCode')), 
-                                                voted = you_voted(session.get('classCode'), session.get('studentCode')), 
+                                                voted = voted_times(session.get('classCode'), session.get('studentCode')), 
                                                 total=not_your_votes(session.get('classCode'),session.get('studentCode')))
 
     if request.method == 'POST':
