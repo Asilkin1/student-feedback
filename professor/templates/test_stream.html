@@ -22,7 +22,7 @@
             data: {
                 labels: [],
                 datasets: [{
-                    label: "Random Dataset",
+                    label: "Feedbacks",
                     backgroundColor: 'rgb(255, 99, 132)',
                     borderColor: 'rgb(255, 99, 132)',
                     data: [],
@@ -33,7 +33,7 @@
                 responsive: true,
                 title: {
                     display: true,
-                    text: 'Creating Real-Time Charts with Flask'
+                    text: 'Real-Time class performance'
                 },
                 tooltips: {
                     mode: 'index',
@@ -66,8 +66,8 @@
 
         const lineChart = new Chart(context, config);
 
-        const source = new EventSource("/chart-data");
-
+        const source = new EventSource("/chart-data/{{classCode}}");
+        console.log({{ classCode|tojson }});
         source.onmessage = function (event) {
             const data = JSON.parse(event.data);
             if (config.data.labels.length === 20) {

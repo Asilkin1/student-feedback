@@ -16,6 +16,10 @@ def before_request():
         flash('Please log in to gain access to the website.', 'info')
         return render_template('student_sign_up.html')
 
+
+def is_ascii(s):
+    return all(ord(c)<128 for c in s)
+
 @student_bp.route('/student/', methods=["POST", "GET"])
 def student():
     if request.method == 'GET':
@@ -47,20 +51,26 @@ def student():
 
         # Elaborate text and encrypt it
         elaborateText = request.form.get('elaborateText')
-        if elaborateText != "":
+        
+        # ------------Accept-only-english-characters---------------
+        if is_ascii(elaborateText): 
             elaborateText = mysql_aes_encrypt(elaborateText, random_key)
-
-        #create data in database
-        newFeedback = Feedback(dateNow, timeNow, session['classCode'], session['studentCode'], emoji, elaborateNumber, elaborateText, check_date_voted(session.get('classCode')))
-        databaseConnection.add(newFeedback)
-        databaseConnection.commit()
+            #create data in database
+            newFeedback = Feedback(dateNow, timeNow, session['classCode'], session['studentCode'], emoji, elaborateNumber, elaborateText, check_date_voted(session.get('classCode')))
+            databaseConnection.add(newFeedback)
+            databaseConnection.commit()
+            flash('Thank you for your feedback', 'success')
+        else:
+            flash('Should be in english ...','error')
+        
+        #----------------Avoid-any-utf-8-utf-16--------------------
 
         classCode = str(session.get('classCode'))
         query = databaseConnection.query(Categories).filter(Categories.classCode == classCode)
         categories = query.all()
 
         # Message
-        flash('Thank you for your feedback', 'info')
+        
         return render_template('student.html', title="student", 
                                 categories=categories,
                                 you=you_voted(session.get('classCode'), session.get('studentCode')), 

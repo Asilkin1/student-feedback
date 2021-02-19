@@ -42,8 +42,15 @@ table, th, td{
                 <td>{{data.at[row,'studentCode']}}</td>
                 <td>{{data.at[row,'emoji']}}</td>
                 <td>{{data.at[row,'elaborateNumber']}}</td>
-                <td>{{data.at[row,'elaborateText']}}</td>
-                <td>{{data.at[row,'inClass']}}</td>
+                <td><p class="h6 text-break">{{data.at[row,'elaborateText']}}</p></td>
+                <td>
+                     <!-- Conditional rendering of the results -->
+                     {% if data.at[row,'inClass'] == 'Inside' %}
+                     <h6><span class="badge badge-success">YES</span></h6>
+                     {% else %}
+                     <h6><span class="badge badge-danger">NO</span></h6>
+                     {% endif %}
+                </td>
             </tr>
         {% endfor %}
         </tbody>

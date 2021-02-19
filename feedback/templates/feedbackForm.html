@@ -30,10 +30,10 @@
         <div class="col">
             <div class="card text-center">
                 <div class="card-body">
-                  Others submitted
+                  Total
                 </div>
                 <div class="card-body">
-                  <h2 class="card-text">{{ total }}</h2>
+                  <h2 class="card-text">{{ total + voted }}</h2>
                 </div>
               </div>
         </div>
@@ -49,7 +49,7 @@
     <div class="row justify-content-center">
         <div class="col">
             <div class="progress">
-                <div class="progress-bar" style="width:{{ (notYou + you) / size|int }}%;" role="progressbar" aria-valuenow="{{ you }}" aria-valuemin="0"
+                <div class="progress-bar" style="width:{{ ((notYou + you) / size|int) * 100 }}%;" role="progressbar" aria-valuenow="{{ you }}" aria-valuemin="0"
                     aria-valuemax="100"></div>
             </div>
         </div>
@@ -139,9 +139,9 @@
         <!-- Input field -->
         <div class="row justify-content-center">
             <!-- Finger emoji -->
-            <div class="col-sm-6 btn-block">
-                <input class="form-control" type="text" placeholder="Elaborate your thoughts" name="elaborateText"
-                    class="form-control" id="emojifield" autofocus>
+            <div class="col-sm btn-block">
+                <textarea class="card form-control" maxlength="140" rows="4" type="text" placeholder="Elaborate your thoughts" name="elaborateText"
+                    class="form-control" id="emojifield" autofocus></textarea>
             </div>
         </div>
 

@@ -56,26 +56,29 @@ def generate_realtime_class(classCode):
        Frame = pd.read_sql_query("SELECT * from Feedback",engine)
        Frame = Frame[Frame['classCode'] == classCode]
        Frame = decrypt_frame(Frame)
-       print('FRAAAAAAAME: ',Frame)
+       print('FRAAAAAAAME: ',Frame.at[Frame.index[-1],'emoji'])
        time.sleep(5)
        yield b'Frame'
 
 # Streams only the data
-@professor_bp.route('/chart-data')
-def chart_data():
-    def generate_random_data():
+@professor_bp.route('/chart-data/<classCode>')
+def chart_data(classCode):
+    def generate_random_data(classCode):
         while True:
+            print('Classssssssss code#########')
             json_data = json.dumps(
-                {'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 'value': random.random() * 100})
+                 {'time': datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 
+                'value': random.random() * 100,
+                'emoji': 1234})
             yield f"data:{json_data}\n\n"
             time.sleep(1)
 
-    return Response(generate_random_data(), mimetype='text/event-stream')
+    return Response(generate_random_data(classCode), mimetype='text/event-stream')
 
 # Show page which will get the data
-@professor_bp.route('/get-chart')
-def get_chart():
-    return render_template('test_stream.html')
+@professor_bp.route('/get-chart/<classCode>')
+def get_chart(classCode):
+    return render_template('test_stream.html', classCode=request.args.get('classCode'))
 
 @professor_bp.route('/professor/<classCode>', methods=['POST','GET'])
 def realtime_professor(classCode):

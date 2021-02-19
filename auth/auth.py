@@ -19,7 +19,7 @@ def studentRegistration():
         studentCode = request.form.get('studentCode')
 
         # hash student code
-        myCode = studentCode.encode('ascii')  # Convert code to binary
+        myCode = studentCode.encode('utf-8')  # Convert code to binary
         # bcrypt.gensalt(rounds=16)   # used for hashing
         salt = b'$2b$16$MTSQ7iU1kQ/bz6tdBgjrqu'
        
@@ -59,7 +59,7 @@ def newstudent():
         # Generate a unique code here
         studentCode = request.form.get('studentCode')
         # hash student code
-        myCode = studentCode.encode('ascii')  # Convert code to binary
+        myCode = studentCode.encode('utf-8')  # Convert code to binary
         # bcrypt.gensalt(rounds=16)   # used for hashing
         salt = b'$2b$16$MTSQ7iU1kQ/bz6tdBgjrqu'
        

@@ -3,7 +3,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session, app, abort, flash, make_response, Response, render_template_string
 from flask_session.__init__ import Session as flaskGlobalSession
 
-
 # ------------BLUEPRINTS-------------------
 from analytics.analytics import analytics_bp
 from professor.professor import professor_bp

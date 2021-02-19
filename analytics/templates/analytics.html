@@ -61,10 +61,10 @@
                         <td>{{data.at[row,'elaborateText']}}</td>
                         <td>
                             <!-- Conditional rendering of the results -->
-                            {% if data.at[row,'inClass'] %}
-                            <h6><span class="badge badge-danger">NO</span></h6>
-                            {% else %}
+                            {% if data.at[row,'inClass'] == 'Inside' %}
                             <h6><span class="badge badge-success">YES</span></h6>
+                            {% else %}
+                            <h6><span class="badge badge-danger">NO</span></h6>
                             {% endif %}
                         </td>
                     </tr>
