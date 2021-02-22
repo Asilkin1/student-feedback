@@ -57,6 +57,11 @@ def get_emoji(classCode):
     emoji = mysql_aes_decrypt(result.emoji,random_key)
     return emoji
 
+def get_time(classCode):
+    query = databaseConnection.query(Feedback.time).filter(Feedback.classCode == classCode).order_by(Feedback.id.desc())
+    result = query.first()
+    return result
+
 # Streams only the data
 @professor_bp.route('/chart-data/<classCode>')
 def chart_data(classCode):
@@ -64,7 +69,7 @@ def chart_data(classCode):
         print('Current time',datetime.now().strftime("%Y/%m/%d/%H:%m "))
         json_data = json.dumps(
                 {
-                    'time': datetime.now().strftime("%Y/%m/%d/%H:%m "), 
+                    'time': get_time(classCode), 
                     'value': get_emoji(classCode)
                 })
         yield f"data:{json_data}\n\n"
