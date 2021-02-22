@@ -271,12 +271,6 @@ def delete_event_db_handler(mapper, connection,target):
     res = es.delete(index=index, doc_type=doc, id=id)
     print('delete index', res)
 
-def new_feedback_added(mapper, connection,target):
-    print('Feedback added')
-
-# Set event listener for Account table
-event.listen(Account, 'after_update',insert_update,propagate=True)
-event.listen(Account, 'after_delete',delete_event_db_handler,propagate=True)
 
 
 # create tables
