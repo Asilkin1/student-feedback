@@ -54,7 +54,7 @@ def student():
         
         # ------------Accept-only-english-characters---------------
         if is_ascii(elaborateText): 
-            elaborateText = mysql_aes_encrypt(elaborateText, random_key)
+            elaborateText = mysql_aes_encrypt(elaborateText + ' ', random_key)
             #create data in database
             newFeedback = Feedback(dateNow, timeNow, session['classCode'], session['studentCode'], emoji, elaborateNumber, elaborateText, check_date_voted(session.get('classCode')))
             databaseConnection.add(newFeedback)

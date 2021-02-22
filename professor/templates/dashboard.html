@@ -71,10 +71,12 @@
                       <a class="btn btn-outline-danger" data-toggle="modal" data-target="#exampleModal">Delete</a>
                     </td>
 
-                    <!-- tutorial Realtime -->
+                   {% if within(row.classCode) == 'Inside'%}
+                    <!-- Realtime data-->
                     <td style="border: none;">
                       <a href="{{url_for('professor_bp.get_chart', classCode=row.classCode)}}"class="btn btn-outline-warning">Realtime</a>
                     </td>
+                    {% endif %}
 
                     <!-- Modal -->
                     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
