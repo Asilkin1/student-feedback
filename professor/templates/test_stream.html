@@ -21,14 +21,16 @@
             type: 'line',
             data: {
                 labels: [],
-                datasets: [{
-                    label: "Feedbacks",
-                    backgroundColor: 'rgb(255, 99, 132)',
-                    borderColor: 'rgb(255, 99, 132)',
-                    data: [],
-                    id: [],
-                    fill: false,
-                }],
+                datasets: [
+                    {
+                        label: "Teaching",
+                        backgroundColor: 'rgb(255, 99, 132)',
+                        borderColor: 'rgb(255, 99, 132)',
+                        data: [],
+                        id: [],
+                        fill: false,
+                }
+            ],
             },
             options: {
                 responsive: true,
@@ -90,7 +92,6 @@
             
             console.log('Time ' + data.time);
             lineChart.update(data.value);
-        
         }
     });
 </script>
