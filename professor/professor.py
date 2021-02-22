@@ -61,7 +61,7 @@ def get_emoji(classCode):
 @professor_bp.route('/chart-data/<classCode>')
 def chart_data(classCode):
     def generate_random_data(classCode):
-       
+        print('Current time',datetime.now().strftime("%Y/%m/%d/%H:%m "))
         json_data = json.dumps(
                 {
                     'time': datetime.now().strftime("%Y/%m/%d/%H:%m "), 
@@ -76,10 +76,6 @@ def chart_data(classCode):
 @professor_bp.route('/get-chart/<classCode>')
 def get_chart(classCode):
     return render_template('test_stream.html', classCode=classCode)
-
-@professor_bp.route('/professor/<classCode>', methods=['POST','GET'])
-def realtime_professor(classCode):
-    return Response(stream_with_context(generate_realtime_class(classCode)))
 
 # Ask to login for any routes in professor
 @professor_bp.before_request

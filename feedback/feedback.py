@@ -30,7 +30,7 @@ def student():
         # Show incentive data
         return render_template('student.html', categories=categories,
                                                 you=you_voted(session.get('classCode'),session.get('studentCode')), 
-                                                notYou = get_total_voters(session.get('classCode'), session.get('studentCode')), 
+                                                notYou = get_total_voters(session.get('classCode')), 
                                                 size=get_class_size(session.get('classCode')), 
                                                 voted = voted_times(session.get('classCode'), session.get('studentCode')), 
                                                 total=not_your_votes(session.get('classCode'),session.get('studentCode')))
@@ -64,17 +64,15 @@ def student():
             flash('Should be in english ...','error')
         
         #----------------Avoid-any-utf-8-utf-16--------------------
-
         classCode = str(session.get('classCode'))
         query = databaseConnection.query(Categories).filter(Categories.classCode == classCode)
         categories = query.all()
 
         # Message
-        
         return render_template('student.html', title="student", 
                                 categories=categories,
                                 you=you_voted(session.get('classCode'), session.get('studentCode')), 
-                                notYou = get_total_voters(session.get('classCode'), session.get('studentCode')), 
+                                notYou = get_total_voters(session.get('classCode')), 
                                 size=get_class_size(session.get('classCode')), 
                                 voted = voted_times(session.get('classCode'),session.get('studentCode')),
                                 total=not_your_votes(session.get('classCode'),session.get('studentCode')))

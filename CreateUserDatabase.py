@@ -182,7 +182,7 @@ def get_distinct_voters(ccode, scode):
 
 #----------------------------------------------------------------
 # Total voters
-def get_total_voters(ccode, scode):
+def get_total_voters(ccode):
     return databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == ccode).distinct().count()
 
 #----------------------------------------------------------------
