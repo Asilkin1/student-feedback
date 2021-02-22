@@ -62,15 +62,20 @@ def get_time(classCode):
     result = query.first()
     return result
 
+def get_id(classCode):
+    query = databaseConnection.query(Feedback.id).filter(Feedback.classCode == classCode).order_by(Feedback.id.desc())
+    result = query.first()
+    return result
+
 # Streams only the data
 @professor_bp.route('/chart-data/<classCode>')
 def chart_data(classCode):
     def generate_random_data(classCode):
-        print('Current time',datetime.now().strftime("%Y/%m/%d/%H:%m "))
         json_data = json.dumps(
                 {
                     'time': get_time(classCode), 
-                    'value': get_emoji(classCode)
+                    'value': get_emoji(classCode),
+                    'id': get_id(classCode)
                 })
         yield f"data:{json_data}\n\n"
         

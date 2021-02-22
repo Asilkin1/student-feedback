@@ -26,6 +26,7 @@
                     backgroundColor: 'rgb(255, 99, 132)',
                     borderColor: 'rgb(255, 99, 132)',
                     data: [],
+                    id: [],
                     fill: false,
                 }],
             },
@@ -70,10 +71,11 @@
         
         source.onmessage = function (event) {
             const data = JSON.parse(event.data);
+            console.log(Number(data.id));
 
-            if(config.data.datasets[0].data[config.data.datasets[0].data.length -1] === data.value){
+            if(config.data.datasets[0].id[config.data.datasets[0].id.length -1] == Number(data.id)){
                 console.log('Same value');
-                
+
             } else{
 
                 if (config.data.labels.length === 20) {
@@ -82,6 +84,7 @@
             }
                 config.data.datasets[0].data.push(data.value);
                 config.data.labels.push(data.time);
+                config.data.datasets[0].id.push(Number(data.id))
                 lineChart.update(data.time);
             }
             
