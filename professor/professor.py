@@ -8,6 +8,7 @@ from CreateUserDatabase import *
 import json
 random.seed()
 from sqlalchemy import event
+from globalTime import utc2local
 
 professor_bp = Blueprint('professor_bp', __name__,
     template_folder='templates',
@@ -21,9 +22,10 @@ def check_date_voted(ccode):
     """
     # Date
     dateNow = date.today()
-    # Time
-    currentTime = datetime.now()
-    timeNow = currentTime.strftime("%H:%M")
+    # Time in UTC
+    currentTime = datetime.utcnow()
+    # Convert to local time
+    timeNow = utc2local(currentTime).strftime("%H:%M")
     currentDay = dateNow.weekday()
 
     day = ""

@@ -6,6 +6,7 @@ from sqlalchemy.orm import relationship, backref
 from sqlalchemy.orm import sessionmaker
 from encryption import *
 from  datetime import datetime, date, timezone
+from globalTime import utc2local
 import os
 # db path OS dependant
 # Works on windows
@@ -117,9 +118,11 @@ def check_date_voted(ccode):
     # Date
     dateNow = date.today()
 
-    # Time
-    currentTime = datetime.now()
-    timeNow = currentTime.strftime("%H:%M")
+     # Time in UTC
+    currentTime = datetime.utcnow()
+    # Convert to local time
+    timeNow = utc2local(currentTime).strftime("%H:%M")
+    currentDay = dateNow.weekday()
         
     currentDay = dateNow.weekday()
 
@@ -261,17 +264,6 @@ def decrypt_frame(Frame):
                     # Replace it everywhere in the column
                     Frame[column] = Frame[column].replace(values, decryptValue)
     return Frame
-def delete_event_db_handler(mapper, connection,target):
-    '''Do something when entry is removed'''
-    print('Something removed from the database')
-    tablename = mapper.mapped_table.name
-    index = get_es_index(tablename)
-    doc_type = 'doc'
-    id = target.id
-    res = es.delete(index=index, doc_type=doc, id=id)
-    print('delete index', res)
-
-
 
 # create tables
 Base.metadata.create_all(engine)
