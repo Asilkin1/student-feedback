@@ -276,4 +276,14 @@ def analytics(classCode):
     Frame = Frame[Frame['classCode']==classCode]
     # This should be decrypted now
     Frame = decrypt_frame(Frame)
-    return render_template('viewAllFeedback.html', title='All Feedback', data=Frame)
+
+    # Get total voters for the class
+    totalVoters = databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == classCode).distinct().count()
+    # Get total feedbacks
+    totalFeedback = databaseConnection.query(Feedback).filter(Feedback.classCode == classCode).count()
+    return render_template('viewAllFeedback.html', 
+                            title='All Feedback', 
+                            data=Frame, 
+                            size=get_class_size(classCode),  
+                            total=totalVoters,
+                            totalFeedback = totalFeedback)
