@@ -108,6 +108,7 @@ def get_emoji(classCode):
 def get_time(classCode):
     query = databaseConnection.query(Feedback.time).filter(Feedback.classCode == classCode).order_by(Feedback.id.desc())
     result = query.first()
+    print('Time now: ', result)
     return result
 
 def get_id(classCode):
