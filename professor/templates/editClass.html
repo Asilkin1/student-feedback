@@ -69,7 +69,7 @@
                     <label class="form-check-label" for="className">
                         Class Name:
                     </label>
-                    <input type="text" class="form-control" id="text" value={{className}} name="className"
+                    <input type="text" class="form-control" id="text" value="{{className}}" name="className"
                         required>
                 </div>
 
@@ -162,7 +162,22 @@
             </div>
         </div>
 
+        <label class="form-check-label" for="5">
+            Edit category labels:
+        </label>
+        
         <!-- Submit button -->
+        <div class="row justify-content-center">
+            <div class="table-responsive">  
+                <table class="table table-bordered" name="dynamic_field" id="dynamic_field">  
+                     <tr>  
+                          <td><input type="text" name="categories" placeholder="Enter a category name" class="form-control name_list" />
+                          <td><button type="button" name="add" id="add" class="btn btn-success">Add More</button></td>  
+                     </tr>  
+                </table> 
+           </div>
+        </div>
+
         <div class="form-group">
             <button class="button btn-block" type="submit" name="submitButton" value="dashboardSubmit">Update Class</button>
             <form action="{{url_for('auth_bp.login', page=request.args.get('page'))}}">
@@ -171,6 +186,7 @@
         </div>
     </form>
 </div>
+
 <script>
     document.getElementById("start").value= "{{ start }}"
     document.getElementById('end').value = "{{ end }}"
@@ -191,5 +207,39 @@
     if ("{{days}}".includes(nodeList[4].value) == true) {
         nodeList[4].checked = true;
     }
+    function addField( $wrapper ) {
+        var $elem = $('.dynamoc_field:first-child', $wrapper).clone(true).appendTo($wrapper).find('input');
+        $elem.val('').focus();
+        return $elem;
+    }
+    function loadData(){
+        data = {{ data|tojson }};
+        for( var i = 0; i < data.length; i++ ) {
+            if ( i > $('.dynamic_field input').length ) {
+                $('#dynamic_field').append('<tr id="row'+i+'"><td><input type="text" name="categories" placeholder="Enter a category name" class="form-control name_list" /></td><td><button type="button" name="remove" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');
+                document.getElementsByName('categories')[i].value=data[i];
+            } else {
+                document.getElementsByName('categories')[i].value=data[i];
+            }
+        }
+    }
+    $(document).ready(function(){  
+        var i=1;  
+        $('#add').click(function(){  
+            i++;  
+            $('#dynamic_field').append('<tr id="row'+i+'"><td><input type="text" name="categories" placeholder="Enter your Name" class="form-control name_list" /></td><td><button type="button" name="remove" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');  
+        });  
+        $(document).on('click', '.btn_remove', function(){  
+            var button_id = $(this).attr("id");   
+            $('#row'+button_id+'').remove();  
+        });
+        $('#submitButton').click(function(e){            
+        $.ajax({  
+                url:"/professor", 
+                data:$("#dynamic_field").serialize()
+        });  
+        });   
+    });
+    loadData();
 </script>
 {% endblock %}
