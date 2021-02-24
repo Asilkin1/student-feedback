@@ -114,6 +114,10 @@ def deleteClass(id, ccode):
     flash('Class Deleted', 'success')
     return redirect(url_for('professor_bp.instructor'))
 
+def deleteCategories(ccode):
+    databaseConnection.query(Categories).filter(Categories.classCode == ccode).delete()
+    databaseConnection.commit()
+
 @professor_bp.route("/professor/edit/<string:id>", methods=['GET', 'POST'])
 def editClass(id):
     
@@ -128,14 +132,24 @@ def editClass(id):
     start = result.start 
     end = result.end
     days = result.days
-    parsingClassCode = result.classCode.split("-")
+    classCode = result.classCode
     mode = result.mode
     size = result.size
 
     # Parse for section
+    parsingClassCode = result.classCode.split("-")
     sectionName = parsingClassCode[1]
 
+    queryCategories = databaseConnection.query(Categories).filter(Categories.classCode == classCode)
+    resultCategories = queryCategories.all()
+
+    # Categories array
+    data = []
+    for category in resultCategories:
+        data.append(category.category)
+
     if request.method == 'POST':
+        deleteCategories(classCode)
         # Query feedback table for class code
         queryFeedBack = databaseConnection.query(Feedback).filter(Feedback.classCode == result.classCode)
         resultFeedback = queryFeedBack.first()
@@ -145,21 +159,37 @@ def editClass(id):
             parsingClassCode = resultFeedback.classCode.split("-")
             sectionFeedBack = parsingClassCode[1]
         
+        # School Name
         schoolName = request.form['schoolName']
+
+        # Department Name
         departmentName = request.form['departmentName']
+
+        # Class Name
         className = request.form['className']
+
+        # Section Name
         sectionName = request.form['sectionName']
         
         days = request.form.getlist('days')
         saveDays = ''
 
+        # Start time
         start = request.form['start']
+
+        #End time
         end = request.form['end']
+
+        # Class mode
         mode = request.form['mode']
+
+        # Class size
         size = request.form['size']
+
+        # Categories
+        categories = request.form.getlist('categories')
         
-        databaseConnection.commit()
-        
+        # Set result in database to new result
         result.schoolName = schoolName
         result.departmentName = departmentName
         result.className = className
@@ -181,6 +211,18 @@ def editClass(id):
             if sectionName != sectionFeedBack:
                 for results in queryFeedBack.all():
                     results.classCode = result.classCode
+        
+        try:
+            databaseConnection.commit()
+        except:
+            databaseConnection.rollback()
+
+        # Update/add categories regardless if changed or not
+        i = 1
+        for category in categories:
+            newCategory = Categories(result.classCode, category, str(i))
+            databaseConnection.add(newCategory)
+            i += 1
         databaseConnection.commit()
 
         flash('Class Updated', 'success')
@@ -189,7 +231,7 @@ def editClass(id):
         return redirect(url_for('professor_bp.instructor'))
 
     return render_template('editClass.html', entryId=id, schoolName=schoolName, departmentName=departmentName, className=className,
-                                                    sectionName=sectionName, days=days, start=start, end=end, size=size, classMode=mode)
+                                                    sectionName=sectionName, days=days, start=start, end=end, size=size, classMode=mode, data=data)
 @professor_bp.route('/professor/create', methods=["POST", "GET"])
 def professor():
     inData = True
