@@ -120,8 +120,10 @@ def check_date_voted(ccode):
 
      # Time in UTC
     currentTime = datetime.utcnow()
+    print('Time now: ', currentTime)
     # Convert to local time
     timeNow = utc2local(currentTime).strftime("%H:%M")
+    print('Time now+: ', timeNow)
     currentDay = dateNow.weekday()
         
     currentDay = dateNow.weekday()

@@ -41,7 +41,7 @@ def student():
         dateNow = date.today()
         # save as UTC
         currentTime = datetime.utcnow()
-        timeNow = currentTime.strftime("%H:%M")
+        timeNow = utc2local(currentTime).strftime("%H:%M")
         print('Time: ', timeNow)
         
         # Emoji number and encrypt it

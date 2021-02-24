@@ -20,19 +20,71 @@
         const config = {
             type: 'line',
             data: {
-                labels: [],
+                // X axis labels
+                labels: [], // Time
                 datasets: [
+                    // Dataset for each category
                     {
-                        label: "Teaching",
-                        backgroundColor: 'rgb(255, 99, 132)',
-                        borderColor: 'rgb(255, 99, 132)',
+                        label: "Excited",
+                        backgroundColor: 'rgb(0, 255, 0)',
+                        borderColor: 'rgb(0, 255, 0)',
                         data: [],
                         id: [],
                         fill: false,
-                }
+                    },
+                    {
+                        label: "Understand",
+                        backgroundColor: 'rgb(255, 255, 100)',
+                        borderColor: 'rgb(255, 255, 100)',
+                        data: [],
+                        id: [],
+                        fill: false,
+    
+                    },
+                    {
+                        label: "Neutral",
+                        backgroundColor: 'rgb(0, 255, 255)',
+                        borderColor: 'rgb(0, 255, 255)',
+                        data: [],
+                        id: [],
+                        fill: false,
+        
+                    },
+                    {
+                        label: "Tired/Bored",
+                        backgroundColor: 'rgb(140, 0, 255)',
+                        borderColor: 'rgb(140, 0, 255)',
+                        data: [],
+                        id: [],
+                        fill: false,
+         
+                    },
+                    {
+                        label: "Anxious/Confused",
+                        backgroundColor: 'rgb(255, 0, 0)',
+                        borderColor: 'rgb(255, 0, 0)',
+                        data: [],
+                        id: [],
+                        fill: false,
+                 
+                    }
             ],
             },
             options: {
+                plugins: {
+                     legend: {
+                        display: true,
+                        title:{
+                            display:true,
+                            text:'Legend'
+                        },
+                        labels: {
+                            
+                            color: 'rgb(255, 99, 132)',
+                        },
+                        position:'top'
+                    }
+        },
                 responsive: true,
                 title: {
                     display: true,
@@ -49,17 +101,24 @@
                 scales: {
                     xAxes: [{
                         display: true,
-                        scaleLabel: {
-                            display: true,
-                            labelString: 'Time'
-                        }
-                    }],
-                    yAxes: [{
-                        display: true,
+                        ticks:{
+                          
+                        },
                         scaleLabel: {
                             display: true,
                             labelString: 'Emoji'
                         }
+                    }],
+                    yAxes: [{
+                        stacked: true,
+                        // Get rid of decimal points
+                        ticks: {
+                            precision:0,
+                            beginAtZero:true},
+                        scaleLabel:{
+                            display:true,
+                            labelString: 'Total'
+                        },
                     }]
                 }
             }
@@ -75,23 +134,93 @@
             const data = JSON.parse(event.data);
             console.log(Number(data.id));
 
-            if(config.data.datasets[0].id[config.data.datasets[0].id.length -1] == Number(data.id)){
+            // Client time
+            let dateWithouthSecond = new Date();
+            let cTime =  dateWithouthSecond.toLocaleTimeString(navigator.language, {hour: '2-digit', minute:'2-digit'});
+            
+            
+
+            // Same ID?
+            if(config.data.datasets[0].id[config.data.datasets[0].id.length -1] == Number(data.id)
+                || config.data.datasets[1].id[config.data.datasets[1].id.length -1] == Number(data.id)
+                || config.data.datasets[2].id[config.data.datasets[2].id.length -1] == Number(data.id)
+                || config.data.datasets[3].id[config.data.datasets[3].id.length -1] == Number(data.id)
+                || config.data.datasets[4].id[config.data.datasets[4].id.length -1] == Number(data.id)){
                 console.log('Same value');
 
             } else{
+                
 
                 if (config.data.labels.length === 20) {
                 config.data.labels.shift();
-                config.data.datasets[0].data.shift();
+                 config.data.datasets[0].data.shift();
+                 config.data.datasets[1].data.shift();
+                 config.data.datasets[2].data.shift();
+                 config.data.datasets[3].data.shift();
+                 config.data.datasets[4].data.shift();
+                }
+                
+                // One data set 
+                // Increment by index
+                // Insert in which dataset
+                if(data.value == 5){
+                    config.data.datasets[0].data.push(config.data.datasets[0].data.length);
+                    config.data.datasets[0].id.push(Number(data.id))
+                    console.log('Excited total: ' + config.data.datasets[0].data.length)
+                    
+                   
+                                        
+                } 
+
+                if(data.value == 4){
+                    config.data.datasets[1].data.push(config.data.datasets[1].data.length);
+                    config.data.datasets[1].id.push(Number(data.id))
+                    console.log('Understand total: ' + config.data.datasets[1].data.length)
+                    
+                   
+                   
+                } 
+
+                if(data.value == 3){
+                    config.data.datasets[2].data.push(config.data.datasets[2].data.length);
+                    config.data.datasets[2].id.push(Number(data.id))
+                    console.log('Neutral total: ' + config.data.datasets[2].data.length)
+                   
+                
+                    
+                } 
+
+                if(data.value == 2){
+                    config.data.datasets[3].data.push(config.data.datasets[3].data.length);
+                    config.data.datasets[3].id.push(Number(data.id))
+                    console.log('Tired total: ' + config.data.datasets[3].data.length)
+                    
+                   
+                    
+                } 
+
+                if(data.value == 1){
+                    config.data.datasets[4].data.push(config.data.datasets[4].data.length);
+                    config.data.datasets[4].id.push(Number(data.id))
+                    console.log('Confused total: ' + config.data.datasets[4].data.length)
+                    
+                    
+                }
+                
+                if( config.data.datasets[0].data.length - config.data.labels.length > 0 
+                    || config.data.datasets[1].data.length - config.data.labels.length > 0
+                    || config.data.datasets[2].data.length - config.data.labels.length > 0
+                    || config.data.datasets[3].data.length - config.data.labels.length  > 0
+                    || config.data.datasets[4].data.length - config.data.labels.length > 0  ){
+                        lineChart.update(config.data.labels.push(data.time)); 
+                        lineChart.update(config.data.datasets[4].data); 
+                        lineChart.update(config.data.datasets[3].data);
+                        lineChart.update(config.data.datasets[2].data);
+                        lineChart.update(config.data.datasets[1].data);
+                        lineChart.update(config.data.datasets[0].data);
+                    }
+                
             }
-                config.data.datasets[0].data.push(data.value);
-                config.data.labels.push(data.time);
-                config.data.datasets[0].id.push(Number(data.id))
-                lineChart.update(data.time);
-            }
-            
-            console.log('Time ' + data.time);
-            lineChart.update(data.value);
         }
     });
 </script>

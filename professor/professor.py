@@ -15,51 +15,6 @@ professor_bp = Blueprint('professor_bp', __name__,
     static_folder='static')
 
 
-# Check if the realtime stream is available
-def check_date_voted(ccode):
-    """
-    @ccode - class code
-    """
-    # Date
-    dateNow = date.today()
-    # Time in UTC
-    currentTime = datetime.utcnow()
-    # Convert to local time
-    timeNow = utc2local(currentTime).strftime("%H:%M")
-    currentDay = dateNow.weekday()
-
-    day = ""
-
-    # Monday
-    if currentDay == 0:
-        day = "M"
-    # Tuesday
-    if currentDay == 1:
-        day = "T"
-    # Wednesday
-    if currentDay == 2:
-        day = "W"
-    # Thursday
-    if currentDay == 3:
-        day = "H"
-    # Friday
-    if currentDay == 4:
-        day = "F"
-
-    query = databaseConnection.query(Account).filter(Account.classCode == ccode)
-    result = query.first()
-    classStart = result.start
-    classEnd = result.end
-    classDays = result.days
-    inClass = ''
-    
-    if (timeNow > classStart) and (timeNow < classEnd) and (day in classDays):
-        inClass = "Inside"
-    else:
-        inClass = "Outside"
-    
-    return inClass
-
 # generate feedbacks data
 def generate_feedbacks_by_category():
      # Get classes data for current username
