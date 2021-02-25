@@ -71,13 +71,35 @@ def get_id(classCode):
     result = query.first()
     return result
 
+
+def sum(data):
+    '''Sum all the values in the list'''
+    total = 0
+    for i in data:
+        # Should be an integer
+        total += int(i)
+    return total / len(data)
+
 # Streams only the data
 @professor_bp.route('/chart-data/<classCode>')
 def chart_data(classCode):
     def generate_random_data(classCode):
+        # Can process data in a certain way?
+        # -----------------------------microbatch
+        #data = []
+        # Aggregate
+        #current_id = get_id(classCode)
+        # Wait for 5 elements in the dataset
+        #while( len(data) < 5 ):
+        # See if the latest id is not the current one
+            #if get_id(classCode) != current_id:
+                 #print('Added')
+                 #yield f"data:{json_data}\n\n"
+                 #data += get_emoji(classCode)
+
         json_data = json.dumps(
                 {
-                    'value': get_emoji(classCode),
+                    'value':get_emoji(classCode),
                     'id': get_id(classCode)
                 })
         yield f"data:{json_data}\n\n"
@@ -101,9 +123,9 @@ def before_request():
 def instructor():
     return Response(stream_with_context(generate_feedbacks_by_category()))
 
-@professor_bp.route("/professor/delete/<string:id>/<string:ccode>", methods=['GET', 'POST'])
+@professor_bp.route("/professor/delete/<int:id>/<string:ccode>", methods=['GET', 'POST'])
 def deleteClass(id, ccode):
-    databaseConnection.query(Account).filter(Account.entryId == id).delete()
+    databaseConnection.query(Account).filter(Account.entryId == int(id)).delete()
     databaseConnection.commit()
     databaseConnection.query(Feedback).filter(Feedback.classCode == ccode).delete()
     databaseConnection.commit()

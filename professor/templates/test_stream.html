@@ -58,6 +58,7 @@
                         pointHitRadius: 8,
                         spanGaps: true,
                     },
+                    
                     {
                         label: "Understand",
                         backgroundColor: 'rgb(255, 200, 100)',
@@ -148,7 +149,7 @@
                         pointHitRadius: 8,
                         spanGaps: true,
 
-                    }
+                    },
                 ],
             },
             options: {
@@ -221,10 +222,13 @@
         source.onmessage = function (event) {
             const data = JSON.parse(event.data);
 
+            console.log(data.average);
+
             // Client time
             let dateWithouthSecond = new Date();
             let cTime = dateWithouthSecond.toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' });
 
+            
 
             // No new data?
             if (config.data.datasets[0].id[config.data.datasets[0].id.length - 1] == Number(data.id)
@@ -244,6 +248,7 @@
                     config.data.datasets[3].data.push(NaN);
                     config.data.datasets[4].data.push(NaN);
 
+                    // config.data.datasets[5].data.push(data.average);
                     // Keep adding time to simulate realtime
                     lineChart.update(config.data.labels.push(cTime));
 
@@ -251,9 +256,10 @@
                     lineChart.update();
             } else {
 
+                
                 // Shift data when x amount of time labels added 
                 // 100 is more than hour
-                if (config.data.labels.length === 10) {
+                if (config.data.labels.length === 100) {
                     config.data.labels.shift();
                     config.data.datasets[0].data.shift();
                     config.data.datasets[1].data.shift();
@@ -297,6 +303,9 @@
                     config.data.datasets[4].data.push(config.data.datasets[4].id.length);
                     lineChart.update();
                 }
+
+
+
             }
         }
     });
