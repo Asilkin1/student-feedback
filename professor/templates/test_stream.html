@@ -15,6 +15,15 @@
     </div>
 </div>
 
+<style>
+    #canvas{
+  
+  border-radius: 6px;
+/*   Check out the fancy shadow  on this one */
+  box-shadow: 0 3rem 5rem -2rem rgba(0, 0, 0, 0.6);
+}
+</style>
+
 <script>
     $(document).ready(function () {
         const config = {
@@ -23,6 +32,7 @@
                 // X axis labels
                 labels: [], // Time
                 datasets: [
+
                     // Dataset for each category
                     {
                         label: "Excited",
@@ -30,16 +40,46 @@
                         borderColor: 'rgb(0, 255, 0)',
                         data: [],
                         id: [],
+
                         fill: false,
+                        lineTension: 0.1,
+                        borderCapStyle: 'butt',
+                        borderDash: [],
+                        borderDashOffset: 0.0,
+                        borderJoinStyle: 'miter',
+                        pointBorderColor: "green",
+                        pointBackgroundColor: "green",
+                        pointBorderWidth: 1,
+                        pointHoverRadius: 8,
+                        pointHoverBackgroundColor: "brown",
+                        pointHoverBorderColor: "yellow",
+                        pointHoverBorderWidth: 2,
+                        pointRadius: 8,
+                        pointHitRadius: 10,
+                        spanGaps: true,
                     },
                     {
                         label: "Understand",
-                        backgroundColor: 'rgb(255, 255, 100)',
-                        borderColor: 'rgb(255, 255, 100)',
+                        backgroundColor: 'rgb(255, 200, 100)',
+                        borderColor: 'rgb(255, 200, 100)',
                         data: [],
                         id: [],
                         fill: false,
-    
+                        lineTension: 0.1,
+                        borderCapStyle: 'butt',
+                        borderDash: [],
+                        borderDashOffset: 0.0,
+                        borderJoinStyle: 'miter',
+                        pointBorderColor: "rgb(255, 200, 100)",
+                        pointBackgroundColor: "rgb(255, 200, 100)",
+                        pointBorderWidth: 1,
+                        pointHoverRadius: 8,
+                        pointHoverBackgroundColor: "brown",
+                        pointHoverBorderWidth: 2,
+                        pointRadius: 8,
+                        pointHitRadius: 10,
+                        spanGaps: true,
+
                     },
                     {
                         label: "Neutral",
@@ -48,7 +88,21 @@
                         data: [],
                         id: [],
                         fill: false,
-        
+                        lineTension: 0.1,
+                        borderCapStyle: 'butt',
+                        borderDash: [],
+                        borderDashOffset: 0.0,
+                        borderJoinStyle: 'miter',
+                        pointBorderColor: "rgb(0, 255, 255)",
+                        pointBorderWidth: 1,
+                        pointHoverRadius: 8,
+                        pointHoverBackgroundColor: "brown",
+                        pointHoverBorderColor: "yellow",
+                        pointHoverBorderWidth: 2,
+                        pointRadius: 8,
+                        pointHitRadius: 10,
+                        spanGaps: true,
+
                     },
                     {
                         label: "Tired/Bored",
@@ -57,34 +111,62 @@
                         data: [],
                         id: [],
                         fill: false,
-         
+                        lineTension: 0.1,
+                        borderCapStyle: 'butt',
+                        borderDash: [],
+                        borderDashOffset: 0.0,
+                        borderJoinStyle: 'miter',
+                        pointBorderColor: "white",
+                        pointBorderWidth: 1,
+                        pointHoverRadius: 8,
+                        pointHoverBackgroundColor: "brown",
+                        pointHoverBorderColor: "yellow",
+                        pointHoverBorderWidth: 2,
+                        pointRadius: 8,
+                        pointHitRadius: 10,
+                        spanGaps: true,
                     },
                     {
                         label: "Anxious/Confused",
-                        backgroundColor: 'rgb(255, 0, 0)',
+                        backgroundColor: 'rgb(255, 0, 0,0.3)',
                         borderColor: 'rgb(255, 0, 0)',
                         data: [],
                         id: [],
                         fill: false,
-                 
+                        lineTension: 0.1,
+                        borderCapStyle: 'butt',
+                        borderDash: [],
+                        borderDashOffset: 0.0,
+                        borderJoinStyle: 'miter',
+                        pointBorderColor: "white",
+                        pointBorderWidth: 1,
+                        pointHoverRadius: 8,
+                        pointHoverBackgroundColor: "brown",
+                        pointHoverBorderColor: "yellow",
+                        pointHoverBorderWidth: 2,
+                        pointRadius: 8,
+                        pointHitRadius: 10,
+                        spanGaps: true,
+
                     }
-            ],
+                ],
             },
             options: {
                 plugins: {
-                     legend: {
+                    legend: {
                         display: true,
-                        title:{
-                            display:true,
-                            text:'Legend'
+                        title: {
+                            display: true,
+                            text: 'Legend'
                         },
                         labels: {
-                            
+
                             color: 'rgb(255, 99, 132)',
+                            position: 'bottom'
                         },
-                        position:'top'
+                        
                     }
-        },
+                },
                 responsive: true,
                 title: {
                     display: true,
@@ -101,8 +183,8 @@
                 scales: {
                     xAxes: [{
                         display: true,
-                        ticks:{
-                          
+                        ticks: {
+
                         },
                         scaleLabel: {
                             display: true,
@@ -110,14 +192,16 @@
                         }
                     }],
                     yAxes: [{
-                        stacked: true,
+                        stacked:true,
                         // Get rid of decimal points
                         ticks: {
-                            precision:0,
-                            beginAtZero:true},
-                        scaleLabel:{
-                            display:true,
-                            labelString: 'Total'
+                            precision: 0,
+                            beginAtZero: true
+                        },
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Total',
+                            fontSize: 20
                         },
                     }]
                 }
@@ -129,97 +213,78 @@
         const lineChart = new Chart(context, config);
 
         const source = new EventSource("/chart-data/{{classCode}}");
-        
+
         source.onmessage = function (event) {
             const data = JSON.parse(event.data);
             console.log(Number(data.id));
 
             // Client time
             let dateWithouthSecond = new Date();
-            let cTime =  dateWithouthSecond.toLocaleTimeString(navigator.language, {hour: '2-digit', minute:'2-digit'});
-            
-            
+            let cTime = dateWithouthSecond.toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' });
 
-            // Same ID?
-            if(config.data.datasets[0].id[config.data.datasets[0].id.length -1] == Number(data.id)
-                || config.data.datasets[1].id[config.data.datasets[1].id.length -1] == Number(data.id)
-                || config.data.datasets[2].id[config.data.datasets[2].id.length -1] == Number(data.id)
-                || config.data.datasets[3].id[config.data.datasets[3].id.length -1] == Number(data.id)
-                || config.data.datasets[4].id[config.data.datasets[4].id.length -1] == Number(data.id)){
-                console.log('Same value');
 
-            } else{
+            // No new data?
+            if (config.data.datasets[0].id[config.data.datasets[0].id.length - 1] == Number(data.id)
+                || config.data.datasets[1].id[config.data.datasets[1].id.length - 1] == Number(data.id)
+                || config.data.datasets[2].id[config.data.datasets[2].id.length - 1] == Number(data.id)
+                || config.data.datasets[3].id[config.data.datasets[3].id.length - 1] == Number(data.id)
+                || config.data.datasets[4].id[config.data.datasets[4].id.length - 1] == Number(data.id)) {
+                    // Keep adding time to simulate realtime
+                    
+                    // Insert none values for y points to denote that no one voted
+                    config.data.datasets[0].data.push(NaN);
+                    config.data.datasets[1].data.push(NaN);
+                    config.data.datasets[2].data.push(NaN);
+                    config.data.datasets[3].data.push(NaN);
+                    config.data.datasets[4].data.push(NaN);
+                    lineChart.update(config.data.labels.push(cTime));
+                    lineChart.update();
+            } else {
+
                 
-
-                if (config.data.labels.length === 20) {
-                config.data.labels.shift();
-                 config.data.datasets[0].data.shift();
-                 config.data.datasets[1].data.shift();
-                 config.data.datasets[2].data.shift();
-                 config.data.datasets[3].data.shift();
-                 config.data.datasets[4].data.shift();
+                if (config.data.labels.length === 300) {
+                    config.data.labels.shift();
+                    config.data.datasets[0].data.shift();
+                    config.data.datasets[1].data.shift();
+                    config.data.datasets[2].data.shift();
+                    config.data.datasets[3].data.shift();
+                    config.data.datasets[4].data.shift();
                 }
-                
+
+            
                 // One data set 
                 // Increment by index
                 // Insert in which dataset
-                if(data.value == 5){
-                    config.data.datasets[0].data.push(config.data.datasets[0].data.length);
+                if (data.value == 5) {
+                    // Insert into this dataset
                     config.data.datasets[0].id.push(Number(data.id))
-                    console.log('Excited total: ' + config.data.datasets[0].data.length)
-                    
-                   
-                                        
-                } 
-
-                if(data.value == 4){
-                    config.data.datasets[1].data.push(config.data.datasets[1].data.length);
-                    config.data.datasets[1].id.push(Number(data.id))
-                    console.log('Understand total: ' + config.data.datasets[1].data.length)
-                    
-                   
-                   
-                } 
-
-                if(data.value == 3){
-                    config.data.datasets[2].data.push(config.data.datasets[2].data.length);
-                    config.data.datasets[2].id.push(Number(data.id))
-                    console.log('Neutral total: ' + config.data.datasets[2].data.length)
-                   
-                
-                    
-                } 
-
-                if(data.value == 2){
-                    config.data.datasets[3].data.push(config.data.datasets[3].data.length);
-                    config.data.datasets[3].id.push(Number(data.id))
-                    console.log('Tired total: ' + config.data.datasets[3].data.length)
-                    
-                   
-                    
-                } 
-
-                if(data.value == 1){
-                    config.data.datasets[4].data.push(config.data.datasets[4].data.length);
-                    config.data.datasets[4].id.push(Number(data.id))
-                    console.log('Confused total: ' + config.data.datasets[4].data.length)
-                    
-                    
+                    config.data.datasets[0].data.push(config.data.datasets[0].id.length);
+                    lineChart.update();
                 }
-                
-                if( config.data.datasets[0].data.length - config.data.labels.length > 0 
-                    || config.data.datasets[1].data.length - config.data.labels.length > 0
-                    || config.data.datasets[2].data.length - config.data.labels.length > 0
-                    || config.data.datasets[3].data.length - config.data.labels.length  > 0
-                    || config.data.datasets[4].data.length - config.data.labels.length > 0  ){
-                        lineChart.update(config.data.labels.push(data.time)); 
-                        lineChart.update(config.data.datasets[4].data); 
-                        lineChart.update(config.data.datasets[3].data);
-                        lineChart.update(config.data.datasets[2].data);
-                        lineChart.update(config.data.datasets[1].data);
-                        lineChart.update(config.data.datasets[0].data);
-                    }
-                
+
+                if (data.value == 4) {
+                    config.data.datasets[1].id.push(Number(data.id))
+                    config.data.datasets[1].data.push(config.data.datasets[1].id.length);
+                    lineChart.update();
+                }
+
+                if (data.value == 3) {
+                    config.data.datasets[2].id.push(Number(data.id))
+                    config.data.datasets[2].data.push(config.data.datasets[2].id.length);
+                    lineChart.update();
+                }
+
+                if (data.value == 2) {
+                    config.data.datasets[3].id.push(Number(data.id))
+                    config.data.datasets[3].data.push(config.data.datasets[3].id.length);
+                    lineChart.update();
+                }
+
+                if (data.value == 1) {
+                    config.data.datasets[4].id.push(Number(data.id))
+                    config.data.datasets[4].data.push(config.data.datasets[4].id.length);
+                    lineChart.update();
+                }
             }
         }
     });
