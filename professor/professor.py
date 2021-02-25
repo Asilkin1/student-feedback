@@ -123,8 +123,8 @@ def before_request():
 def instructor():
     return Response(stream_with_context(generate_feedbacks_by_category()))
 
-@professor_bp.route("/professor/delete/<int:id>/<string:ccode>", methods=['GET', 'POST'])
-def deleteClass(id, ccode):
+@professor_bp.route("/professor/delete/<id>/<ccode>", methods=['GET', 'POST'])
+def deleteClass(id,ccode):
     databaseConnection.query(Account).filter(Account.entryId == int(id)).delete()
     databaseConnection.commit()
     databaseConnection.query(Feedback).filter(Feedback.classCode == ccode).delete()
