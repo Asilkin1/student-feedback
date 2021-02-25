@@ -35,14 +35,14 @@
             </tr>
           </thead>
           <tbody>
-        
+            
             {% for row in data %}
             <tr>
               <form action="/analytics/check" method="GET">
                 <th scope="row">{{row.className}}</th>
                 <!-- Get class code into the form  -->
                 <!-- The input cannot be disables -->
-                <td >{{row.classCode}}<input type="hidden" name="ccode" value={{row.classCode}}></td> 
+                <td >{{row.classCode}}<input type="hidden" id="classCode" name="ccode" value={{row.classCode}}></td> 
                 <td>
                   <div class="form-group">
                     <select name="category" id="category" class="form-control" required>
@@ -68,9 +68,9 @@
                       </div>
                     </td>
                     <td style="border: none;">
-                      <a class="btn btn-outline-danger" data-toggle="modal" data-target="#exampleModal">Delete</a>
+                      <button class="btn btn-outline-danger" id="delete" data-toggle="modal" classCode="{{row.classCode}}" data-id="{{row.entryId}}" data-target="#exampleModal">Delete</button>
                     </td>
-                    
+
                    {% if within(row.classCode) == 'Inside'%}
                    <h6>Current class</h6>
                     <!-- Realtime data-->
@@ -83,31 +83,30 @@
                       <a href="{{url_for('professor_bp.get_chart', classCode=row.classCode)}}"class="btn disabled btn-outline-light">Realtime</a>
                     </td>
                     {% endif %}
-
-                    <!-- Modal -->
-                    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                      <div class="modal-dialog" role="document">
-                        <div class="modal-content">
-                          <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Delete Class {{row.classCode}}</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                              <span aria-hidden="true">&times;</span>
-                            </button>
-                          </div>
-                          <div class="modal-body">
-                            Are you sure you want to delete this class?
-                          </div>
-                          <div class="modal-footer">
-                            <a class="btn btn-danger" href="/professor/delete/{{row.entryId}}/{{row.classCode}}">Delete</a>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                 </table>
+                  </table>
                 </td>
               </form>
             </tr>
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 id="title" class="modal-title" id="exampleModalLabel"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div class="modal-body">
+                    Are you sure you want to delete this class?
+                  </div>
+                  <div class="modal-footer">
+                    <a class="btn btn-danger" id="deleteClass" href="/professor/delete/{{row.entryId}}/{{row.classCode}}">Delete</a>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                  </div>
+                </div>
+              </div>
+            </div>
             {% endfor %}
           </tbody>
         </table>
@@ -185,6 +184,22 @@ $('#classTable').dataTable( {
 </script>
 
 <script>
-  $('#myModal').on('shown.bs.modal', function () {
-  })
+  // $('#myModal').on('shown.bs.modal', function () {
+  // })
+  // ON SELECTING ROW 
+  $(document).on('click', '#delete', function () {
+    //FINDING ELEMENTS OF ROWS AND STORING THEM IN VARIABLES 
+    console.log($(this))
+    var id = $(this).attr("data-id");
+    var classCode = $(this).attr("classCode");
+    console.log($(this).attr("data-id"))
+    console.log($(this).attr("classCode"))
+    var p = "";  
+    p += "<p>Delete class " + classCode + " </p>"; 
+    //CLEARING THE PREFILLED DATA 
+    $("#title").empty(); 
+    //WRITING THE DATA ON MODEL 
+    $("#title").append(p); 
+    document.getElementById("deleteClass").href = "/professor/delete/" +id+"/"+classCode;
+  });
 </script>

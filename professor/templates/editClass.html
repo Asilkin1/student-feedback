@@ -1,3 +1,12 @@
+<style>
+    .nounderline {
+        text-decoration: none !important;
+        color: white
+    }
+    .nounderline:hover {
+        color: white
+    }
+</style>
 {% extends "base.html" %}
 {% block title %}Home{% endblock %}
 
@@ -180,9 +189,9 @@
 
         <div class="form-group">
             <button class="button btn-block" type="submit" name="submitButton" value="dashboardSubmit">Update Class</button>
-            <form action="{{url_for('auth_bp.login', page=request.args.get('page'))}}">
+            <a href="{{url_for('professor_bp.instructor')}}" class="nounderline">
                 <button class="button btn-block">Back To Class Dashboard</a>
-            </form>
+            </a>
         </div>
     </form>
 </div>
