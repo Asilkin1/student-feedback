@@ -77,7 +77,6 @@ def chart_data(classCode):
     def generate_random_data(classCode):
         json_data = json.dumps(
                 {
-                    'time': get_time(classCode), 
                     'value': get_emoji(classCode),
                     'id': get_id(classCode)
                 })
