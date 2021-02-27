@@ -3,11 +3,13 @@
 
 {% block content %}
 
+
 <div class="container">
     <div class="row">
         <div class="col-12">
             <div>
                 <div class="card-body">
+                    
                     <canvas id="canvas"></canvas>
                 </div>
             </div>
@@ -196,7 +198,6 @@
                         }
                     }],
                     yAxes: [{
-                        stacked:true,
                         // Get rid of decimal points
                         ticks: {
                             precision: 0,
@@ -218,17 +219,15 @@
 
         const source = new EventSource("/chart-data/{{classCode}}");
 
+      
+
         source.onmessage = function (event) {
             const data = JSON.parse(event.data);
-
-            console.log(data.average);
-
+            console.log(data.value);
             // Client time
             let dateWithouthSecond = new Date();
-            let cTime = dateWithouthSecond.toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit' });
-
-            
-
+            let cTime = dateWithouthSecond.toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit', second:'2-digit' });
+            console.log(cTime);
             // No new data?
             if (config.data.datasets[0].id[config.data.datasets[0].id.length - 1] == Number(data.id)
                 || config.data.datasets[1].id[config.data.datasets[1].id.length - 1] == Number(data.id)
@@ -246,7 +245,6 @@
                     config.data.datasets[3].data.push(NaN);
                     config.data.datasets[4].data.push(NaN);
 
-                    // config.data.datasets[5].data.push(data.average);
                     // Keep adding time to simulate realtime
                     lineChart.update(config.data.labels.push(cTime));
 
@@ -255,6 +253,10 @@
                                         easing: 'easeOutBounce'});
             } else {
 
+                // if (config.data.labels[-1] !== cTime){
+                //     console.log('Update');
+                //     lineChart.update(config.data.labels.push(cTime));
+                // }
                 
                 // Shift data when x amount of time labels added 
                 // 100 is more than hour
@@ -272,6 +274,7 @@
                     // Insert into this dataset
                     config.data.datasets[0].id.push(Number(data.id))
                     config.data.datasets[0].data.push(config.data.datasets[0].id.length);
+                    lineChart.update(config.data.labels.push(cTime));
                     lineChart.update();
                 }
 
@@ -279,6 +282,7 @@
                 if (data.value == 4) {
                     config.data.datasets[1].id.push(Number(data.id))
                     config.data.datasets[1].data.push(config.data.datasets[1].id.length);
+                    lineChart.update(config.data.labels.push(cTime));
                     lineChart.update();
                 }
 
@@ -286,6 +290,7 @@
                 if (data.value == 3) {
                     config.data.datasets[2].id.push(Number(data.id))
                     config.data.datasets[2].data.push(config.data.datasets[2].id.length);
+                    lineChart.update(config.data.labels.push(cTime));
                     lineChart.update();
                 }
 
@@ -293,6 +298,7 @@
                 if (data.value == 2) {
                     config.data.datasets[3].id.push(Number(data.id))
                     config.data.datasets[3].data.push(config.data.datasets[3].id.length);
+                    lineChart.update(config.data.labels.push(cTime));
                     lineChart.update();
                 }
 
@@ -300,8 +306,11 @@
                 if (data.value == 1) {
                     config.data.datasets[4].id.push(Number(data.id))
                     config.data.datasets[4].data.push(config.data.datasets[4].id.length);
+                    lineChart.update(config.data.labels.push(cTime));
                     lineChart.update();
                 }
+
+ 
             }
         }
     });

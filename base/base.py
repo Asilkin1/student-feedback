@@ -8,6 +8,8 @@ base_bp = Blueprint('base_bp', __name__,
 
 @base_bp.route('/', methods=["POST", "GET"])
 def index():
+    # log out when returned to the website
+    session.clear()
     if session.get('username'):
         return redirect(url_for('professor_bp.instructor'))
     elif session.get('studentCode'):

@@ -9,6 +9,9 @@ import json
 random.seed()
 from sqlalchemy import event
 from globalTime import utc2local
+from datetime import timedelta
+from cache import cache
+
 
 professor_bp = Blueprint('professor_bp', __name__,
     template_folder='templates',
@@ -54,10 +57,41 @@ def generate_feedbacks_by_category():
                             within = check_date_voted 
                             )
 
+# Get all feedbacks for the past 5 seconds  
+@cache.cached(timeout=5, key_prefix='last_10_emoji_values')
+def get_emoji_cached(classCode):
+    '''@classCode - current class
+       :returns a list of emojis values = [5,4,2,1,4,1,2,3,4,5]
+    '''
+    emoji = 0
+    accumulate = []
+    # Get feedbacks by classCode
+    try:
+        query = databaseConnection.query(Feedback).filter(Feedback.classCode == classCode).order_by(Feedback.id.desc())
+        # get last 10 feedbacks
+        result = query.limit(10).all()
+        if result:
+            for i in result:
+                emoji = mysql_aes_decrypt(i.emoji,random_key)
+                accumulate.append(int(emoji))
+    # Cannot read from the database then do something
+    except:
+        emoji = 0
+    print('Cached function',accumulate)
+    return accumulate
+
 def get_emoji(classCode):
-    query = databaseConnection.query(Feedback).filter(Feedback.classCode == classCode).order_by(Feedback.id.desc())
-    result = query.first()
-    emoji = mysql_aes_decrypt(result.emoji,random_key)
+    # Return 0 if something goes wrong
+    emoji = 0
+    # Get something from the database
+    try:
+        query = databaseConnection.query(Feedback).filter(Feedback.classCode == classCode).order_by(Feedback.id.desc())
+        result = query.first()
+        if result:
+            emoji = mysql_aes_decrypt(result.emoji,random_key)
+    # Cannot read from the database then do something
+    except:
+        emoji = 0
     return emoji
 
 def get_time(classCode):
@@ -66,11 +100,18 @@ def get_time(classCode):
     print('Time now: ', result)
     return result
 
+
 def get_id(classCode):
     query = databaseConnection.query(Feedback.id).filter(Feedback.classCode == classCode).order_by(Feedback.id.desc())
     result = query.first()
     return result
 
+def get_student_feedback_count(classCode):
+    # Get distinct student codes
+    student_code = databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == classCode).distinct()
+    result = student_code.all()
+    # How many feedbacks left by this student
+    return result.count()
 
 def sum(data):
     '''Sum all the values in the list'''
@@ -81,40 +122,51 @@ def sum(data):
     return total / len(data)
 
 # Streams only the data
+
 @professor_bp.route('/chart-data/<classCode>')
 def chart_data(classCode):
+    # call cached function here
+    last_ten = get_emoji_cached(classCode)
     def generate_random_data(classCode):
-        # Can process data in a certain way?
-        # -----------------------------microbatch
-        #data = []
-        # Aggregate
-        #current_id = get_id(classCode)
-        # Wait for 5 elements in the dataset
-        #while( len(data) < 5 ):
-        # See if the latest id is not the current one
-            #if get_id(classCode) != current_id:
-                 #print('Added')
-                 #yield f"data:{json_data}\n\n"
-                 #data += get_emoji(classCode)
+        try:
+            
+            # Can process data in a certain way?
+            # -----------------------------microbatch
+            #data = []
+            # Aggregate
+            #current_id = get_id(classCode)
+            # Wait for 5 elements in the dataset
+            #while( len(data) < 5 ):
+            # See if the latest id is not the current one
+                #if get_id(classCode) != current_id:
+                    #print('Added')
+                    #data += get_emoji(classCode)
 
-        json_data = json.dumps(
-                {
-                    'value':get_emoji(classCode),
-                    'id': get_id(classCode)
-                })
-        yield f"data:{json_data}\n\n"
+            # Send result
+            json_data = json.dumps(
+                    {
+                        'value':sum(last_ten),
+                        'id': get_id(classCode)
+                    })
+            print('Live stream')
+            yield f"data:{json_data}\n\n"
+        except Exception as e:
+            return Response('Error! ' + str(e))
         
     return Response(generate_random_data(classCode), mimetype='text/event-stream')
     
     
 # Show page which will get the data
 @professor_bp.route('/get-chart/<classCode>')
+@cache.cached(timeout=5)
 def get_chart(classCode):
     return render_template('test_stream.html', classCode=classCode)
 
 # Ask to login for any routes in professor
 @professor_bp.before_request
 def before_request():
+    session.permanent = True
+    professor_bp.permanent_session_lifetime = timedelta(minutes=95)
     if not session.get('logged_in'):
         flash('Please log in to gain access to the website.', 'info')
         return render_template('login.html')

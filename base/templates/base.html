@@ -67,11 +67,10 @@
              
              {% endif %}
              
-             {{ session['_id'] }}
              <!-- Hello {{ session['username'] }} -->
              
              {% elif session['studentCode'] %}
-             <a class="navbar-brand" href="{{url_for('base_bp.index')}}">
+             <a class="navbar-brand" href="{{url_for('student_bp.student')}}">
                  <img  id="logo" src="/static/logo.png">
              </a>
              <div class="col">

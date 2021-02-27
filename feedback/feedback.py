@@ -13,6 +13,8 @@ student_bp = Blueprint('student_bp', __name__,
 # Ask to login for any routes in student
 @student_bp.before_request
 def before_request():
+    session.permanent = True
+    student_bp.permanent_session_lifetime = timedelta(minutes=95)
     if not session.get('studentCode'):
         flash('Please log in to gain access to the website.', 'info')
         return render_template('student_sign_up.html')

@@ -5,10 +5,10 @@ from encryption import *
 import re
 import bcrypt
 
+
 auth_bp = Blueprint('auth_bp', __name__,
     template_folder='templates',
     static_folder='static')
-
 
 # Register students
 @auth_bp.route('/student/registration', methods=["POST", "GET"])

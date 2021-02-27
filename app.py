@@ -2,6 +2,7 @@
 # The lines below should be moved to some other parts of the app
 from flask import Flask, render_template, request, redirect, url_for, session, app, abort, flash, make_response, Response, render_template_string
 from flask_session.__init__ import Session as flaskGlobalSession
+from cache import cache
 
 # ------------BLUEPRINTS-------------------
 from analytics.analytics import analytics_bp
@@ -17,22 +18,6 @@ app.register_blueprint(student_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(base_bp)
 
-# Stream any template with the context
-def stream_template(template_name, **context):
-    app.update_template_context(context)
-    t = app.jinja_env.get_template(template_name)
-    rv = t.stream(context)
-    rv.enable_buffering(5)
-    return rv
-
-# generate feedbacks data
-def generate_feedbacks_by_category():
-    yield render_template(stream_template('login.html'))
-
-@professor_bp.route('/professor/realtime', methods=['POST','GET'])
-def realtime_professor():
-    return Response(generate_feedbacks_by_category())
-
 if __name__ == '__main__':
     # This secret if for local development environment
     app.secret_key = 'super secret key'
@@ -43,4 +28,5 @@ if __name__ == '__main__':
     app.config['DEBUG'] = True
     weirdsession = flaskGlobalSession()
     weirdsession.init_app(app)
+    cache.init_app(app)
     app.run(threaded=True)
