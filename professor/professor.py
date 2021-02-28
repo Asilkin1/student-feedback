@@ -57,11 +57,17 @@ def generate_feedbacks_by_category():
                             within = check_date_voted 
                             )
 
+
+def get_id(classCode):
+    query = databaseConnection.query(Feedback.id).filter(Feedback.classCode == classCode).order_by(Feedback.id.desc())
+    result = query.first()
+    return result
+
 # Get all feedbacks for the past 5 seconds  
 @cache.cached(timeout=5, key_prefix='last_10_emoji_values')
 def get_emoji_cached(classCode):
     '''@classCode - current class
-       :returns a list of emojis values = [5,4,2,1,4,1,2,3,4,5]
+       :returns a list of emojis values e.g. [5,4,2,1,4,1,2,3,4,5]
     '''
     emoji = 0
     accumulate = []
@@ -70,10 +76,16 @@ def get_emoji_cached(classCode):
         query = databaseConnection.query(Feedback).filter(Feedback.classCode == classCode).order_by(Feedback.id.desc())
         # get last 10 feedbacks
         result = query.limit(10).all()
-        if result:
+
+        # get classCodes
+        ccode = databaseConnection.query(Feedback.id).filter(Feedback.classCode == classCode).order_by(Feedback.id.desc())
+        ccode = query.limit(10).all()
+        
+        if result and ccode:
             for i in result:
-                emoji = mysql_aes_decrypt(i.emoji,random_key)
-                accumulate.append(int(emoji))
+                if i.id not in ccode:
+                    emoji = mysql_aes_decrypt(i.emoji,random_key)
+                    accumulate.append(int(emoji))
     # Cannot read from the database then do something
     except:
         emoji = 0
@@ -101,10 +113,13 @@ def get_time(classCode):
     return result
 
 
-def get_id(classCode):
-    query = databaseConnection.query(Feedback.id).filter(Feedback.classCode == classCode).order_by(Feedback.id.desc())
-    result = query.first()
-    return result
+def get_id_cached(classCode):
+    '''
+    @classCode - class code to identify feedbacks
+    '''
+    pass
+
+
 
 def get_student_feedback_count(classCode):
     # Get distinct student codes
@@ -119,7 +134,7 @@ def sum(data):
     for i in data:
         # Should be an integer
         total += int(i)
-    return total / len(data)
+    return round(total / len(data))
 
 # Streams only the data
 
@@ -143,6 +158,7 @@ def chart_data(classCode):
                     #data += get_emoji(classCode)
 
             # Send result
+            time.sleep(5)
             json_data = json.dumps(
                     {
                         'value':sum(last_ten),
@@ -158,7 +174,6 @@ def chart_data(classCode):
     
 # Show page which will get the data
 @professor_bp.route('/get-chart/<classCode>')
-@cache.cached(timeout=5)
 def get_chart(classCode):
     return render_template('test_stream.html', classCode=classCode)
 
