@@ -159,9 +159,10 @@ def chart_data(classCode):
 
             # Send result
             time.sleep(5)
+            print("sum is ", sum(last_ten))
             json_data = json.dumps(
                     {
-                        'value':sum(last_ten),
+                        'value':get_emoji(classCode),
                         'id': get_id(classCode)
                     })
             print('Live stream')

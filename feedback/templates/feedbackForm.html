@@ -124,6 +124,18 @@
         </div>
 
         {% for row in categories %}
+            {% if categories.index(row) == 0 %}
+            <div class="col- feedmoji">
+                <!-- Category -->
+                <div class="form-check">
+                    <input class="form-check-input block" name="elaborateNumber" id={{row.category}} type="radio" value={{row.number}}
+                        required checked>
+                    <label class="form-check-label" for={{row.category}} style="cursor: pointer;">
+                        {{ row.category}}
+                    </label>
+                </div>
+            </div>
+            {% else %}
             <div class="col- feedmoji">
                 <!-- Category -->
                 <div class="form-check">
@@ -134,6 +146,7 @@
                     </label>
                 </div>
             </div>
+            {% endif %}
         {% endfor%}
 
         <!-- Input field -->
