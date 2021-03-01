@@ -1,8 +1,7 @@
-# All global imports should reside in each individual blueprint
-# The lines below should be moved to some other parts of the app
 from flask import Flask, render_template, request, redirect, url_for, session, app, abort, flash, make_response, Response, render_template_string
 from flask_session.__init__ import Session as flaskGlobalSession
 from cache import cache
+import logging
 
 # ------------BLUEPRINTS-------------------
 from analytics.analytics import analytics_bp
@@ -17,6 +16,9 @@ app.register_blueprint(professor_bp)
 app.register_blueprint(student_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(base_bp)
+
+# Set logging to a file
+logging.basicConfig(filename='feedback.log', level=logging.DEBUG,format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
 
 if __name__ == '__main__':
     # This secret if for local development environment
