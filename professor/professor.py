@@ -64,7 +64,7 @@ def get_id(classCode):
     return result
 
 # Get all feedbacks for the past 5 seconds  
-@cache.cached(timeout=5, key_prefix='last_10_emoji_values')
+@cache.cached(timeout=10, key_prefix='last_10_emoji_values')
 def get_emoji_cached(classCode):
     '''@classCode - current class
        :returns a list of emojis values e.g. [5,4,2,1,4,1,2,3,4,5]
@@ -80,10 +80,11 @@ def get_emoji_cached(classCode):
         # get classCodes
         ccode = databaseConnection.query(Feedback.id).filter(Feedback.classCode == classCode).order_by(Feedback.id.desc())
         ccode = query.limit(10).all()
-        
         if result and ccode:
             for i in result:
+                print('Result: ',i)
                 if i.id not in ccode:
+                    print('Code: ', i.id)
                     emoji = mysql_aes_decrypt(i.emoji,random_key)
                     accumulate.append(int(emoji))
     # Cannot read from the database then do something
@@ -118,7 +119,6 @@ def get_id_cached(classCode):
     @classCode - class code to identify feedbacks
     '''
     pass
-
 
 
 def get_student_feedback_count(classCode):

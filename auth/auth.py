@@ -4,6 +4,7 @@ from CreateUserDatabase import *
 from encryption import *
 import re
 import bcrypt
+from cache import cache
 
 
 auth_bp = Blueprint('auth_bp', __name__,
@@ -13,7 +14,7 @@ auth_bp = Blueprint('auth_bp', __name__,
 # Register students
 @auth_bp.route('/student/registration', methods=["POST", "GET"])
 def studentRegistration():
-
+    '''Register student code'''
     if request.method == "POST":
         # Generate a unique code here
         studentCode = request.form.get('studentCode')
