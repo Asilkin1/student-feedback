@@ -70,7 +70,11 @@ def get_emoji_cached(classCode):
        :returns a list of emojis values e.g. [5,4,2,1,4,1,2,3,4,5]
     '''
     emoji = 0
+    time = 0
+    id = 0
     accumulate = []
+    timeAccumulate = []
+    idAccumulate = []
     # Get feedbacks by classCode
     try:
         query = databaseConnection.query(Feedback).filter(Feedback.classCode == classCode).order_by(Feedback.id.desc())
@@ -87,11 +91,18 @@ def get_emoji_cached(classCode):
                     print('Code: ', i.id)
                     emoji = mysql_aes_decrypt(i.emoji,random_key)
                     accumulate.append(int(emoji))
+                    timeAccumulate.append(i.time)
+                    idAccumulate.append(i.id)
     # Cannot read from the database then do something
     except:
         emoji = 0
+        time = 0
+        id = 0
     print('Cached function',accumulate)
-    return accumulate
+    timeAccumulate.reverse()
+    idAccumulate.reverse()
+    print(timeAccumulate)
+    return accumulate, timeAccumulate, idAccumulate
 
 def get_emoji(classCode):
     # Return 0 if something goes wrong
@@ -156,7 +167,52 @@ def sum(data):
 @professor_bp.route('/chart-data/<classCode>')
 def chart_data(classCode):
     # call cached function here
-    last_ten = get_emoji_cached(classCode)
+    last_ten, lastTimes, lastIDs= get_emoji_cached(classCode)
+    excitedArr = []
+    understandArr = []
+    neutralArr = []
+    tiredArr = []
+    anxiousArr = []
+    excitedID = []
+    understandID = []
+    neutralID = []
+    tiredID = []
+    anxiousID = []
+    excited = {}
+    understand = {}
+    neutral = {}
+    tired = {}
+    anxious = {}
+    i = 0
+    times = {}
+    for x in lastTimes:
+        times[x] = None
+    for emoji in last_ten:
+        if emoji == 5:
+            excitedArr.append(len(excitedArr)+1)
+            excitedID.append(lastIDs[i])
+            excited[lastTimes[i]] = len(excitedArr)
+            i += 1
+        if emoji == 4:
+            understandArr.append(len(understandArr)+1)
+            understandID.append(i)
+            understand[lastTimes[i]] = len(understandArr)
+            i += 1
+        if emoji == 3:
+            neutralArr.append(len(neutralArr)+1)
+            neutralID.append(i)
+            neutral[lastTimes[i]] = len(neutralArr)
+            i += 1
+        if emoji == 2:
+            tiredArr.append(len(tiredArr)+1)
+            tiredID.append(i)
+            tired[lastTimes[i]] = len(tiredArr)
+            i += 1
+        if emoji == 1:
+            anxiousArr.append(len(anxiousArr)+1)
+            anxiousID.append(i)
+            anxious[lastTimes[i]] = len(anxiousArr)
+            i += 1
     def generate_random_data(classCode):
         try:
             
@@ -194,7 +250,63 @@ def chart_data(classCode):
 # Show page which will get the data
 @professor_bp.route('/get-chart/<classCode>')
 def get_chart(classCode):
-    return render_template('test_stream.html', classCode=classCode)
+    last_ten, lastTimes, lastIDs= get_emoji_cached(classCode)
+    excitedArr = []
+    understandArr = []
+    neutralArr = []
+    tiredArr = []
+    anxiousArr = []
+    excitedID = []
+    understandID = []
+    neutralID = []
+    tiredID = []
+    anxiousID = []
+    excited = {}
+    understand = {}
+    neutral = {}
+    tired = {}
+    anxious = {}
+    i = 0
+    times = {}
+    for time in lastTimes:
+        times[time] = None
+    for emoji in last_ten:
+        if emoji == 5:
+            excitedArr.append(len(excitedArr)+1)
+            excitedID.append(lastIDs[i])
+            excited[lastTimes[i]] = len(excitedArr)
+            i += 1
+        if emoji == 4:
+            understandArr.append(len(understandArr)+1)
+            understandID.append(i)
+            understand[lastTimes[i]] = len(understandArr)
+            i += 1
+        if emoji == 3:
+            neutralArr.append(len(neutralArr)+1)
+            neutralID.append(i)
+            neutral[lastTimes[i]] = len(neutralArr)
+            i += 1
+        if emoji == 2:
+            tiredArr.append(len(tiredArr)+1)
+            tiredID.append(i)
+            tired[lastTimes[i]] = len(tiredArr)
+            i += 1
+        if emoji == 1:
+            anxiousArr.append(len(anxiousArr)+1)
+            anxiousID.append(i)
+            anxious[lastTimes[i]] = len(anxiousArr)
+            i += 1
+    
+    print("times are: ", lastTimes)
+    print("excited dictionary is : ", excited)
+    print("understand dictionary is : ", understand)
+    print("neutral dictionary is : ", neutral)
+    print("tired dictionary is : ", tired)
+    print("anxious dictionary is : ", anxious)
+    return render_template('test_stream.html', classCode=classCode, last_ten = last_ten, lastTimes = times, lastIDs = lastIDs, excitedArr = excitedArr,
+                            understandArr = understandArr, neutralArr = neutralArr, tiredArr = tiredArr, anxiousArr = anxiousArr,
+                            excitedID = excitedID, understandID = understandID, neutralID = neutralID, tiredID = tiredID, anxiousID = anxiousID, 
+                            excited=excited, understand=understand, neutral=neutral, tired=tired, anxious=anxious)
 
 # Ask to login for any routes in professor
 @professor_bp.before_request
