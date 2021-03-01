@@ -107,6 +107,21 @@ def get_emoji(classCode):
         emoji = 0
     return emoji
 
+def get_student_code(classCode):
+    # Return 0 if something goes wrong
+    studentCode = 0
+    # Get something from the database
+    try:
+        query = databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == classCode).order_by(Feedback.id.desc())
+        result = query.first()
+        if result:
+            studentCode = result[0]
+    # Cannot read from the database then do something
+    except:
+        studentCode = 0
+    print('Student Code: ', str(studentCode))
+    return studentCode
+
 def get_time(classCode):
     query = databaseConnection.query(Feedback.time).filter(Feedback.classCode == classCode).order_by(Feedback.id.desc())
     result = query.first()
@@ -163,7 +178,10 @@ def chart_data(classCode):
             json_data = json.dumps(
                     {
                         'value':get_emoji(classCode),
-                        'id': get_id(classCode)
+                        'id': get_id(classCode),
+                        'last10':sum(last_ten),
+                        'numberOfFeedback':10,
+                        'studentID':get_student_code(classCode)
                     })
             print('Live stream')
             yield f"data:{json_data}\n\n"
