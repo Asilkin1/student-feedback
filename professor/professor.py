@@ -99,6 +99,7 @@ def get_emoji_cached(classCode):
         time = 0
         id = 0
     print('Cached function',accumulate)
+    accumulate.reverse()
     timeAccumulate.reverse()
     idAccumulate.reverse()
     print(timeAccumulate)
