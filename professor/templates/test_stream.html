@@ -79,6 +79,8 @@
 
         let last_ten = {{ last_ten|tojson }};
         let lastTimes = {{ lastTimes|tojson }};
+        let uniqueTimes = [...new Set(lastTimes)];
+
         let excitedID = {{ excitedID|tojson }};
         let understandID = {{ understandID|tojson }};
         let neutralID = {{ neutralID|tojson }};
@@ -97,28 +99,64 @@
         let tired2 = []
         let anxious2 = []
 
-        for (const [key, value] of Object.entries(excited)){
-            excited2.push({x: key, y: value});
-        }
-        for (const [key, value] of Object.entries(understand)){
-            understand2.push({x: key, y: value});
-        }
-        for (const [key, value] of Object.entries(neutral)){
-            neutral2.push({x: key, y: value});
-        }
-        for (const [key, value] of Object.entries(tired)){
-            tired2.push({x: key, y: value});
-        }
-        for (const [key, value] of Object.entries(anxious)){
-            anxious2.push({x: key, y: value});
-        }
+        uniqueTimes.forEach(element => {
+            console.log(excited)
+            for (const [key, value] of Object.entries(excited)){
+                if (element.localeCompare(key) == 0){
+                    excited2.push({x: key, y: value});
+                }
+            }
+            if (Object.keys(excited).includes(element) == false){
+                excited2.push({x: element, y: NaN});
+            }
+        });
+        uniqueTimes.forEach(element => {
+            for (const [key, value] of Object.entries(understand)){
+                if (element.localeCompare(key) == 0){
+                    understand2.push({x: key, y: value});
+                }
+            }
+            if (Object.keys(understand).includes(element) == false){
+                understand2.push({x: element, y: NaN});
+            }
+        });
+        uniqueTimes.forEach(element => {
+            for (const [key, value] of Object.entries(neutral)){
+                if (element.localeCompare(key) == 0){
+                    neutral2.push({x: key, y: value});
+                }
+            }
+            if (Object.keys(neutral).includes(element) == false){
+                neutral2.push({x: element, y: NaN});
+            }
+        });
+        uniqueTimes.forEach(element => {
+            for (const [key, value] of Object.entries(tired)){
+                if (element.localeCompare(key) == 0){
+                    tired2.push({x: key, y: value});
+                }
+            }
+            if (Object.keys(tired).includes(element) == false){
+                tired2.push({x: element, y: NaN});
+            }
+        });
+        uniqueTimes.forEach(element => {
+            for (const [key, value] of Object.entries(anxious)){
+                if (element.localeCompare(key) == 0){
+                    anxious2.push({x: key, y: value});
+                }
+            }
+            if (Object.keys(anxious).includes(element) == false){
+                anxious2.push({x: element, y: NaN});
+            }
+        });
 
         console.log(excited2)
         console.log(understand2)
         console.log(neutral2)
         console.log(tired2)
         console.log(anxious2)
-        console.log(lastTimes)
+        console.log(uniqueTimes)
 
       // --------------------UPDATE function every second
       let intervalID = setInterval(update_values,1000);
@@ -156,7 +194,7 @@
             type: 'line',
             data: {
                 // X axis labels
-                labels: lastTimes, // Time
+                labels: uniqueTimes, // Time
                 datasets: [
 
                     // Dataset for each category
@@ -298,10 +336,10 @@
                     display: true,
                     text: 'Real-Time class performance'
                 },
-                tooltips: {
-                    mode: 'index',
-                    intersect: false,
-                },
+                // tooltips: {
+                //     mode: 'index',
+                //     intersect: false,
+                // },
                 hover: {
                     mode: 'nearest',
                     intersect: true
@@ -626,14 +664,14 @@
                     // Insert none values for y points to denote that no one voted
                     // This helps to keep in sync y and x axis since
                     // some data should be added in realtime
-                    // config.data.datasets[0].data.push(NaN);
-                    // config.data.datasets[1].data.push(NaN);
-                    // config.data.datasets[2].data.push(NaN);
-                    // config.data.datasets[3].data.push(NaN);
-                    // config.data.datasets[4].data.push(NaN);
+                    // excited2.push({x: key, y: NaN});
+                    // understand2.push({x: key, y: NaN});
+                    // neutral2.push({x: key, y: NaN});
+                    // tired2.push({x: key, y: NaN});
+                    // anxious2.push({x: key, y: NaN});
 
                     // Keep adding time to simulate realtime
-                    lineChart.update(lastTimes[cTime] = NaN);
+                    lineChart.update(lastTimes.push(cTime));
 
                     // Have to update the whole chart to avoid skip error
                     lineChart.update({duration: 800,
@@ -720,7 +758,7 @@
                     excitedArr.push(excitedArr.length+1);
                     excited2.push({x: cTime, y: excitedArr.length})
                     console.log("array now ", excited2)
-                    lineChart.update(lastTimes[cTime] = NaN);
+                    lineChart.update(lastTimes.push(cTime));
                     lineChart.update();
                 }
 
@@ -729,7 +767,7 @@
                     understandID.push(Number(data.id));
                     understandArr.push(understandArr.length+1);
                     understand2.push({x: cTime, y: understandArr.length})
-                    lineChart.update(lastTimes[cTime] = NaN);
+                    lineChart.update(lastTimes.push(cTime));
                     lineChart.update();
                 }
 
@@ -738,7 +776,7 @@
                     neutralID.push(Number(data.id));
                     neutralArr.push(neutralArr.length+1);
                     neutral2.push({x: cTime, y: neutralArr.length})
-                    lineChart.update(lastTimes[cTime] = NaN);
+                    lineChart.update(lastTimes.push(cTime));
                     lineChart.update();
                 }
 
@@ -747,7 +785,7 @@
                     tiredID.push(Number(data.id));
                     tiredArr.push(tiredArr.length+1);
                     tired2.push({x: cTime, y: tiredArr.length})
-                    lineChart.update(lastTimes[cTime] = NaN);
+                    lineChart.update(lastTimes.push(cTime));
                     lineChart.update();
                 }
 
@@ -756,7 +794,7 @@
                     anxiousID.push(Number(data.id));
                     anxiousArr.push(anxiousArr.length+1);
                     anxious2.push({x: cTime, y: anxiousArr.length})
-                    lineChart.update(lastTimes[cTime] = NaN);
+                    lineChart.update(lastTimes.push(cTime));
                     lineChart.update();
                 }
             }
