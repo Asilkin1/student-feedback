@@ -118,6 +118,7 @@ def get_emoji(classCode):
         emoji = 0
     return emoji
 
+@cache.cached(timeout=1, key_prefix='last_student_voted')
 def get_student_code(classCode):
     # Return 0 if something goes wrong
     studentCode = 0
@@ -140,13 +141,6 @@ def get_time(classCode):
     return result
 
 
-def get_id_cached(classCode):
-    '''
-    @classCode - class code to identify feedbacks
-    '''
-    pass
-
-
 def get_student_feedback_count(classCode):
     # Get distinct student codes
     student_code = databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == classCode).distinct()
@@ -157,12 +151,34 @@ def get_student_feedback_count(classCode):
 def sum(data):
     '''Sum all the values in the list'''
     total = 0
-    for i in data:
-        # Should be an integer
-        total += int(i)
-    return round(total / len(data))
+    if len(data)>0:
+        for i in data:
+            # Should be an integer
+            total += int(i)
+        return round(total / len(data))
+    else:
+        return 0
+# ---------------------------------------------Get average of 10 last votes
+@professor_bp.route('/chart-data/average/<classCode>')
+def get_average_rating(classCode):
+    '''Get average from last 10 feedbacks'''
+    avg,two,three = get_emoji_cached(classCode)
+    json_data = json.dumps(
+                    {
+                        'average':sum(avg),
+                    })
+    return jsonify(result=json_data)
 
-# Streams only the data
+@professor_bp.route('/chart-data/studentcode/<classCode>')
+def get_latest_studentcode(classCode):
+    '''Get student code'''
+    code = get_student_code(classCode)
+    json_data = json.dumps(
+                    {
+                        'scode':code,
+                    })
+    print('Student CODE: ', json_data)
+    return jsonify(scode=json_data)
 
 @professor_bp.route('/chart-data/<classCode>')
 def chart_data(classCode):

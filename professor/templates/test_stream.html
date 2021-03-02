@@ -5,6 +5,34 @@
 
 
 <div class="container">
+    <!-- Update in a way similar to react -->
+    <div class="row">
+    <div class="col feedmoji" onload="update_values();">
+        <div class="card text-center">
+            <div class="card-body">
+              Avg. of last 10 feedback
+            </div>
+            <div class="card-body">
+              <!-- <h2 id="result" class="card-text">??</h2> -->
+              <p id="result"></p>
+            </div>
+          </div>
+    </div>
+    <!-- Last 10 voted ID -->
+    <div class="col feedmoji" onload="update_scode();">
+        <div class="card text-center">
+            <div class="card-body">
+              Last voted
+            </div>
+            <div class="card-body">
+              <!-- <h2 id="result" class="card-text">??</h2> -->
+              <p id="scode">loading...</p>
+            </div>
+          </div>
+    </div>
+</div>
+
+    <!-- End of average of latest 10 -->
     <div class="row">
         <div class="col-12">
             <div>
@@ -91,6 +119,38 @@
         console.log(tired2)
         console.log(anxious2)
         console.log(lastTimes)
+
+      // --------------------UPDATE function every second
+      let intervalID = setInterval(update_values,1000);
+      let intervalID2 = setInterval(update_scode,1000);
+
+      console.log($.getJSON('/chart-data/studentcode/{{ classCode }}'));
+       function update_scode(){
+           $.getJSON('/chart-data/studentcode/{{ classCode }}',
+            function(data){
+                $('#scode').text(JSON.parse(data.scode).scode);
+            })
+       };
+
+        function update_values(){
+            
+            $.getJSON('/chart-data/average/{{ classCode }}',
+            function(data){
+                $('#result').text('loading...');
+                // Insert emoji based on the number
+                if(JSON.parse(data.result).average === 5)
+                    $('#result').text('Excited');
+                else if(JSON.parse(data.result).average === 4)
+                    $('#result').text('Understand');
+                else if(JSON.parse(data.result).average === 3)
+                    $('#result').text('Neutral');
+                else if(JSON.parse(data.result).average === 2)
+                    $('#result').text('Tired/Bored');
+                else if (JSON.parse(data.result).average === 1)
+                    $('#result').text('Anxious/Confused');     
+                // $('#result').text(JSON.parse(data.result).average)
+            })
+        };
 
         const config = {
             type: 'line',
@@ -534,6 +594,8 @@
             }
         };
 
+        
+
         // First chart
         const context = document.getElementById('canvas').getContext('2d');
         const lineChart = new Chart(context, config);
@@ -697,8 +759,6 @@
                     lineChart.update(lastTimes[cTime] = NaN);
                     lineChart.update();
                 }
-
- 
             }
         }
     });
