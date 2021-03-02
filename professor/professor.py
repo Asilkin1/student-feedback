@@ -184,9 +184,6 @@ def chart_data(classCode):
     tired = {}
     anxious = {}
     i = 0
-    times = {}
-    for x in lastTimes:
-        times[x] = None
     for emoji in last_ten:
         if emoji == 5:
             excitedArr.append(len(excitedArr)+1)
@@ -267,9 +264,6 @@ def get_chart(classCode):
     tired = {}
     anxious = {}
     i = 0
-    times = {}
-    for time in lastTimes:
-        times[time] = None
     for emoji in last_ten:
         if emoji == 5:
             excitedArr.append(len(excitedArr)+1)
@@ -303,7 +297,7 @@ def get_chart(classCode):
     print("neutral dictionary is : ", neutral)
     print("tired dictionary is : ", tired)
     print("anxious dictionary is : ", anxious)
-    return render_template('test_stream.html', classCode=classCode, last_ten = last_ten, lastTimes = times, lastIDs = lastIDs, excitedArr = excitedArr,
+    return render_template('test_stream.html', classCode=classCode, last_ten = last_ten, lastTimes = lastTimes, lastIDs = lastIDs, excitedArr = excitedArr,
                             understandArr = understandArr, neutralArr = neutralArr, tiredArr = tiredArr, anxiousArr = anxiousArr,
                             excitedID = excitedID, understandID = understandID, neutralID = neutralID, tiredID = tiredID, anxiousID = anxiousID, 
                             excited=excited, understand=understand, neutral=neutral, tired=tired, anxious=anxious)

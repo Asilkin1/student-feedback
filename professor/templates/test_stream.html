@@ -63,13 +63,40 @@
         let tired = {{ tired|tojson }};
         let anxious = {{ anxious|tojson }};
 
+        let excited2 = [];
+        let understand2 = []
+        let neutral2 = []
+        let tired2 = []
+        let anxious2 = []
+
+        for (const [key, value] of Object.entries(excited)){
+            excited2.push({x: key, y: value});
+        }
+        for (const [key, value] of Object.entries(understand)){
+            understand2.push({x: key, y: value});
+        }
+        for (const [key, value] of Object.entries(neutral)){
+            neutral2.push({x: key, y: value});
+        }
+        for (const [key, value] of Object.entries(tired)){
+            tired2.push({x: key, y: value});
+        }
+        for (const [key, value] of Object.entries(anxious)){
+            anxious2.push({x: key, y: value});
+        }
+
+        console.log(excited2)
+        console.log(understand2)
+        console.log(neutral2)
+        console.log(tired2)
+        console.log(anxious2)
         console.log(lastTimes)
 
         const config = {
             type: 'line',
             data: {
                 // X axis labels
-                labels: Object.keys(lastTimes), // Time
+                labels: lastTimes, // Time
                 datasets: [
 
                     // Dataset for each category
@@ -77,7 +104,7 @@
                         label: "Excited",
                         backgroundColor: 'rgb(0, 255, 0)',
                         borderColor: 'rgb(0, 255, 0)',
-                        data: Object.keys(excited).map(function (key) { return excited[key]; }),
+                        data: excited2,
                         id: excitedID,
 
                         fill: false,
@@ -101,7 +128,7 @@
                         label: "Understand",
                         backgroundColor: 'rgb(255, 200, 100)',
                         borderColor: 'rgb(255, 200, 100)',
-                        data:  Object.keys(understand).map(function (key) { return understand[key]; }),
+                        data:  understand2,
                         id: understandID,
                         fill: false,
                         lineTension: 0.1,
@@ -124,7 +151,7 @@
                         label: "Neutral",
                         backgroundColor: 'rgb(0, 255, 255)',
                         borderColor: 'rgb(0, 255, 255)',
-                        data: Object.keys(neutral).map(function (key) { return neutral[key]; }),
+                        data: neutral2,
                         id: neutralID,
                         fill: false,
                         lineTension: 0.1,
@@ -147,7 +174,7 @@
                         label: "Tired/Bored",
                         backgroundColor: 'rgb(140, 0, 255)',
                         borderColor: 'rgb(140, 0, 255)',
-                        data: Object.keys(tired).map(function (key) { return tired[key]; }),
+                        data: tired2,
                         id: tiredID,
                         fill: false,
                         lineTension: 0.1,
@@ -169,7 +196,7 @@
                         label: "Anxious/Confused",
                         backgroundColor: 'rgb(255, 0, 0,0.3)',
                         borderColor: 'rgb(255, 0, 0)',
-                        data: Object.keys(anxious).map(function (key) { return anxious[key]; }),
+                        data: anxious2,
                         id: anxiousID,
                         fill: false,
                         lineTension: 0.1,
@@ -629,8 +656,8 @@
                     // Insert into this dataset
                     excitedID.push(Number(data.id));
                     excitedArr.push(excitedArr.length+1);
-                    excited[cTime] = excitedArr.length;
-                    console.log("array now ", excited)
+                    excited2.push({x: cTime, y: excitedArr.length})
+                    console.log("array now ", excited2)
                     lineChart.update(lastTimes[cTime] = NaN);
                     lineChart.update();
                 }
@@ -639,7 +666,7 @@
                 if (data.value == 4) {
                     understandID.push(Number(data.id));
                     understandArr.push(understandArr.length+1);
-                    understand[cTime] = understandArr.length;
+                    understand2.push({x: cTime, y: understandArr.length})
                     lineChart.update(lastTimes[cTime] = NaN);
                     lineChart.update();
                 }
@@ -648,7 +675,7 @@
                 if (data.value == 3) {
                     neutralID.push(Number(data.id));
                     neutralArr.push(neutralArr.length+1);
-                    neutral[cTime] = neutralArr.length;
+                    neutral2.push({x: cTime, y: neutralArr.length})
                     lineChart.update(lastTimes[cTime] = NaN);
                     lineChart.update();
                 }
@@ -657,7 +684,7 @@
                 if (data.value == 2) {
                     tiredID.push(Number(data.id));
                     tiredArr.push(tiredArr.length+1);
-                    tired[cTime] = tiredArr.length;
+                    tired2.push({x: cTime, y: tiredArr.length})
                     lineChart.update(lastTimes[cTime] = NaN);
                     lineChart.update();
                 }
@@ -666,7 +693,7 @@
                 if (data.value == 1) {
                     anxiousID.push(Number(data.id));
                     anxiousArr.push(anxiousArr.length+1);
-                    anxious[cTime] = anxiousArr.length;
+                    anxious2.push({x: cTime, y: anxiousArr.length})
                     lineChart.update(lastTimes[cTime] = NaN);
                     lineChart.update();
                 }
