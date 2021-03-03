@@ -141,13 +141,30 @@ def get_time(classCode):
     print('Time now: ', result)
     return result
 
-
 def get_student_feedback_count(classCode):
     # Get distinct student codes
     student_code = databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == classCode).distinct()
     result = student_code.all()
     # How many feedbacks left by this student
     return result.count()
+
+def get_class_categories_voted(classCode):
+    categories_voted = databaseConnection.query(Feedback.elaborateNumber).filter(Feedback.classCode == classCode).distinct()
+    result = categories_voted.all()
+    categories = []
+    if result:
+        for feedbacks in result:
+            feedbacks = mysql_aes_decrypt(feedbacks.elaborateNumber, random_key)
+            num_to_word = databaseConnection.query(Categories.category).filter(Categories.number == feedbacks,Categories.classCode == classCode)
+            res = num_to_word.all()
+            categories.append(res)
+    
+
+    if len(categories) > 0:
+        return categories
+    else:
+        return 0
+
 
 def sum(data):
     '''Sum all the values in the list'''
@@ -169,6 +186,17 @@ def get_average_rating(classCode):
                         'average':sum(avg),
                     })
     return jsonify(result=json_data)
+
+@professor_bp.route('/chart-data/categoriesVoted/<classCode>')
+def categories_voted(classCode):
+    '''Get categories voted for'''
+    categories_voted = get_class_categories_voted(classCode)
+    json_data = json.dumps(
+                    {
+                        'categoriesVoted':categories_voted,
+                    })
+    return jsonify(categories_voted=json_data)
+
 
 @professor_bp.route('/chart-data/studentcode/<classCode>')
 def get_latest_studentcode(classCode):

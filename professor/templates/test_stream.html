@@ -1,9 +1,6 @@
 {% extends "base.html" %}
 {% block title %}Live class updates{% endblock %}
-
 {% block content %}
-
-
 <div class="container">
     <!-- Update in a way similar to react -->
     <div class="row">
@@ -30,8 +27,18 @@
             </div>
           </div>
     </div>
+    <!-- Categories voted -->
+    <div class="col feedmoji" onload="update_categories();">
+        <div class="card text-center">
+            <div class="card-body">
+              Voted for categories
+            </div>
+            <div class="card-body">
+              <p id="categoriesVoted">loading...</p>
+            </div>
+          </div>
+    </div>
 </div>
-
     <!-- End of average of latest 10 -->
     <div class="row">
         <div class="col-12">
@@ -161,17 +168,25 @@
       // --------------------UPDATE function every second
       let intervalID = setInterval(update_values,1000);
       let intervalID2 = setInterval(update_scode,1000);
+      let intervalID3 = setInterval(update_categories,1000);
 
-      console.log($.getJSON('/chart-data/studentcode/{{ classCode }}'));
+      function update_categories(){
+          $.getJSON('/chart-data/categoriesVoted/{{ classCode }}',
+          (data) =>{
+            $('#categoriesVoted').text('loading...');
+            $('#categoriesVoted').text(JSON.parse(data.categories_voted).categoriesVoted);
+          });
+      }
+        
        function update_scode(){
            $.getJSON('/chart-data/studentcode/{{ classCode }}',
             function(data){
+                $('#scode').text('loading...');
                 $('#scode').text(JSON.parse(data.scode).scode);
             })
        };
 
         function update_values(){
-            
             $.getJSON('/chart-data/average/{{ classCode }}',
             function(data){
                 $('#result').text('loading...');
