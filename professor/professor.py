@@ -176,6 +176,59 @@ def sum(data):
         return round(total / len(data))
     else:
         return 0
+
+# @Todo: move to the the ../REST.py with other python functions e.g sum
+# ---------------
+#  REST API     |
+# ---------------
+
+# ---------------------------------------------Get categories for selected class
+@professor_bp.route('/chart-data/showCategories/<classCode>')
+def get_categories_for_class(classCode):
+    '''Get categories for selected class'''
+     # Get classes data for current username
+    dashboardData = databaseConnection.query(Account).filter(Account.username == session.get('username'))
+    # get categories only for this classcode
+    categoryData = databaseConnection.query(Categories).filter(Categories.classCode == classCode)
+
+    # categories existed for this professor
+    presentCategories = []
+    wN = {}
+    
+    for category in categoryData:
+        for classCode in dashboardData:
+            if classCode.classCode == category.classCode:
+                presentCategories.append(category.category + '(' + classCode.classCode + ')')
+                # Count feedback for each category
+                wN[category.category] = 0
+
+    print('Present Categories: ', presentCategories)        
+        
+    # Get all feedbacks for the class
+    query = databaseConnection.query(Feedback).filter(classCode == classCode)
+    result = query.all()
+    print('Number of feedbacks: ',len(result))
+
+   
+    cat = databaseConnection.query(Categories).filter(classCode == classCode)
+    cat_res = cat.all()
+
+    # Go over all results
+    for i in result:
+        for j in cat_res:
+            print('ClassCodes: ', i.classCode, j.classCode)
+            if i.classCode == j.classCode:
+                print('ClassCodes: ', i.classCode)
+                if category.category in wN:
+                    wN[category.category] += 1
+
+
+    json_data = json.dumps(
+                    {
+                        'categories':presentCategories,
+                        'feedbackCount':wN
+                    })
+    return jsonify(result=json_data)
 # ---------------------------------------------Get average of 10 last votes
 @professor_bp.route('/chart-data/average/<classCode>')
 def get_average_rating(classCode):
@@ -187,6 +240,7 @@ def get_average_rating(classCode):
                     })
     return jsonify(result=json_data)
 
+# ---------------------------------------------Get categories voted
 @professor_bp.route('/chart-data/categoriesVoted/<classCode>')
 def categories_voted(classCode):
     '''Get categories voted for'''
@@ -197,7 +251,7 @@ def categories_voted(classCode):
                     })
     return jsonify(categories_voted=json_data)
 
-
+# ----------------------------------------------Get student code voted
 @professor_bp.route('/chart-data/studentcode/<classCode>')
 def get_latest_studentcode(classCode):
     '''Get student code'''

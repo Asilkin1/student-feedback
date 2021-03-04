@@ -133,6 +133,15 @@
 
 <!-- Draw bar chart -->
 <script>
+  //let intervalID = setInterval(get_catgeories_for_class,1000);
+  
+  function get_catgeories_for_class(classCode){
+    $.getJSON('/chart-data/showCategories/554-DDDD',
+            function(data){
+                console.log(data);
+            })
+  };
+
   // Somehow loop over the length
   let myCategories = {{ present|tojson}};
   let wN = {{wN | tojson}};
