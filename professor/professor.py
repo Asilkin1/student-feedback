@@ -203,23 +203,18 @@ def get_categories_for_class(classCode):
     print('Present Categories: ', presentCategories)        
         
     # Get all feedbacks for the class
-    query = databaseConnection.query(Feedback).filter(classCode == classCode)
+    query = databaseConnection.query(Feedback).filter(Feedback.classCode == classCode)
     result = query.all()
     print('Number of feedbacks: ',len(result))
 
-   
-    cat = databaseConnection.query(Categories).filter(classCode == classCode)
-    cat_res = cat.all()
+    print("this is wn ", wN)
 
     # Go over all results
     for i in result:
-        for j in cat_res:
-            print('ClassCodes: ', i.classCode, j.classCode)
-            if i.classCode == j.classCode:
-                print('ClassCodes: ', i.classCode)
-                if category.category in wN:
-                    wN[category.category] += 1
-
+        print('ClassCodes: ', i.classCode)
+        for key in wN:
+            if list(wN.keys()).index(key)+1 == int(mysql_aes_decrypt(i.elaborateNumber, random_key)):
+                wN[key] += 1  #wN['test'] += 1
 
     json_data = json.dumps(
                     {
@@ -227,6 +222,7 @@ def get_categories_for_class(classCode):
                         'feedbackCount':wN
                     })
     return jsonify(result=json_data)
+
 # ---------------------------------------------Get average of 10 last votes
 @professor_bp.route('/chart-data/average/<classCode>')
 def get_average_rating(classCode):
