@@ -186,8 +186,7 @@ def sum(data):
 @professor_bp.route('/chart-data/showCategories/<classCode>')
 def get_categories_for_class(classCode):
     '''Get categories for selected class'''
-     # Get classes data for current username
-    dashboardData = databaseConnection.query(Account).filter(Account.username == session.get('username'))
+
     # get categories only for this classcode
     categoryData = databaseConnection.query(Categories).filter(Categories.classCode == classCode)
 
@@ -196,9 +195,8 @@ def get_categories_for_class(classCode):
     wN = {}
     
     for category in categoryData:
-        for classCode in dashboardData:
-            if classCode.classCode == category.classCode:
-                presentCategories.append(category.category + '(' + classCode.classCode + ')')
+            if classCode == category.classCode:
+                presentCategories.append(category.category + '(' + classCode + ')')
                 # Count feedback for each category
                 wN[category.category] = 0
 
