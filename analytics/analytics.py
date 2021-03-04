@@ -37,6 +37,7 @@ def check():
         return render_template('ClassNotFound.html', title='CNF')
 
     elif(len(Frame.index) < 10):  # If the whole datatable is smaller than 10 values
+        Frame = Frame[Frame['elaborateNumber'] == Category]
         PassFrame = Frame
         return render_template('notEnoughData.html', title='NED', data=PassFrame)
 
