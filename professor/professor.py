@@ -199,26 +199,21 @@ def get_categories_for_class(classCode):
                 presentCategories.append(category.category + '(' + classCode + ')')
                 # Count feedback for each category
                 wN[category.category] = 0
-
-    print('Present Categories: ', presentCategories)        
         
     # Get all feedbacks for the class
     query = databaseConnection.query(Feedback).filter(classCode == classCode)
     result = query.all()
-    print('Number of feedbacks: ',len(result))
 
-   
-    cat = databaseConnection.query(Categories).filter(classCode == classCode)
-    cat_res = cat.all()
+    print('Wn before change: ', wN)
 
     # Go over all results
     for i in result:
-        for j in cat_res:
-            print('ClassCodes: ', i.classCode, j.classCode)
-            if i.classCode == j.classCode:
-                print('ClassCodes: ', i.classCode)
-                if category.category in wN:
-                    wN[category.category] += 1
+        print('ClassCodes: ', i.classCode)
+        print('Category: ', category.category)
+        for f in wN:
+            if category.category == f:
+                print('Increase in ' + category.category, wN[category.category])
+                wN[f] += 1  #wN['test'] += 1
 
 
     json_data = json.dumps(
