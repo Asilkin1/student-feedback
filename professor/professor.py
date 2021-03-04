@@ -201,27 +201,25 @@ def get_categories_for_class(classCode):
                 wN[category.category] = 0
         
     # Get all feedbacks for the class
-    query = databaseConnection.query(Feedback).filter(classCode == classCode)
+    query = databaseConnection.query(Feedback).filter(Feedback.classCode == classCode)
     result = query.all()
 
-    print('Wn before change: ', wN)
+    print("this is wn ", wN)
 
     # Go over all results
     for i in result:
         print('ClassCodes: ', i.classCode)
+
         print('Category: ', category.category)
         for f in wN:
             if category.category == f:
-                print('Increase in ' + category.category, wN[category.category])
-                wN[f] += 1  #wN['test'] += 1
-
 
     json_data = json.dumps(
                     {
-                        'categories':presentCategories,
                         'feedbackCount':wN
                     })
     return jsonify(result=json_data)
+
 # ---------------------------------------------Get average of 10 last votes
 @professor_bp.route('/chart-data/average/<classCode>')
 def get_average_rating(classCode):
