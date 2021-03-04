@@ -199,23 +199,26 @@ def get_categories_for_class(classCode):
                 presentCategories.append(category.category + '(' + classCode + ')')
                 # Count feedback for each category
                 wN[category.category] = 0
+
+    print('Present Categories: ', presentCategories)        
         
     # Get all feedbacks for the class
     query = databaseConnection.query(Feedback).filter(Feedback.classCode == classCode)
     result = query.all()
+    print('Number of feedbacks: ',len(result))
 
     print("this is wn ", wN)
 
     # Go over all results
     for i in result:
         print('ClassCodes: ', i.classCode)
-
-        print('Category: ', category.category)
-        for f in wN:
-            if category.category == f:
+        for key in wN:
+            if list(wN.keys()).index(key)+1 == int(mysql_aes_decrypt(i.elaborateNumber, random_key)):
+                wN[key] += 1  #wN['test'] += 1
 
     json_data = json.dumps(
                     {
+                        'categories':presentCategories,
                         'feedbackCount':wN
                     })
     return jsonify(result=json_data)
