@@ -11,7 +11,7 @@ from globalTime import utc2local
 from datetime import timedelta
 from threading import Thread
 from cache import cache
-from professor.professor_REST import *  # REST API for professor routes
+from professor.logic import *  # REST API for professor routes
 random.seed()
 thread = None
 
@@ -21,44 +21,17 @@ professor_bp = Blueprint('professor_bp', __name__,
 
 # generate feedbacks data
 def generate_feedbacks_by_category():
+    '''Show datatable with @class_name, @class_code, @categories'''
      # Get classes data for current username
     dashboardData = databaseConnection.query(Account).\
     filter(Account.username == session.get('username'))
     categoryData = databaseConnection.query(Categories).filter(Categories.classCode == Account.classCode)
 
-    # categories existed for this professor
-    presentCategories = []
-    wN = {}
-
-    for category in categoryData:
-        for classCode in dashboardData:
-            if classCode.classCode == category.classCode:
-                presentCategories.append(category.category + ' (' + classCode.classCode + ')')
-
-    query = databaseConnection.query(Account, Feedback).filter(Account.username == session.get('username'),Account.classCode == Feedback.classCode)
-    result = query.all()
-
-    # Get each category name
-    for i in categoryData:
-        # Add a key to the dict with a value of 0
-        wN[int(i.number)] = 0
-
-    for feedbacks in result:
-        feedbacks = mysql_aes_decrypt(feedbacks.Feedback.elaborateNumber, random_key)
-        if int(feedbacks) in wN:
-            # Can increment that value later
-            wN[int(feedbacks)] += 1
-        
     yield render_template('login.html',
                             title='dashboard',
                             data=dashboardData,
                             categoryData=categoryData,
-                            categoryCount=categoryData.count(),
-                            present=presentCategories,
-                            wN = wN,
-                            within=check_date_voted 
                             )
-
 # ---------------
 #  REST API     |
 # ---------------
@@ -86,19 +59,13 @@ def get_categories_for_class(classCode):
                 presentCategories.append(category.category + '(' + classCode + ')')
                 # Count feedback for each category
                 wN[category.category] = 0
-
-    print('Present Categories: ', presentCategories)        
-        
+   
     # Get all feedbacks for the class
     query = databaseConnection.query(Feedback).filter(Feedback.classCode == classCode)
     result = query.all()
-    print('Number of feedbacks: ',len(result))
-
-    print("this is wn ", wN)
 
     # Go over all results
     for i in result:
-        print('ClassCodes: ', i.classCode)
         for key in wN:
             if list(wN.keys()).index(key)+1 == int(mysql_aes_decrypt(i.elaborateNumber, random_key)):
                 wN[key] += 1  #wN['test'] += 1
@@ -141,7 +108,6 @@ def get_latest_studentcode(classCode):
                     {
                         'scode':code,
                     })
-    print('Student CODE: ', json_data)
     return jsonify(scode=json_data)
 
 @professor_bp.route('/chart-data/<classCode>')
@@ -192,22 +158,8 @@ def chart_data(classCode):
             i += 1
     def generate_random_data(classCode):
         try:
-            
-            # Can process data in a certain way?
-            # -----------------------------microbatch
-            #data = []
-            # Aggregate
-            #current_id = get_id(classCode)
-            # Wait for 5 elements in the dataset
-            #while( len(data) < 5 ):
-            # See if the latest id is not the current one
-                #if get_id(classCode) != current_id:
-                    #print('Added')
-                    #data += get_emoji(classCode)
-
             # Send result
             time.sleep(5)
-            print("sum is ", sum(last_ten))
             json_data = json.dumps(
                     {
                         'value':get_emoji(classCode),
@@ -216,7 +168,6 @@ def chart_data(classCode):
                         'numberOfFeedback':10,
                         'studentID':get_student_code(classCode)
                     })
-            print('Live stream')
             yield f"data:{json_data}\n\n"
         except Exception as e:
             return Response('Error! ' + str(e))
@@ -271,12 +222,6 @@ def get_chart(classCode):
             anxious[lastTimes[i]] = len(anxiousArr)
             i += 1
     
-    print("times are: ", lastTimes)
-    print("excited dictionary is : ", excited)
-    print("understand dictionary is : ", understand)
-    print("neutral dictionary is : ", neutral)
-    print("tired dictionary is : ", tired)
-    print("anxious dictionary is : ", anxious)
     return render_template('test_stream.html', classCode=classCode, last_ten = last_ten, lastTimes = lastTimes, lastIDs = lastIDs, excitedArr = excitedArr,
                             understandArr = understandArr, neutralArr = neutralArr, tiredArr = tiredArr, anxiousArr = anxiousArr,
                             excitedID = excitedID, understandID = understandID, neutralID = neutralID, tiredID = tiredID, anxiousID = anxiousID, 

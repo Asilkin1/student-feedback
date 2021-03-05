@@ -32,4 +32,3 @@ if __name__ == '__main__':
     weirdsession.init_app(app)
     cache.init_app(app)
     app.run(threaded=True)
-    

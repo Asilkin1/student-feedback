@@ -39,6 +39,64 @@
           </div>
     </div>
 </div>
+
+<div class="row justify-content-center" id="face_row">
+    <!-- Excited -->
+    <div class="col- feedmoji">
+        <div class="form-check justify-content-center">
+            <label class="form-check-label" for="excited" title="Choose your mood. Is that what you think?"
+                style="cursor: pointer;">
+                excited
+                <p id="emoji">&#128512;</p>
+                <p id="percentage_excited">5%</p>
+            </label>
+        </div>
+    </div>
+    <div class="col- feedmoji">
+        <!-- Understand -->
+        <div class="form-check">
+            <label class="form-check-label" for="normal" title="Choose your mood. Is that what you think?"
+                style="cursor: pointer;">
+                understand
+                <p id="emoji">&#128578;</p>
+                <p id="percentage">10%</p>
+            </label>
+        </div>
+    </div>
+    <div class="col- feedmoji">
+        <!-- Neutral -->
+        <div class="form-check">
+            <label class="form-check-label" for="unclear"
+                style="cursor: pointer;">
+                neutral
+                <p id="emoji">&#128528;</p>
+                <p id="percentage_neutral">10%</p>
+            </label>
+        </div>
+    </div>
+    <div class="col- feedmoji">
+        <!-- tider/bored -->
+        <div class="form-check">
+            <label class="form-check-label" for="nervous" title="Choose your mood. Is that what you think?"
+                style="cursor: pointer;">
+                tired/bored
+                <p id="emoji">&#128564;</p>
+                <p id="percentage_tired">4%</p>
+            </label>
+        </div>
+    </div>
+    <div class="col- feedmoji">
+        <!-- anxious/overwhelmed/confused -->
+        <div class="form-check">
+            <label class="form-check-label" for="mad" title="Choose your mood. Is that what you think?"
+                style="cursor: pointer;">
+                anxious/confused
+                <p id="emoji">&#128548;</p>
+                <p id="percentage_anxious">4%</p>
+            </label>
+        </div>
+    </div>
+</div>
     <!-- End of average of latest 10 -->
     <div class="row">
         <div class="col-12">
@@ -169,6 +227,11 @@
       let intervalID = setInterval(update_values,1000);
       let intervalID2 = setInterval(update_scode,1000);
       let intervalID3 = setInterval(update_categories,1000);
+      let intervalID4 = setInterval(update_percentage,1000);
+
+      function update_percentage(){
+          console.log('update_percentage')
+      }
 
       function update_categories(){
           $.getJSON('/chart-data/categoriesVoted/{{ classCode }}',
