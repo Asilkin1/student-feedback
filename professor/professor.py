@@ -6,22 +6,24 @@ import time
 from datetime import datetime
 from CreateUserDatabase import *
 import json
-random.seed()
 from sqlalchemy import event
 from globalTime import utc2local
 from datetime import timedelta
+from threading import Thread
 from cache import cache
-
+from professor.professor_REST import *  # REST API for professor routes
+random.seed()
+thread = None
 
 professor_bp = Blueprint('professor_bp', __name__,
     template_folder='templates',
     static_folder='static')
 
-
 # generate feedbacks data
 def generate_feedbacks_by_category():
      # Get classes data for current username
-    dashboardData = databaseConnection.query(Account).filter(Account.username == session.get('username'))
+    dashboardData = databaseConnection.query(Account).\
+    filter(Account.username == session.get('username'))
     categoryData = databaseConnection.query(Categories).filter(Categories.classCode == Account.classCode)
 
     # categories existed for this professor
@@ -54,130 +56,9 @@ def generate_feedbacks_by_category():
                             categoryCount=categoryData.count(),
                             present=presentCategories,
                             wN = wN,
-                            within = check_date_voted 
+                            within=check_date_voted 
                             )
 
-
-def get_id(classCode):
-    query = databaseConnection.query(Feedback.id).filter(Feedback.classCode == classCode).order_by(Feedback.id.desc())
-    result = query.first()
-    return result
-
-# Get all feedbacks for the past 5 seconds  
-@cache.cached(timeout=10, key_prefix='last_10_emoji_values')
-def get_emoji_cached(classCode):
-    '''@classCode - current class
-       :returns a list of emojis values e.g. [5,4,2,1,4,1,2,3,4,5]
-    '''
-    emoji = 0
-    time = 0
-    id = 0
-    accumulate = []
-    timeAccumulate = []
-    idAccumulate = []
-    # Get feedbacks by classCode
-    try:
-        query = databaseConnection.query(Feedback).filter(Feedback.classCode == classCode).order_by(Feedback.id.desc())
-        # get last 10 feedbacks
-        result = query.limit(10).all()
-
-        # get classCodes
-        ccode = databaseConnection.query(Feedback.id).filter(Feedback.classCode == classCode).order_by(Feedback.id.desc())
-        ccode = query.limit(10).all()
-        if result and ccode:
-            for i in result:
-                print('Result: ',i)
-                if i.id not in ccode:
-                    print('Code: ', i.id)
-                    emoji = mysql_aes_decrypt(i.emoji,random_key)
-                    accumulate.append(int(emoji))
-                    timeAccumulate.append(i.time)
-                    idAccumulate.append(i.id)
-    # Cannot read from the database then do something
-    except:
-        emoji = 0
-        time = 0
-        id = 0
-    print('Cached function',accumulate)
-    accumulate.reverse()
-    timeAccumulate.reverse()
-    idAccumulate.reverse()
-    print(timeAccumulate)
-    return accumulate, timeAccumulate, idAccumulate
-
-def get_emoji(classCode):
-    # Return 0 if something goes wrong
-    emoji = 0
-    # Get something from the database
-    try:
-        query = databaseConnection.query(Feedback).filter(Feedback.classCode == classCode).order_by(Feedback.id.desc())
-        result = query.first()
-        if result:
-            emoji = mysql_aes_decrypt(result.emoji,random_key)
-    # Cannot read from the database then do something
-    except:
-        emoji = 0
-    return emoji
-
-@cache.cached(timeout=1, key_prefix='last_student_voted')
-def get_student_code(classCode):
-    # Return 0 if something goes wrong
-    studentCode = 0
-    # Get something from the database
-    try:
-        query = databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == classCode).order_by(Feedback.id.desc())
-        result = query.first()
-        if result:
-            studentCode = result[0]
-    # Cannot read from the database then do something
-    except:
-        studentCode = 0
-    print('Student Code: ', str(studentCode))
-    return studentCode
-
-def get_time(classCode):
-    query = databaseConnection.query(Feedback.time).filter(Feedback.classCode == classCode).order_by(Feedback.id.desc())
-    result = query.first()
-    print('Time now: ', result)
-    return result
-
-def get_student_feedback_count(classCode):
-    # Get distinct student codes
-    student_code = databaseConnection.query(Feedback.studentCode).filter(Feedback.classCode == classCode).distinct()
-    result = student_code.all()
-    # How many feedbacks left by this student
-    return result.count()
-
-def get_class_categories_voted(classCode):
-    categories_voted = databaseConnection.query(Feedback.elaborateNumber).filter(Feedback.classCode == classCode).distinct()
-    result = categories_voted.all()
-    categories = []
-    if result:
-        for feedbacks in result:
-            feedbacks = mysql_aes_decrypt(feedbacks.elaborateNumber, random_key)
-            num_to_word = databaseConnection.query(Categories.category).filter(Categories.number == feedbacks,Categories.classCode == classCode)
-            res = num_to_word.all()
-            categories.append(res)
-    
-
-    if len(categories) > 0:
-        return categories
-    else:
-        return 0
-
-
-def sum(data):
-    '''Sum all the values in the list'''
-    total = 0
-    if len(data)>0:
-        for i in data:
-            # Should be an integer
-            total += int(i)
-        return round(total / len(data))
-    else:
-        return 0
-
-# @Todo: move to the the ../REST.py with other python functions e.g sum
 # ---------------
 #  REST API     |
 # ---------------
@@ -186,6 +67,12 @@ def sum(data):
 @professor_bp.route('/chart-data/showCategories/<classCode>')
 def get_categories_for_class(classCode):
     '''Get categories for selected class'''
+    global thread
+    
+    if thread is None:
+        thread = Thread(target=print_log_thread('/chart-data/showCategories/<classCode>'))
+        thread.daemon = True
+        thread.start()
 
     # get categories only for this classcode
     categoryData = databaseConnection.query(Categories).filter(Categories.classCode == classCode)

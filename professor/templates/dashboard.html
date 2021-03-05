@@ -1,6 +1,6 @@
 <div class="container col- mx-auto">
   <div lass="row">
-    <p class="display-4">Classes statistic</p>
+    <p class="display-4">Dashboard</p>
     <div class="container col-">
     </div>
     <div class="btn-toolbar mb-2 mb-md-0">
@@ -38,7 +38,7 @@
             {% for row in data %}
             <tr class="table-row-hover" onmousedown="get_class_data(this);" onmouseover="" style="cursor: pointer;">
               <form action="/analytics/check" method="GET">
-                <th scope="row">{{row.className}}</th>
+                <th scope="row">{{row.className}}<span class="badge badge-pill badge-info">show</span></th>
                 <!-- Get class code into the form  -->
                 <!-- The input cannot be disables -->
                 <td>{{row.classCode}}<input type="hidden" id="classCode" name="ccode" value={{row.classCode}}></td>
