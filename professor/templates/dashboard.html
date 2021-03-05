@@ -37,7 +37,7 @@
           <tbody>
             
             {% for row in data %}
-            <tr onmousedown="console.log(this.children[2].children[0].getAttribute('value'));">
+            <tr onmousedown="get_class_data(this);">
               <form action="/analytics/check" method="GET">
                 <th scope="row">{{row.className}}</th>
                 <!-- Get class code into the form  -->
@@ -133,10 +133,11 @@
 
 <!-- Draw bar chart -->
 <script>
-  //let intervalID = setInterval(get_catgeories_for_class,1000);
   
-  function get_catgeories_for_class(classCode){
-    $.getJSON('/chart-data/showCategories/554-DDDD',
+  // Call this function on user event onmousedown rather than each second
+  function get_class_data(row){
+    let classCodeFromRow = row.children[2].children[0].getAttribute('value')
+    $.getJSON(`/chart-data/showCategories/${classCodeFromRow}`,
             function(data){
                 console.log(data);
             })
