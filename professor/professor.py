@@ -88,6 +88,50 @@ def get_average_rating(classCode):
                     })
     return jsonify(result=json_data)
 
+# ---------------------------------------------Get feedback percentages
+@professor_bp.route('/chart-data/percentage/<classCode>')
+def get_percentage(classCode):
+    '''Get percentage for each feeling'''
+    # Get all feedbacks for this classCode
+    get_categories = databaseConnection.query(Feedback).filter(Feedback.classCode == classCode)
+    g_c_result = get_categories.all()
+    
+    # Get class size
+    get_class_size = databaseConnection.query(Account).filter(Account.classCode == classCode)
+    g_c_s = get_class_size.all()
+    
+    excited = []
+    und = []
+    neutral = []
+    tired = []
+    anxious = []
+    
+    if g_c_result:
+        for i in g_c_result:
+            res = int(mysql_aes_decrypt(i.elaborateNumber, random_key))
+            
+            if res == 5:
+                excited.append(res)
+            if res == 4:
+                und.append(res)
+            if res == 3:
+                neutral.append(res)
+            if res == 2:
+                tired.append(res)
+            if res == 1:
+                anxious.append(res)
+            
+    json_data = json.dumps(
+                    {
+                        'excited': len(excited),
+                        'understand':len(und),
+                        'neutral':len(neutral),
+                        'tired':len(tired),
+                        'anxious': len(anxious)
+                    })
+    return jsonify(cat=json_data)
+    
+
 # ---------------------------------------------Get categories voted
 @professor_bp.route('/chart-data/categoriesVoted/<classCode>')
 def categories_voted(classCode):

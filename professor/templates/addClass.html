@@ -178,13 +178,19 @@
 <script>  
 
     $(document).ready(function(){      
-        $("#emojikeyboard").emojioneArea();
+        $("#emojikeyboard").emojioneArea({spellcheck     : false,
+    autocomplete   : false,
+    autocorrect    : false,
+    autocapitalize : false,});
 
          var i=1;  
          $('#add').click(function(){  
               i++;  
               $('#dynamic_field').append('<div id="div'+i+'" class="row justify-content-center"><tr id="row'+i+'"><td><input id="emojikeyboard'+i+'" type="text" name="categories" placeholder="Enter a category name" class="form-control name_list" required/></td><td><button type="button" name="remove" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr></div>');  
-              $('#emojikeyboard'+i+'').emojioneArea();
+              $('#emojikeyboard'+i+'').emojioneArea({spellcheck     : false,
+    autocomplete   : false,
+    autocorrect    : false,
+    autocapitalize : false,});
             });
 
          $(document).on('click', '.btn_remove', function(){  

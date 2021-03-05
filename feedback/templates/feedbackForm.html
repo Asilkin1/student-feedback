@@ -131,9 +131,9 @@
                 <div class="form-check">
                     <input class="form-check-input block" name="elaborateNumber" id={{row.category}} type="radio" value={{row.number}}
                         required checked>
-                    <label class="form-check-label" for={{row.category}} style="cursor: pointer;">
+                    <label id="emoji" class="form-check-label" for={{row.category}} style="cursor: pointer;">
                         {{ row.category}}
-                        <p id="emoji" class="emoji_dynamic">&#128528;</p>
+                        
                     </label>
                 </div>
             </div>
@@ -143,9 +143,9 @@
                 <div class="form-check">
                     <input class="form-check-input block" name="elaborateNumber" id={{row.category}} type="radio" value={{row.number}}
                         required>
-                    <label class="form-check-label" for={{row.category}} style="cursor: pointer;">
+                    <label id="emoji" class="form-check-label" for={{row.category}} style="cursor: pointer;">
                         {{ row.category}}
-                        <p id="emoji" class="emoji_dynamic">&#128528;</p>
+                        
                     </label>
                 </div>
             </div>
@@ -166,7 +166,6 @@
             </div>
         </div>
 
-
 </div>
 <div class="row justify-content-center">
     <div class="col-sm-3">
@@ -183,21 +182,3 @@
 </form>
 
 </div>
-
-<script>
-
-    let emoji_container = document.getElementsByClassName('emoji_dynamic');
-    const emojiCodes = [128110,127909,127908,127911,127913,127914,127915,127916,
-                        127917,127918,127919,127920,127921,127923,,127922,127928,
-                        127929,127930,127934,127935,127936,127941,127942,127947,
-                        9996,9757,9997,9989,10024,128025,128074,128083,
-                        10060,10068,10133,127344,127538,
-                        127744,128077,129332,129333,129497,127939]
-
-    for(const el in emoji_container){
-    
-        emoji_container[el].innerHTML = `&#${emojiCodes[Math.floor(Math.random() * emojiCodes.length)]};`
-        console.log(emoji_container[el]);
-    }
-    
-</script>

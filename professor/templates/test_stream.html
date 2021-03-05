@@ -59,7 +59,7 @@
                 style="cursor: pointer;">
                 understand
                 <p id="emoji">&#128578;</p>
-                <p id="percentage">10%</p>
+                <p id="percentage_understand">10%</p>
             </label>
         </div>
     </div>
@@ -165,7 +165,7 @@
         let anxious2 = []
 
         uniqueTimes.forEach(element => {
-            console.log(excited)
+
             for (const [key, value] of Object.entries(excited)){
                 if (element.localeCompare(key) == 0){
                     excited2.push({x: key, y: value});
@@ -216,12 +216,7 @@
             }
         });
 
-        console.log(excited2)
-        console.log(understand2)
-        console.log(neutral2)
-        console.log(tired2)
-        console.log(anxious2)
-        console.log(uniqueTimes)
+
 
       // --------------------UPDATE function every second
       let intervalID = setInterval(update_values,1000);
@@ -230,7 +225,15 @@
       let intervalID4 = setInterval(update_percentage,1000);
 
       function update_percentage(){
-          console.log('update_percentage')
+          $.getJSON('/chart-data/percentage/{{ classCode }}',
+          (data) =>{
+            $('#percentage_excited').text(JSON.parse(data.cat).excited);
+            $('#percentage_understand').text(JSON.parse(data.cat).understand);
+            $('#percentage_neutral').text(JSON.parse(data.cat).neutral);
+            $('#percentage_tired').text(JSON.parse(data.cat).tired);
+            $('#percentage_anxious').text(JSON.parse(data.cat).anxious);
+          });
+          
       }
 
       function update_categories(){
@@ -726,11 +729,9 @@
 
         source.onmessage = function (event) {
             const data = JSON.parse(event.data);
-            console.log(data.value);
             // Client time
             let dateWithouthSecond = new Date();
             let cTime = dateWithouthSecond.toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit', second:'2-digit' });
-            console.log(cTime);
             // No new data?
             if (excitedID[excitedID.length-1] == Number(data.id)
                 || understandID[understandID.length-1] == Number(data.id)
@@ -775,7 +776,6 @@
     
                     configStudentID.data.labels.push(data.studentID);
                     configStudentID.data.datasets[0].data.push(configStudentID.data.datasets[0].data.length += 1);
-                    console.log(configStudentID.data.datasets[0].data);
                     schart.update();
                  
             
@@ -835,7 +835,6 @@
                     excitedID.push(Number(data.id));
                     excitedArr.push(excitedArr.length+1);
                     excited2.push({x: cTime, y: excitedArr.length})
-                    console.log("array now ", excited2)
                     lineChart.update(lastTimes.push(cTime));
                     lineChart.update();
                 }
