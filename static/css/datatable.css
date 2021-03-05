@@ -51,3 +51,7 @@ footer{
 caption{
     text-align: center; caption-side: top;
 }
+
+tr.table-row-hover:hover{
+  background:green;
+}
