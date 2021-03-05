@@ -157,11 +157,11 @@
         <label class="form-check-label" for="5">
             Enter category labels:
         </label>
-        <div class="row justify-content-center" id="dynamic_field">
-                     <tr>  
+        <div id="dynamic_field">
+            <div class="row justify-content-center">
                           <td><input type="text" id="emojikeyboard" name="categories" placeholder="Enter a category name" class="form-control name_list" required/>
                           <td><button type="button" name="add" id="add" class="btn btn-success">Add More</button></td>  
-                     </tr>  
+            </div>
         </div>
 
 
@@ -183,13 +183,13 @@
          var i=1;  
          $('#add').click(function(){  
               i++;  
-              $('#dynamic_field').append('<tr id="row'+i+'"><td><input id="emojikeyboard" type="text" name="categories" placeholder="Enter a category name" class="form-control name_list" required/></td><td><button type="button" name="remove" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr>');  
-              
+              $('#dynamic_field').append('<div id="div'+i+'" class="row justify-content-center"><tr id="row'+i+'"><td><input id="emojikeyboard'+i+'" type="text" name="categories" placeholder="Enter a category name" class="form-control name_list" required/></td><td><button type="button" name="remove" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr></div>');  
+              $('#emojikeyboard'+i+'').emojioneArea();
             });
 
          $(document).on('click', '.btn_remove', function(){  
               var button_id = $(this).attr("id");   
-              $('#row'+button_id+'').remove();  
+              $('#div'+button_id+'').remove();  
          });
          $('#submitButton').click(function(e){            
            $.ajax({  
