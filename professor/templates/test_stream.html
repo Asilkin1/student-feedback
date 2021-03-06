@@ -1,162 +1,297 @@
 {% extends "base.html" %}
 {% block title %}Live class updates{% endblock %}
 {% block content %}
-<div class="container">
+<div class="container-fluid">
     <!-- Update in a way similar to react -->
     <div class="row">
-    <div class="col feedmoji" onload="update_values();">
-        <div class="card text-center">
-            <div class="card-body">
-              Avg. of last 10 feedback
-            </div>
-            <div class="card-body">
-              <!-- <h2 id="result" class="card-text">??</h2> -->
-              <p id="result"></p>
-            </div>
-          </div>
-    </div>
-    <!-- Last 10 voted ID -->
-    <div class="col feedmoji" onload="update_scode();">
-        <div class="card text-center">
-            <div class="card-body">
-              Last voted
-            </div>
-            <div class="card-body">
-              <!-- <h2 id="result" class="card-text">??</h2> -->
-              <p id="scode">loading...</p>
-            </div>
-          </div>
-    </div>
-    <!-- Categories voted -->
-    <div class="col feedmoji" onload="update_categories();">
-        <div class="card text-center">
-            <div class="card-body">
-              Voted for categories
-            </div>
-            <div class="card-body">
-              <p id="categoriesVoted">loading...</p>
-            </div>
-          </div>
-    </div>
-</div>
+        <!-- Left hand side sorting/filtering criterias -->
+        <nav class="col-md-2 d-none d-md-block sidebar">
+            <div class="sidebar-sticky">
+                <ul class="nav flex-column">
+                   <h4 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">Filter:
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="feather feather-plus-circle">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="16"></line>
+                            <line x1="8" y1="12" x2="16" y2="12"></line>
+                        </svg> 
+                   </h4>
+                    <li class="nav-item">
+                        <a class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted" href="#">  
+                            &#127922;
+                            Show 10 average 
+                        </a>                            
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted" href="#">
+                            &#127880;
+                            Feel
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted" href="#">
+                            &#127771;
+                            Last voted
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        
+                        <a class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted" href="#">
+                          &#11088;
+                            Categories voted
+                        </a>
+                    </li>
+                    <h4 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">Charts:
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="feather feather-plus-circle">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="16"></line>
+                            <line x1="8" y1="12" x2="16" y2="12"></line>
+                        </svg> 
+                    </h4>
+                    <li class="nav-item">
+                        <a class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted" href="#">
+                            &#9889;Real-Time
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted" href="#">
+                            &#9997;Last 10
+                            
+                        </a>
+                    </li>
+                </ul>
 
-<div class="row justify-content-center" id="face_row">
-    <!-- Excited -->
-    <div class="col- feedmoji">
-        <div class="form-check justify-content-center">
-            <label class="form-check-label" for="excited" title="Choose your mood. Is that what you think?"
-                style="cursor: pointer;">
-                excited
-                <p id="emoji">&#128512;</p>
-                <p id="percentage_excited">5%</p>
-            </label>
-        </div>
-    </div>
-    <div class="col- feedmoji">
-        <!-- Understand -->
-        <div class="form-check">
-            <label class="form-check-label" for="normal" title="Choose your mood. Is that what you think?"
-                style="cursor: pointer;">
-                understand
-                <p id="emoji">&#128578;</p>
-                <p id="percentage_understand">10%</p>
-            </label>
-        </div>
-    </div>
-    <div class="col- feedmoji">
-        <!-- Neutral -->
-        <div class="form-check">
-            <label class="form-check-label" for="unclear"
-                style="cursor: pointer;">
-                neutral
-                <p id="emoji">&#128528;</p>
-                <p id="percentage_neutral">10%</p>
-            </label>
-        </div>
-    </div>
-    <div class="col- feedmoji">
-        <!-- tider/bored -->
-        <div class="form-check">
-            <label class="form-check-label" for="nervous" title="Choose your mood. Is that what you think?"
-                style="cursor: pointer;">
-                tired/bored
-                <p id="emoji">&#128564;</p>
-                <p id="percentage_tired">4%</p>
-            </label>
-        </div>
-    </div>
-    <div class="col- feedmoji">
-        <!-- anxious/overwhelmed/confused -->
-        <div class="form-check">
-            <label class="form-check-label" for="mad" title="Choose your mood. Is that what you think?"
-                style="cursor: pointer;">
-                anxious/confused
-                <p id="emoji">&#128548;</p>
-                <p id="percentage_anxious">4%</p>
-            </label>
-        </div>
-    </div>
-</div>
-    <!-- End of average of latest 10 -->
-    <div class="row">
-        <div class="col-12">
-            <div>
-                <div class="card-body"> 
-                    <canvas id="canvas"></canvas>
+
+                <!-- <ul class="nav flex-column mb-2">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="feather feather-file-text">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10 9 9 9 8 9"></polyline>
+                            </svg>
+                            Current month
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="feather feather-file-text">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10 9 9 9 8 9"></polyline>
+                            </svg>
+                            Last quarter
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="feather feather-file-text">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10 9 9 9 8 9"></polyline>
+                            </svg>
+                            Social engagement
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="feather feather-file-text">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10 9 9 9 8 9"></polyline>
+                            </svg>
+                            Year-end sale
+                        </a>
+                    </li>
+                </ul> -->
+            </div>
+        </nav>
+
+        <!-- Right hand side with the data and charts -->
+        <div class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+            <!-- Row with carts statistic -->
+            <div class="row">
+                <div class="col feedmoji" onload="update_values();">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            Avg. of last 10 feedback
+                        </div>
+                        <div class="card-body">
+                            <!-- <h2 id="result" class="card-text">??</h2> -->
+                            <p id="result"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Last 10 voted ID -->
+                <div class="col feedmoji" onload="update_scode();">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            Last voted
+                        </div>
+                        <div class="card-body">
+                            <!-- <h2 id="result" class="card-text">??</h2> -->
+                            <p id="scode">loading...</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Categories voted -->
+                <div class="col feedmoji" onload="update_categories();">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            Voted for categories
+                        </div>
+                        <div class="card-body">
+                            <p id="categoriesVoted">loading...</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row justify-content-center" id="face_row">
+                <!-- Excited -->
+                <div class="col feedmoji">
+                    <div class="form-check justify-content-center">
+                        <label class="form-check-label" for="excited" title="Choose your mood. Is that what you think?"
+                            style="cursor: pointer;">
+                            excited
+                            <p id="emoji">&#128512;</p>
+                            <p id="percentage_excited">5%</p>
+                        </label>
+                    </div>
+                </div>
+                <div class="col feedmoji">
+                    <!-- Understand -->
+                    <div class="form-check">
+                        <label class="form-check-label" for="normal" title="Choose your mood. Is that what you think?"
+                            style="cursor: pointer;">
+                            understand
+                            <p id="emoji">&#128578;</p>
+                            <p id="percentage_understand">10%</p>
+                        </label>
+                    </div>
+                </div>
+                <div class="col feedmoji">
+                    <!-- Neutral -->
+                    <div class="form-check">
+                        <label class="form-check-label" for="unclear" style="cursor: pointer;">
+                            neutral
+                            <p id="emoji">&#128528;</p>
+                            <p id="percentage_neutral">10%</p>
+                        </label>
+                    </div>
+                </div>
+                <div class="col feedmoji">
+                    <!-- tider/bored -->
+                    <div class="form-check">
+                        <label class="form-check-label" for="nervous" title="Choose your mood. Is that what you think?"
+                            style="cursor: pointer;">
+                            tired/bored
+                            <p id="emoji">&#128564;</p>
+                            <p id="percentage_tired">4%</p>
+                        </label>
+                    </div>
+                </div>
+                <div class="col feedmoji">
+                    <!-- anxious/overwhelmed/confused -->
+                    <div class="form-check">
+                        <label class="form-check-label" for="mad" title="Choose your mood. Is that what you think?"
+                            style="cursor: pointer;">
+                            anxious/confused
+                            <p id="emoji">&#128548;</p>
+                            <p id="percentage_anxious">4%</p>
+                        </label>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-12">
-            <div>
-                <div class="card-body"> 
-                    <canvas id="lastTen"></canvas>
+
+            <!-- Charts -->
+            <div class="row">
+                <div class="col-12">
+                    <div>
+                        <div class="card-body">
+                            <canvas id="canvas"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div>
+                        <div class="card-body">
+                            <canvas id="lastTen"></canvas>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-12">
-            <div>
-                <div class="card-body"> 
-                    <canvas id="studentID"></canvas>
+            <div class="row">
+                <div class="col-12">
+                    <div>
+                        <div class="card-body">
+                            <canvas id="studentID"></canvas>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+
         </div>
+
     </div>
-</div>
 
-<style>
-    #canvas,#studentID,#lastTen{
-  
-  border-radius: 6px;
-/*   Check out the fancy shadow  on this one */
-  box-shadow: 0 3rem 5rem -2rem rgba(0, 0, 0, 0.6);
-}
-</style>
+    <style>
+        #canvas,
+        #studentID,
+        #lastTen {
 
-<script>
-    $(document).ready(function () {
-        let excitedArr = {{ excitedArr|tojson }};
-        let understandArr = {{ understandArr|tojson }};
-        let neutralArr = {{ neutralArr|tojson }};
-        let tiredArr = {{ tiredArr|tojson }};
-        let anxiousArr = {{ anxiousArr|tojson }};
+            border-radius: 6px;
+            /*   Check out the fancy shadow  on this one */
+            box-shadow: 0 3rem 5rem -2rem rgba(0, 0, 0, 0.6);
+        }
+    </style>
 
-        let last_ten = {{ last_ten|tojson }};
-        let lastTimes = {{ lastTimes|tojson }};
+    <script>
+        $(document).ready(function () {
+            let excitedArr = {{ excitedArr| tojson
+        }};
+        let understandArr = {{ understandArr| tojson }};
+        let neutralArr = {{ neutralArr| tojson }};
+        let tiredArr = {{ tiredArr| tojson }};
+        let anxiousArr = {{ anxiousArr| tojson }};
+
+        let last_ten = {{ last_ten| tojson }};
+        let lastTimes = {{ lastTimes| tojson }};
         let uniqueTimes = [...new Set(lastTimes)];
 
-        let excitedID = {{ excitedID|tojson }};
-        let understandID = {{ understandID|tojson }};
-        let neutralID = {{ neutralID|tojson }};
-        let tiredID = {{ tiredID|tojson }};
-        let anxiousID = {{ anxiousID|tojson }};
+        let excitedID = {{ excitedID| tojson }};
+        let understandID = {{ understandID| tojson }};
+        let neutralID = {{ neutralID| tojson }};
+        let tiredID = {{ tiredID| tojson }};
+        let anxiousID = {{ anxiousID| tojson }};
 
-        let excited = {{ excited|tojson }};
-        let understand = {{ understand|tojson }};
-        let neutral = {{ neutral|tojson }};
-        let tired = {{ tired|tojson }};
-        let anxious = {{ anxious|tojson }};
+        let excited = {{ excited| tojson }};
+        let understand = {{ understand| tojson }};
+        let neutral = {{ neutral| tojson }};
+        let tired = {{ tired| tojson }};
+        let anxious = {{ anxious| tojson }};
 
         let excited2 = [];
         let understand2 = []
@@ -166,109 +301,106 @@
 
         uniqueTimes.forEach(element => {
 
-            for (const [key, value] of Object.entries(excited)){
-                if (element.localeCompare(key) == 0){
-                    excited2.push({x: key, y: value});
+            for (const [key, value] of Object.entries(excited)) {
+                if (element.localeCompare(key) == 0) {
+                    excited2.push({ x: key, y: value });
                 }
             }
-            if (Object.keys(excited).includes(element) == false){
-                excited2.push({x: element, y: NaN});
+            if (Object.keys(excited).includes(element) == false) {
+                excited2.push({ x: element, y: NaN });
             }
         });
         uniqueTimes.forEach(element => {
-            for (const [key, value] of Object.entries(understand)){
-                if (element.localeCompare(key) == 0){
-                    understand2.push({x: key, y: value});
+            for (const [key, value] of Object.entries(understand)) {
+                if (element.localeCompare(key) == 0) {
+                    understand2.push({ x: key, y: value });
                 }
             }
-            if (Object.keys(understand).includes(element) == false){
-                understand2.push({x: element, y: NaN});
+            if (Object.keys(understand).includes(element) == false) {
+                understand2.push({ x: element, y: NaN });
             }
         });
         uniqueTimes.forEach(element => {
-            for (const [key, value] of Object.entries(neutral)){
-                if (element.localeCompare(key) == 0){
-                    neutral2.push({x: key, y: value});
+            for (const [key, value] of Object.entries(neutral)) {
+                if (element.localeCompare(key) == 0) {
+                    neutral2.push({ x: key, y: value });
                 }
             }
-            if (Object.keys(neutral).includes(element) == false){
-                neutral2.push({x: element, y: NaN});
+            if (Object.keys(neutral).includes(element) == false) {
+                neutral2.push({ x: element, y: NaN });
             }
         });
         uniqueTimes.forEach(element => {
-            for (const [key, value] of Object.entries(tired)){
-                if (element.localeCompare(key) == 0){
-                    tired2.push({x: key, y: value});
+            for (const [key, value] of Object.entries(tired)) {
+                if (element.localeCompare(key) == 0) {
+                    tired2.push({ x: key, y: value });
                 }
             }
-            if (Object.keys(tired).includes(element) == false){
-                tired2.push({x: element, y: NaN});
+            if (Object.keys(tired).includes(element) == false) {
+                tired2.push({ x: element, y: NaN });
             }
         });
         uniqueTimes.forEach(element => {
-            for (const [key, value] of Object.entries(anxious)){
-                if (element.localeCompare(key) == 0){
-                    anxious2.push({x: key, y: value});
+            for (const [key, value] of Object.entries(anxious)) {
+                if (element.localeCompare(key) == 0) {
+                    anxious2.push({ x: key, y: value });
                 }
             }
-            if (Object.keys(anxious).includes(element) == false){
-                anxious2.push({x: element, y: NaN});
+            if (Object.keys(anxious).includes(element) == false) {
+                anxious2.push({ x: element, y: NaN });
             }
         });
 
+        // --------------------UPDATE function every second
+        let intervalID = setInterval(update_values, 1000);
+        let intervalID2 = setInterval(update_scode, 1000);
+        let intervalID3 = setInterval(update_categories, 1000);
+        let intervalID4 = setInterval(update_percentage, 1000);
 
+        function update_percentage() {
+            $.getJSON('/chart-data/percentage/{{ classCode }}',
+                (data) => {
+                    $('#percentage_excited').text(JSON.parse(data.cat).excited);
+                    $('#percentage_understand').text(JSON.parse(data.cat).understand);
+                    $('#percentage_neutral').text(JSON.parse(data.cat).neutral);
+                    $('#percentage_tired').text(JSON.parse(data.cat).tired);
+                    $('#percentage_anxious').text(JSON.parse(data.cat).anxious);
+                });
+        }
 
-      // --------------------UPDATE function every second
-      let intervalID = setInterval(update_values,1000);
-      let intervalID2 = setInterval(update_scode,1000);
-      let intervalID3 = setInterval(update_categories,1000);
-      let intervalID4 = setInterval(update_percentage,1000);
+        function update_categories() {
+            $.getJSON('/chart-data/categoriesVoted/{{ classCode }}',
+                (data) => {
+                    $('#categoriesVoted').text('loading...');
+                    $('#categoriesVoted').text(JSON.parse(data.categories_voted).categoriesVoted);
+                });
+        }
 
-      function update_percentage(){
-          $.getJSON('/chart-data/percentage/{{ classCode }}',
-          (data) =>{
-            $('#percentage_excited').text(JSON.parse(data.cat).excited);
-            $('#percentage_understand').text(JSON.parse(data.cat).understand);
-            $('#percentage_neutral').text(JSON.parse(data.cat).neutral);
-            $('#percentage_tired').text(JSON.parse(data.cat).tired);
-            $('#percentage_anxious').text(JSON.parse(data.cat).anxious);
-          });
-          
-      }
+        function update_scode() {
+            $.getJSON('/chart-data/studentcode/{{ classCode }}',
+                function (data) {
+                    $('#scode').text('loading...');
+                    $('#scode').text(JSON.parse(data.scode).scode);
+                })
+        };
 
-      function update_categories(){
-          $.getJSON('/chart-data/categoriesVoted/{{ classCode }}',
-          (data) =>{
-            $('#categoriesVoted').text('loading...');
-            $('#categoriesVoted').text(JSON.parse(data.categories_voted).categoriesVoted);
-          });
-      }
-        
-       function update_scode(){
-           $.getJSON('/chart-data/studentcode/{{ classCode }}',
-            function(data){
-                $('#scode').text('loading...');
-                $('#scode').text(JSON.parse(data.scode).scode);
-            })
-       };
-
-        function update_values(){
+        function update_values() {
             $.getJSON('/chart-data/average/{{ classCode }}',
-            function(data){
-                $('#result').text('loading...');
-                // Insert emoji based on the number
-                if(JSON.parse(data.result).average === 5)
-                    $('#result').text('Excited');
-                else if(JSON.parse(data.result).average === 4)
-                    $('#result').text('Understand');
-                else if(JSON.parse(data.result).average === 3)
-                    $('#result').text('Neutral');
-                else if(JSON.parse(data.result).average === 2)
-                    $('#result').text('Tired/Bored');
-                else if (JSON.parse(data.result).average === 1)
-                    $('#result').text('Anxious/Confused');     
-                // $('#result').text(JSON.parse(data.result).average)
-            })
+                function (data) {
+                    $('#result').text('loading...');
+                    // Insert emoji based on the number
+                    if (JSON.parse(data.result).average === 5)
+                        $('#result').text('Excited');
+                    else if (JSON.parse(data.result).average === 4)
+                        $('#result').text('Understand');
+                    else if (JSON.parse(data.result).average === 3)
+                        $('#result').text('Neutral');
+                    else if (JSON.parse(data.result).average === 2)
+                        $('#result').text('Tired/Bored');
+                    else if (JSON.parse(data.result).average === 1)
+                        $('#result').text('Anxious/Confused');
+                    // $('#result').text(JSON.parse(data.result).average)
+                })
         };
 
         const config = {
@@ -302,12 +434,12 @@
                         pointHitRadius: 8,
                         spanGaps: true,
                     },
-                    
+
                     {
                         label: "Understand",
                         backgroundColor: 'rgb(255, 200, 100)',
                         borderColor: 'rgb(255, 200, 100)',
-                        data:  understand2,
+                        data: understand2,
                         id: understandID,
                         fill: false,
                         lineTension: 0.1,
@@ -384,7 +516,7 @@
                         borderDashOffset: 0.0,
                         borderJoinStyle: 'miter',
                         pointBorderColor: "rgb(255, 0, 0,0.3)",
-                        pointBackgroundColor:"white",
+                        pointBackgroundColor: "white",
                         pointBorderWidth: 1,
                         pointHoverRadius: 8,
                         pointHoverBorderColor: "yellow",
@@ -409,7 +541,7 @@
                             color: 'rgb(255, 99, 132)',
                             position: 'bottom'
                         },
-                        
+
                     }
                 },
                 responsive: true,
@@ -429,10 +561,10 @@
                     xAxes: [{
                         display: true,
                         ticks: {
-                            callback: function(dataLabel, index) {
-								// Hide the label of every 2nd dataset. return null to hide the grid line too
-								return index % 13 === 0 ? dataLabel : '';
-							}
+                            callback: function (dataLabel, index) {
+                                // Hide the label of every 2nd dataset. return null to hide the grid line too
+                                return index % 13 === 0 ? dataLabel : '';
+                            }
 
                         },
                         scaleLabel: {
@@ -487,7 +619,7 @@
                         pointHitRadius: 8,
                         spanGaps: true,
                     },
-                    
+
                     {
                         label: "Understand",
                         backgroundColor: 'rgb(255, 200, 100)',
@@ -569,7 +701,7 @@
                         borderDashOffset: 0.0,
                         borderJoinStyle: 'miter',
                         pointBorderColor: "rgb(255, 0, 0,0.3)",
-                        pointBackgroundColor:"white",
+                        pointBackgroundColor: "white",
                         pointBorderWidth: 1,
                         pointHoverRadius: 8,
                         pointHoverBorderColor: "yellow",
@@ -594,7 +726,7 @@
                             color: 'rgb(255, 99, 132)',
                             position: 'bottom'
                         },
-                        
+
                     }
                 },
                 responsive: true,
@@ -614,10 +746,10 @@
                     xAxes: [{
                         display: true,
                         ticks: {
-                            callback: function(dataLabel, index) {
-								// Hide the label of every 2nd dataset. return null to hide the grid line too
-								return index % 13 === 0 ? dataLabel : '';
-							}
+                            callback: function (dataLabel, index) {
+                                // Hide the label of every 2nd dataset. return null to hide the grid line too
+                                return index % 13 === 0 ? dataLabel : '';
+                            }
 
                         },
                         scaleLabel: {
@@ -656,7 +788,7 @@
                         data: [],
                         fill: false,
                         lineTension: 0.1,
-                        
+
                     },
                 ],
             },
@@ -672,7 +804,7 @@
                             color: 'rgb(255, 99, 132)',
                             position: 'bottom'
                         },
-                        
+
                     }
                 },
                 responsive: true,
@@ -713,17 +845,17 @@
             }
         };
 
-        
+
 
         // First chart
         const context = document.getElementById('canvas').getContext('2d');
         const lineChart = new Chart(context, config);
         // Second chart
         const chart2 = document.getElementById('lastTen').getContext('2d');
-        const lastTenChart = new Chart(chart2,secondChart);
+        const lastTenChart = new Chart(chart2, secondChart);
         // Stundet ID chart
         const studentID = document.getElementById('studentID').getContext('2d');
-        const schart = new Chart(studentID,configStudentID);
+        const schart = new Chart(studentID, configStudentID);
 
         const source = new EventSource("/chart-data/{{classCode}}");
 
@@ -731,93 +863,97 @@
             const data = JSON.parse(event.data);
             // Client time
             let dateWithouthSecond = new Date();
-            let cTime = dateWithouthSecond.toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit', second:'2-digit' });
+            let cTime = dateWithouthSecond.toLocaleTimeString(navigator.language, { hour: '2-digit', minute: '2-digit', second: '2-digit' });
             // No new data?
-            if (excitedID[excitedID.length-1] == Number(data.id)
-                || understandID[understandID.length-1] == Number(data.id)
-                || neutralID[neutralID.length-1] == Number(data.id)
-                || tiredID[tiredID.length-1] == Number(data.id)
-                || anxiousID[anxiousID.length-1] == Number(data.id)) {
-                    
-                    
-                    // Insert none values for y points to denote that no one voted
-                    // This helps to keep in sync y and x axis since
-                    // some data should be added in realtime
-                    // excited2.push({x: key, y: NaN});
-                    // understand2.push({x: key, y: NaN});
-                    // neutral2.push({x: key, y: NaN});
-                    // tired2.push({x: key, y: NaN});
-                    // anxious2.push({x: key, y: NaN});
+            if (excitedID[excitedID.length - 1] == Number(data.id)
+                || understandID[understandID.length - 1] == Number(data.id)
+                || neutralID[neutralID.length - 1] == Number(data.id)
+                || tiredID[tiredID.length - 1] == Number(data.id)
+                || anxiousID[anxiousID.length - 1] == Number(data.id)) {
 
-                    // Keep adding time to simulate realtime
-                    lineChart.update(lastTimes.push(cTime));
 
-                    // Have to update the whole chart to avoid skip error
-                    lineChart.update({duration: 800,
-                                        easing: 'easeOutBounce'});
-                    
-                    // Second chart with last 10 average
-                    secondChart.data.datasets[0].data.push(NaN);
-                    secondChart.data.datasets[1].data.push(NaN);
-                    secondChart.data.datasets[2].data.push(NaN);
-                    secondChart.data.datasets[3].data.push(NaN);
-                    secondChart.data.datasets[4].data.push(NaN);
+                // Insert none values for y points to denote that no one voted
+                // This helps to keep in sync y and x axis since
+                // some data should be added in realtime
+                // excited2.push({x: key, y: NaN});
+                // understand2.push({x: key, y: NaN});
+                // neutral2.push({x: key, y: NaN});
+                // tired2.push({x: key, y: NaN});
+                // anxious2.push({x: key, y: NaN});
 
-                    // Keep adding time to simulate realtime
-                    lastTenChart.update(secondChart.data.labels.push(cTime));
+                // Keep adding time to simulate realtime
+                lineChart.update(lastTimes.push(cTime));
 
-                    // Have to update the whole chart to avoid skip error
-                    lastTenChart.update({duration: 800,
-                                        easing: 'easeOutBounce'});
+                // Have to update the whole chart to avoid skip error
+                lineChart.update({
+                    duration: 800,
+                    easing: 'easeOutBounce'
+                });
+
+                // Second chart with last 10 average
+                secondChart.data.datasets[0].data.push(NaN);
+                secondChart.data.datasets[1].data.push(NaN);
+                secondChart.data.datasets[2].data.push(NaN);
+                secondChart.data.datasets[3].data.push(NaN);
+                secondChart.data.datasets[4].data.push(NaN);
+
+                // Keep adding time to simulate realtime
+                lastTenChart.update(secondChart.data.labels.push(cTime));
+
+                // Have to update the whole chart to avoid skip error
+                lastTenChart.update({
+                    duration: 800,
+                    easing: 'easeOutBounce'
+                });
 
             } else {
 
                 // New ID
-    
-                    configStudentID.data.labels.push(data.studentID);
-                    configStudentID.data.datasets[0].data.push(configStudentID.data.datasets[0].data.length += 1);
-                    schart.update();
-                 
-            
-                
+
+                configStudentID.data.labels.push(data.studentID);
+                configStudentID.data.datasets[0].data.push(configStudentID.data.datasets[0].data.length += 1);
+                schart.update();
+
+
+
 
                 // Chart 2 last 10 average
-                if(data.last10 == 5){
-                     // Insert into this dataset
+                if (data.last10 == 5) {
+                    // Insert into this dataset
                     secondChart.data.datasets[0].id.push(Number(data.id))
                     secondChart.data.datasets[0].data.push(config.data.datasets[0].id.length * data.numberOfFeedback);
                     lastTenChart.update(config.data.labels.push(cTime));
                     lastTenChart.update();
                 }
-                if(data.last10 == 4){
-                     // Insert into this dataset
+                if (data.last10 == 4) {
+                    // Insert into this dataset
                     secondChart.data.datasets[1].id.push(Number(data.id))
                     secondChart.data.datasets[1].data.push(config.data.datasets[1].id.length * data.numberOfFeedback);
                     lastTenChart.update(config.data.labels.push(cTime));
                     lastTenChart.update();
                 }
-                if(data.last10 == 3){
-                     // Insert into this dataset
+                if (data.last10 == 3) {
+                    // Insert into this dataset
                     secondChart.data.datasets[2].id.push(Number(data.id))
                     secondChart.data.datasets[2].data.push(config.data.datasets[2].id.length * data.numberOfFeedback);
                     lastTenChart.update(config.data.labels.push(cTime));
                     lastTenChart.update();
                 }
-                if(data.last10 == 2){
-                     // Insert into this dataset
+                if (data.last10 == 2) {
+                    // Insert into this dataset
                     secondChart.data.datasets[3].id.push(Number(data.id))
                     secondChart.data.datasets[3].data.push(config.data.datasets[3].id.length * data.numberOfFeedback);
                     lastTenChart.update(config.data.labels.push(cTime));
                     lastTenChart.update();
                 }
-                if(data.last10 == 1){
-                     // Insert into this dataset
+                if (data.last10 == 1) {
+                    // Insert into this dataset
                     secondChart.data.datasets[4].id.push(Number(data.id))
                     secondChart.data.datasets[4].data.push(config.data.datasets[4].id.length * data.numberOfFeedback);
                     lastTenChart.update(config.data.labels.push(cTime));
                     lastTenChart.update();
                 }
-                
+
                 // Shift data when x amount of time labels added 
                 // 100 is more than hour
                 if (config.data.labels.length === 100) {
@@ -833,8 +969,8 @@
                 if (data.value == 5) {
                     // Insert into this dataset
                     excitedID.push(Number(data.id));
-                    excitedArr.push(excitedArr.length+1);
-                    excited2.push({x: cTime, y: excitedArr.length})
+                    excitedArr.push(excitedArr.length + 1);
+                    excited2.push({ x: cTime, y: excitedArr.length })
                     lineChart.update(lastTimes.push(cTime));
                     lineChart.update();
                 }
@@ -842,8 +978,8 @@
                 // Voted for understand emoji
                 if (data.value == 4) {
                     understandID.push(Number(data.id));
-                    understandArr.push(understandArr.length+1);
-                    understand2.push({x: cTime, y: understandArr.length})
+                    understandArr.push(understandArr.length + 1);
+                    understand2.push({ x: cTime, y: understandArr.length })
                     lineChart.update(lastTimes.push(cTime));
                     lineChart.update();
                 }
@@ -851,8 +987,8 @@
                 // Voted for neutral emoji
                 if (data.value == 3) {
                     neutralID.push(Number(data.id));
-                    neutralArr.push(neutralArr.length+1);
-                    neutral2.push({x: cTime, y: neutralArr.length})
+                    neutralArr.push(neutralArr.length + 1);
+                    neutral2.push({ x: cTime, y: neutralArr.length })
                     lineChart.update(lastTimes.push(cTime));
                     lineChart.update();
                 }
@@ -860,8 +996,8 @@
                 // Voted for tired/bored
                 if (data.value == 2) {
                     tiredID.push(Number(data.id));
-                    tiredArr.push(tiredArr.length+1);
-                    tired2.push({x: cTime, y: tiredArr.length})
+                    tiredArr.push(tiredArr.length + 1);
+                    tired2.push({ x: cTime, y: tiredArr.length })
                     lineChart.update(lastTimes.push(cTime));
                     lineChart.update();
                 }
@@ -869,13 +1005,13 @@
                 // Voted for anxious/confused
                 if (data.value == 1) {
                     anxiousID.push(Number(data.id));
-                    anxiousArr.push(anxiousArr.length+1);
-                    anxious2.push({x: cTime, y: anxiousArr.length})
+                    anxiousArr.push(anxiousArr.length + 1);
+                    anxious2.push({ x: cTime, y: anxiousArr.length })
                     lineChart.update(lastTimes.push(cTime));
                     lineChart.update();
                 }
             }
         }
     });
-</script>
-{% endblock %}
+    </script>
+    {% endblock %}
