@@ -25,6 +25,7 @@
           <thead class="thead-dark lead">
             <!-- Table top rows -->
             <tr>
+              <th scope="col">Choose</th>
               <th scope="col">Class Name</th>
               <th scope="col">Class Code</th>
               <th scope="col">Category</th>
@@ -36,6 +37,7 @@
             {% for row in data %}
             <tr class="table-row-hover" onmousedown="get_class_data(this);" onmouseover="" style="cursor: pointer;">
               <form action="/analytics/check" method="GET">
+                <th scope="row" id="emoji">&#128073;</th>
                 <th scope="row">{{row.className}}</th>
                 <!-- Get class code into the form  -->
                 <!-- The input cannot be disables -->
@@ -50,7 +52,7 @@
                       {% endfor %}
                     </select>
                   </div>
-                  <button name="check" id="check" href="{{ url_for('auth_bp.login') }}" class="btn btn-block btn-dark"
+                  <button name="check" id="check" href="{{url_for('auth_bp.login')}}" class="btn btn-block btn-dark"
                     type="submit">Check</button>
                 </td>
                 <td>
@@ -145,7 +147,7 @@
     let chartID = document.getElementById("myChart");
 
     chartID.hidden = false;
-    let classCodeFromRow = row.children[2].children[0].getAttribute('value')
+    let classCodeFromRow = row.children[3].children[0].getAttribute('value');
     $.getJSON(`/chart-data/showCategories/${classCodeFromRow}`,
       function (data) {
 
