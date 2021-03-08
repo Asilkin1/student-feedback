@@ -1,3 +1,6 @@
+<style>
+  tr.row_selected td{background-color: #bdbdbd !important;}
+</style>
 <div class="container col- mx-auto">
   <div lass="row">
     <p class="display-4">Dashboard</p>
@@ -35,10 +38,10 @@
           <tbody>
 
             {% for row in data %}
-            <tr class="table-row-hover" onmousedown="get_class_data(this);" onmouseover="" style="cursor: pointer;">
+            <tr class="table-row-hover" onclick="get_class_data(this);" onmouseover="" style="cursor: pointer;">
               <form action="/analytics/check" method="GET">
-                <th scope="row" id="emoji">&#128073;</th>
-                <th scope="row">{{row.className}}</th>
+                <td scope="row" id="emoji">&#128073;</td>
+                <td scope="row">{{row.className}}</td>
                 <!-- Get class code into the form  -->
                 <!-- The input cannot be disables -->
                 <td>{{row.classCode}}<input type="hidden" id="classCode" name="ccode" value={{row.classCode}}></td>
@@ -219,6 +222,11 @@
 <script>
   $('#classTable').dataTable({
     "lengthMenu": [5, 10, 15, 20, 25]
+  });
+
+  $("#classTable tbody tr").on('click',function(event) {
+    $("#classTable tbody tr").removeClass('row_selected');        
+    $(this).addClass('row_selected');
   });
 </script>
 
