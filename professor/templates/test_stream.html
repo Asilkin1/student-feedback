@@ -8,58 +8,73 @@
         <nav class="col-md-2 d-none d-md-block sidebar">
             <div class="sidebar-sticky">
                 <ul class="nav flex-column">
-                   <h4 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">Filter:
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="feather feather-plus-circle">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="12" y1="8" x2="12" y2="16"></line>
-                            <line x1="8" y1="12" x2="16" y2="12"></line>
-                        </svg> 
-                   </h4>
-                    <li class="nav-item">
-                        <a class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted" href="#">  
-                            &#127922;
-                            Show 10 average 
-                        </a>                            
-                    </li>
-                    <li class="nav-item">
-                        <a class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted" href="#">
-                            &#127880;
-                            Feel
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted" href="#">
-                            &#127771;
-                            Last voted
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        
-                        <a class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted" href="#">
-                          &#11088;
-                            Categories voted
-                        </a>
-                    </li>
-                    <h4 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">Charts:
+                    <h4
+                        class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                        Filter:
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                             class="feather feather-plus-circle">
                             <circle cx="12" cy="12" r="10"></circle>
                             <line x1="12" y1="8" x2="12" y2="16"></line>
                             <line x1="8" y1="12" x2="16" y2="12"></line>
-                        </svg> 
+                        </svg>
                     </h4>
                     <li class="nav-item">
-                        <a class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted" href="#">
+                        <a class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted"
+                            href="#">
+                            &#127922;
+                            Show\Hide 10 average
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted"
+                            href="#">
+                            &#127880;
+                            Show\Hide Feel
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted"
+                            href="#">
+                            &#127771;
+                            Show\Hide Last voted
+                        </a>
+                    </li>
+                    <li class="nav-item">
+
+                        <a class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted"
+                            href="#">
+                            &#11088;
+                            Show\Hide Categories
+                        </a>
+                    </li>
+                    <h4
+                        class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                        Charts:
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="feather feather-plus-circle">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="16"></line>
+                            <line x1="8" y1="12" x2="16" y2="12"></line>
+                        </svg>
+                    </h4>
+                    <li class="nav-item">
+                        <a class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted"
+                            href="#" id="show_hide_realtime">
                             &#9889;Real-Time
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted" href="#">
+                        <a class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted"
+                            href="#" hidden id="show_hide_last10">
                             &#9997;Last 10
-                            
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted"
+                            href="#" id="show_hide_studentid">
+                            &#9997;Last voted
                         </a>
                     </li>
                 </ul>
@@ -230,14 +245,14 @@
                 <div class="col-12">
                     <div>
                         <div class="card-body">
-                            <canvas id="canvas"></canvas>
+                            <canvas id="canvas" class="r_filter"></canvas>
                         </div>
                     </div>
                 </div>
                 <div class="col-12">
                     <div>
                         <div class="card-body">
-                            <canvas id="lastTen"></canvas>
+                            <canvas id="lastTen" hidden></canvas>
                         </div>
                     </div>
                 </div>
@@ -246,7 +261,7 @@
                 <div class="col-12">
                     <div>
                         <div class="card-body">
-                            <canvas id="studentID"></canvas>
+                            <canvas id="studentID" hidden></canvas>
                         </div>
                     </div>
                 </div>
@@ -269,7 +284,25 @@
     </style>
 
     <script>
+       
+
+        show_hide_realtime.addEventListener('click', function () {
+            canvas.hidden = !canvas.hidden;
+
+        }, false);
+
+        show_hide_last10.addEventListener('click', function () {
+            lastTen.hidden = !lastTen.hidden;
+
+        }, false);
+
+        show_hide_studentid.addEventListener('click', function(){
+            studentID.hidden = !studentID.hidden;
+        }, false);
+     
         $(document).ready(function () {
+
+
             let excitedArr = {{ excitedArr| tojson
         }};
         let understandArr = {{ understandArr| tojson }};
@@ -298,6 +331,8 @@
         let neutral2 = []
         let tired2 = []
         let anxious2 = []
+
+        
 
         uniqueTimes.forEach(element => {
 
