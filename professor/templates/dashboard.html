@@ -38,7 +38,7 @@
           <tbody>
 
             {% for row in data %}
-            <tr class="table-row-hover" onmousedown="get_class_data(this);" onmouseover="" style="cursor: pointer;">
+            <tr class="table-row-hover" onclick="get_class_data(this);" onmouseover="" style="cursor: pointer;">
               <form action="/analytics/check" method="GET">
                 <td scope="row" id="emoji">&#128073;</td>
                 <td scope="row">{{row.className}}</td>
