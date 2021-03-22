@@ -33,6 +33,21 @@ class User(Base):
         self.username = username
         self.password = password
 
+
+# Admin table
+class Admin(Base):
+    __tablename__ = "admin_login"
+
+    id = Column(Integer, primary_key=True)
+    username = Column(String)
+    password = Column(String)
+
+#----------------------------------------------------------------------
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password
+        
+        
 # Categories table
 class Categories(Base):
     __tablename__ = 'categories'

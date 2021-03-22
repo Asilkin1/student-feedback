@@ -9,6 +9,7 @@ from professor.professor import professor_bp
 from feedback.feedback import student_bp
 from auth.auth import auth_bp
 from base.base import base_bp
+from admin.admin import admin_bp
 
 app = Flask(__name__)
 app.register_blueprint(analytics_bp)
@@ -16,6 +17,7 @@ app.register_blueprint(professor_bp)
 app.register_blueprint(student_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(base_bp)
+app.register_blueprint(admin_bp)
 
 # Set logging to a file
 logging.basicConfig(filename='feedback.log', level=logging.DEBUG,format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')

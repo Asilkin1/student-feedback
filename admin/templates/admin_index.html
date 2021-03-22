@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Admin{% endblock %}
+
+{% block content %}
+
+<!-- If logged in show professor dashboard -->
+{% if session['logged_in']%}
+  
+{% include 'admin.html'%}
+
+{% else %}
+
+{% include 'admin_login.html'%}
+
+{% endif %}
+
+{% endblock %}

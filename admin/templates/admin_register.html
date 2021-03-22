@@ -1,0 +1,132 @@
+<style>
+    #pass-info{
+    width: 100%;
+    height: 30px;
+    border: 1px solid linear-gradient(90deg, rgb(10, 28, 68) 0%, #010418 100%);
+    border-radius: 4px;
+    color: white;
+    text-align: center;
+    font: 12px/12px Arial, Helvetica, sans-serif;
+    padding-top: 3%;
+    }
+    #pass-info.weakpass{
+    border: 1px solid #FF9191;
+    background: #FFC7C7;
+    color: #94546E;
+    text-shadow: 1px 1px 1px #FFF;
+    padding-left: 1mm;
+    padding-right: 1mm;
+    }
+    #pass-info.stillweakpass {
+    border: 1px solid #FBB;
+    background: #FDD;
+    color: #945870;
+    text-shadow: 1px 1px 1px #FFF;
+    padding-left: 1mm;
+    padding-right: 1mm;
+    }
+    #pass-info.goodpass {
+    border: 1px solid #C4EEC8;
+    background: #E4FFE4;
+    color: #51926E;
+    text-shadow: 1px 1px 1px #FFF;
+    padding-left: 1mm;
+    padding-right: 1mm;
+    }
+    #pass-info.strongpass {
+    border: 1px solid #6ED66E;
+    background: #d2ffd2;
+    color: #348F34;
+    text-shadow: 1px 1px 1px #FFF;
+    padding-left: 1mm;
+    padding-right: 1mm;
+    }
+    #pass-info.vrystrongpass {
+    border: 1px solid #379137;
+    background: #48B448;
+    color: #CDFFCD;
+    text-shadow: 1px 1px 1px #296429;
+    padding-left: 1mm;
+    padding-right: 1mm;
+    }
+</style>
+
+
+<!-- Registration form -->
+<div class="form-container container">
+    <div class="form">
+        <h1>Register</h1>
+        <form action="{{ url_for('auth_bp.newadmin')}}" method="POST">
+
+            <div class="form-group">
+                <label class="form-check-label" for="username">Username</label>
+                <input type="text" maxlength="10" class="form-control" placeholder="Enter your username" name="username">
+            </div>
+
+            <div class="form-group">
+                <label class="form-check-label" for="password">Password</label>
+                <input type="password" class="form-control" id="password" placeholder="Enter your password" name="password">
+            </div>
+            <div class="form-group" style="float: left;">
+                <div id="pass-info"></div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-check-label" for="password">Repeat Password</label>
+                <input type="password" class="form-control" id="password2" placeholder="Repeat your password" name="repassword">
+            </div>
+
+            <button type="submit" class="button btn-block">Register</button>
+            <a href="{{ url_for('auth_bp.adminlogin') }}">
+                <h6>Or login</h6>
+            </a>
+        </form>
+    </div>
+</div>
+
+<script>
+$(document).ready(function() {
+    var password1       = $('#password'); //id of first password field
+    var password2       = $('#password2'); //id of second password field
+    var passwordsInfo   = $('#pass-info'); //id of indicator element
+    
+    passwordStrengthCheck(password1,password2,passwordsInfo); //call password check function
+    
+});
+ 
+function passwordStrengthCheck(password, password2, passwordsInfo)
+{
+    //Must contain 5 characters or more
+    var WeakPass = /^([^0-9]*).{5,}$/;
+    //Must contain lower case letters and at least one digit.
+    var MediumPass = /^(?=\S*?[a-z])(?=\S*?[0-9])\S{5,}$/;
+    //Must contain at least one upper case letter, one lower case letter and one digit.
+    var StrongPass = /^(?=\S*?[A-Z])(?=\S*?[a-z])(?=\S*?[0-9])\S{5,}$/;
+    //Must contain at least one upper case letter, one lower case letter and one digit.
+    var VryStrongPass = /^(?=\S*?[A-Z])(?=\S*?[a-z])(?=\S*?[0-9])(?=\S*?[^\w\*])\S{5,}$/;
+    
+    $(password).on('keyup', function(e) {
+        if(VryStrongPass.test(password.val()))
+        {
+            passwordsInfo.removeClass().addClass('vrystrongpass').html("Very Strong! Please remember your password!");
+        }  
+        else if(StrongPass.test(password.val()))
+        {
+            passwordsInfo.removeClass().addClass('strongpass').html("Strong! Enter special characters to make it even stronger.");
+        }  
+        else if(MediumPass.test(password.val()))
+        {
+            passwordsInfo.removeClass().addClass('goodpass').html("Good! Enter uppercase letter to make strong.");
+        }
+        else if(WeakPass.test(password.val()))
+        {   
+            console.log(WeakPass.test(password.val()));
+            passwordsInfo.removeClass().addClass('stillweakpass').html("Still Weak! Enter digits to make good password.");
+        }
+        else
+        {
+            passwordsInfo.removeClass().addClass('weakpass').html("Very Weak! Must be 8 or more characters.");
+        }
+    });
+}
+</script>

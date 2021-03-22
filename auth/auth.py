@@ -51,6 +51,81 @@ def studentRegistration():
     elif request.method == "GET":
         return render_template('student_sign_in.html')
 
+# Register an admin  
+@auth_bp.route('/newAdmin', methods=['POST', 'GET'])
+def newadmin():
+    if request.method == 'POST':
+        # Get username from the form
+        username = request.form.get('username')
+        password = request.form.get('password')
+        repassword = request.form.get('repassword')
+
+        if password == "":
+            flash('Password cannot be empty.', 'error')
+        else: 
+            for error, boolean in password_check(password).items():
+
+                if error == 'length_error' and boolean:
+                    flash('Password length must contain at least 8 characters.', 'error')
+                    return render_template('register.html')
+                
+                if error == 'digit_error' and boolean:
+                    flash('Password must contain at least one digit.', 'error')
+                    return render_template('register.html')
+                
+                if error == 'uppercase_error' and boolean:
+                    flash('Password must contain at least one upper case letter', 'error')
+                    return render_template('register.html')
+                
+                if error == 'symbol_error' and boolean:
+                    flash('Password must contain at least one symbol.', 'error')
+                    return render_template('register.html')
+
+                if error == 'password_ok' and boolean:
+                    # Passwords should match
+                    if str(password) == str(repassword):
+                        user = Admin(username, password)
+                        databaseConnection.add(user)
+                        databaseConnection.commit()
+                        flash('You have registered. Please login to continue.', 'success')
+                        return render_template('admin_sign_in.html', title="login")
+
+                    else:
+                        flash('Passwords doesn\'t match.', 'error')
+                        return render_template('admin_sign_up.html')
+    return render_template('admin_sign_up.html')
+
+# Admin login
+@auth_bp.route('/loginAdmin', methods=['POST','GET'])
+def adminlogin():
+        # Sumbitting login form
+    if request.method == 'POST':
+        send_username = request.form.get('username')
+        send_password = request.form.get('password')
+
+        # If the password and username is provided
+        if send_password and len(send_username) <= 10:
+            # Compare admin credentials with the records in the databse
+            query = databaseConnection.query(Admin).filter(Admin.username.in_(
+                [send_username]), Admin.password.in_([send_password]))
+            # Store result of the query
+            result = query.first()
+
+            # Match found in the database
+            if result:
+                # Here we can login
+                session['logged_in'] = True
+                session['username'] = send_username
+                flash('You have successfully logged in.', 'success')
+
+                # Show dashboard
+                return redirect(url_for('admin_bp.adminindex'))
+            else:
+                flash('Check your username and password', 'error')
+                return redirect(url_for('auth_bp.adminlogin'))
+    else:
+        return render_template('admin_sign_in.html')
+
 @auth_bp.route('/newstudent', methods=['POST', 'GET'])
 def newstudent():
     if request.method == "POST":
