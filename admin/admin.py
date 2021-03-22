@@ -3,6 +3,7 @@ from datetime import timedelta
 from CreateUserDatabase import *
 import random
 random.seed()
+import csv
 
 # Define our blueprint with routes
 admin_bp = Blueprint('admin_bp', __name__,
@@ -20,7 +21,32 @@ def before_request():
     
 @admin_bp.route('/admin', methods=['POST','GET'])
 def adminindex():
-    return render_template('admin_index.html')
+    '''Show datatable with professor name and username'''
+     # Get classes data for current username
+    query = databaseConnection.query(AdminUsernames.username, Account.classCode).filter(AdminUsernames.username == Account.username)
+    result = query.all()
+    return  render_template('admin_index.html',
+                            data=result)
+    
+# Add classes from csv file
+@admin_bp.route("/admin/bulkadd", methods=["GET", "POST"])
+def hello():
+    if request.method == 'POST':
+    
+        # Create variable for uploaded file
+        f = request.files['fileupload']  
+
+        #store the file contents as a string
+        fstring = csv.reader(f)
+        
+        #create list of dictionaries keyed by header row
+        print('CSV uploaded', fstring)
+        
+        # Insert rows from csv into the database
+        
+
+        #do something list of dictionaries
+    return redirect(url_for("admin_bp.adminindex"))
 
 
 @admin_bp.route('/admin/createprofessor', methods=['POST','GET'])
@@ -45,7 +71,6 @@ def deleteCategories(ccode):
 
 @admin_bp.route("/admin/edit/<string:id>", methods=['GET', 'POST'])
 def editClass(id):
-    
     query = databaseConnection.query(Account).filter(
                 Account.entryId == id)
     result = query.first()
@@ -159,8 +184,8 @@ def editClass(id):
                                                     sectionName=sectionName, days=days, start=start, end=end, size=size, classMode=mode, data=data)
 
 # Create a class based on the professor username
-@admin_bp.route('/admin/create/<username>', methods=["POST", "GET"])
-def createclass(username):
+@admin_bp.route('/admin/create', methods=["POST", "GET"])
+def createclass():
     inData = True
 
     if request.method == 'POST':
@@ -212,7 +237,7 @@ def createclass(username):
         
         # adds data to database
         newClass = Account(schoolName, departmentName,
-                           className, classAndSection, start, end, saveDays.join(days), classSize, mode, username)
+                           className, classAndSection, start, end, saveDays.join(days), classSize, mode, "")
         databaseConnection.add(newClass)
 
         try:

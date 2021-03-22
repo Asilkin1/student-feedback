@@ -1,240 +1,163 @@
 <style>
-    tr.row_selected td{background-color: #bdbdbd !important;}
-  </style>
-  <div class="container col- mx-auto">
+    tr.row_selected td {
+        background-color: #bdbdbd !important;
+    }
+</style>
+<div class="container col- mx-auto">
     <div lass="row">
-      <p class="display-4">Create class</p>
-      <div class="container col-">
-      </div>
-      <div class="btn-toolbar mb-2 mb-md-0">
-        <div class="btn-group mr-2">
-          <!-- Put create class button -->
-          <a href="{{ url_for('admin_bp.createprofessor')}}"><button class="btn btn-info btn-lg">Create professor</button></a>
+        <p class="display-4">Create class</p>
+        <div class="container col-">
         </div>
-      </div>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group mr-2">
+                <!-- Put create class button -->
+                <a href="{{ url_for('admin_bp.createprofessor')}}"><button class="btn btn-info btn-lg">Create
+                        professor</button></a>
+            </div>
+
+            <div class="btn-group mr-2">
+                 <!-- Bulk add -->
+                 <form action="/admin/bulkadd" method="post" enctype="multipart/form-data">
+                    <input class="custom-file-upload" type="file" name="fileupload" id="fileToUpload">
+                    <input type="submit" value="Upload File" name="submit">
+                </form>
+            </div>
+
+        </div>
     </div>
     <div>
-      <!-- Put Chart -->
-      <div>
-        <!-- Put chart here -->
-        <canvas id="myChart" hidden></canvas>
-      </div>
-  
-      <!-- Put table -->
-      <div>
-        <!-- Put table -->
-        <div class="display">
-          <table id="classTable" class="display" cellspacing="0" width="100%">
-            <thead class="thead-dark lead">
-              <!-- Table top rows -->
-              <tr>
-                <th scope="col">Professor</th>
-                <th scope="col">Username</th>
-                <th scope="col">Options</th>
-              </tr>
-            </thead>
-            <tbody>
-  
-              {% for row in data %}
-              <tr class="table-row-hover" onclick="get_class_data(this);" onmouseover="" style="cursor: pointer;">
-                <form action="/analytics/check" method="GET">
-                  <td scope="row" id="emoji">&#128073;</td>
-                  <td scope="row">{{row.className}}</td>
-                  <!-- Get class code into the form  -->
-                  <!-- The input cannot be disables -->
-                  <td>{{row.classCode}}<input type="hidden" id="classCode" name="ccode" value={{row.classCode}}></td>
-                  <td>
-                    <div class="form-group">
-                      <select name="category" id="category" class="form-control" required>
-                        {% for category in categoryData %}
-                        {% if row.classCode == category.classCode %}
-                        <option>{{category.category}}</option>
-                        {% endif %}
-                        {% endfor %}
-                      </select>
-                    </div>
-                    <button name="check" id="check" href="{{url_for('auth_bp.login')}}" class="btn btn-block btn-dark"
-                      type="submit">Check</button>
-                  </td>
-                  <td>
-                    <table style="border: none;">
-                      <td style="border: none;">
-                        <div>
-                          <a href="/admin/edit/{{row.entryId}}" class="btn btn-outline-success">Edit</a>
-                        </div>
-                      </td>
-                      <td style="border: none;">
-                        <button class="btn btn-outline-danger" id="delete" data-toggle="modal"
-                          classCode="{{row.classCode}}" data-id="{{row.entryId}}"
-                          data-target="#exampleModal">Delete</button>
-                      </td>
-  
-  
-                      <!-- Realtime data-->
-                      <td style="border: none;">
-                         <!-- Put create class button -->
-                            <a href="{{ url_for('admin_bp.createclass/{{row.entryId}}') }}"><button class="btn btn-info btn-lg">Create Class</button></a>
-                      </td>
-  
-                      <!-- Modal -->
-                      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
-                        aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                          <div class="modal-content">
-                            <div class="modal-header">
-                              <h5 class="modal-title" id="exampleModalLabel">Delete Class {{row.classCode}}</h5>
-  
-                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                              </button>
+        <!-- Put Chart -->
+        <div>
+
+            <div class="row">
+              
+            </div>
+            <!-- Put table -->
+            <div>
+                <!-- Put table -->
+                <div class="display">
+                    <table id="classTable" class="display" cellspacing="0" width="100%">
+                        <thead class="thead-dark lead">
+                            <!-- Table top rows -->
+                            <tr>
+                                <th scope="col">Username</th>
+                                <th scope="col">Class code</th>
+                                <th scope="col">Options</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            {% for row in data %}
+                            <tr class="table-row-hover" onclick="get_class_data(this);" onmouseover=""
+                                style="cursor: pointer;">
+                                <td scope="row">{{ row.username }}</td>
+                                <!-- Get class code into the form  -->
+                                <!-- The input cannot be disables -->
+                                <td>{{row.classCode}}<input type="hidden" id="classCode" name="ccode"
+                                        value={{row.classCode}}></td>
+
+                                <td>
+                                    <table style="border: none;">
+                                        <td style="border: none;">
+                                            <div>
+                                                <a href="/admin/edit/{{row.entryId}}"
+                                                    class="btn btn-outline-success">Edit</a>
+                                            </div>
+                                        </td>
+
+                                        <td style="border: none;">
+                                            <button class="btn btn-outline-danger" id="delete" data-toggle="modal"
+                                                classCode="{{row.classCode}}" data-id="{{row.entryId}}"
+                                                data-target="#exampleModal">Delete</button>
+                                        </td>
+
+
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                                            aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="exampleModalLabel">Delete Professor
+                                                            {{row.username}}</h5>
+
+                                                        <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        Are you sure you want to delete this class?
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <a class="btn btn-danger"
+                                                            href="/admin/delete/{{row.entryId}}/{{row.classCode}}">Delete</a>
+                                                        <button type="button" class="btn btn-secondary"
+                                                            data-dismiss="modal">Cancel</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </table>
+                                </td>
+                            </tr>
+                            <!-- Modal -->
+                            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 id="title" class="modal-title" id="exampleModalLabel"></h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Are you sure you want to delete this class?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <a class="btn btn-danger" id="deleteClass"
+                                                href="/professor/delete/{{row.entryId}}/{{row.classCode}}">Delete</a>
+                                            <button type="button" class="btn btn-secondary"
+                                                data-dismiss="modal">Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="modal-body">
-                              Are you sure you want to delete this class?
-                            </div>
-                            <div class="modal-footer">
-                              <a class="btn btn-danger"
-                                href="/professor/delete/{{row.entryId}}/{{row.classCode}}">Delete</a>
-                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+                            {% endfor %}
+                        </tbody>
                     </table>
-                  </td>
-                </form>
-              </tr>
-              <!-- Modal -->
-              <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 id="title" class="modal-title" id="exampleModalLabel"></h5>
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                    </div>
-                    <div class="modal-body">
-                      Are you sure you want to delete this class?
-                    </div>
-                    <div class="modal-footer">
-                      <a class="btn btn-danger" id="deleteClass"
-                        href="/professor/delete/{{row.entryId}}/{{row.classCode}}">Delete</a>
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    </div>
-                  </div>
                 </div>
-              </div>
-              {% endfor %}
-            </tbody>
-          </table>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
-  
-  
-  <!-- Draw bar chart -->
-  <script>
-  
-    // Call this function on user event onmousedown rather than each second
-    function get_class_data(row) {
-      let chartID = document.getElementById("myChart");
-  
-      chartID.hidden = false;
-      let classCodeFromRow = row.children[3].children[0].getAttribute('value');
-      $.getJSON(`/chart-data/showCategories/${classCodeFromRow}`,
-        function (data) {
-  
-          // Somehow loop over the length
-          let myCategories = JSON.parse(data.result).categories;
-          let wN = JSON.parse(data.result).feedbackCount;
-          let numbers = []
-  
-        for (key in wN) {
-          numbers.push(wN[key]);
-        }
-    let ctx = document.getElementById('myChart').getContext('2d');
-    var myChart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: myCategories,
-        datasets: [
-          {
-            data: numbers,
-            backgroundColor: [
-              'rgba(255, 99, 132, 0.2)',
-              'rgba(54, 162, 235, 0.2)',
-              'rgba(255, 206, 86, 0.2)',
-              'rgba(75, 192, 192, 0.2)',
-              'rgba(153, 102, 255, 0.2)',
-              'rgba(255, 159, 64, 0.2)'
-            ],
-            borderColor: [
-              'rgba(255, 99, 132, 1)',
-              'rgba(54, 162, 235, 1)',
-              'rgba(255, 206, 86, 1)',
-              'rgba(75, 192, 192, 1)',
-              'rgba(153, 102, 255, 1)',
-              'rgba(255, 159, 64, 1)'
-            ],
-            borderWidth: 1
-          }]
-      },
-      options: {
-        legend:{
-          display: false
-        },
-        labels: {
-          // This more specific font property overrides the global property
-          fontColor: 'black',
-          defaultFontSize: 20
-        },
-  
-        events: ['click'],
-        scales: {
-          yAxes: [{
-            ticks: {
-              beginAtZero: true,
-              precision: 0,
-            }
-          }]
-        }
-      }
-    });
-        })
-    };
-  
-  // Show empty graph if nothing was selected
-  
-  
-  
-  </script>
-  
-  <script>
-    $('#classTable').dataTable({
-      "lengthMenu": [5, 10, 15, 20, 25]
-    });
-  
-    $("#classTable tbody tr").on('click',function(event) {
-      $("#classTable tbody tr").removeClass('row_selected');        
-      $(this).addClass('row_selected');
-    });
-  </script>
-  
-  <script>
-    // ON SELECTING ROW 
-    $(document).on('click', '#delete', function () {
-      //FINDING ELEMENTS OF ROWS AND STORING THEM IN VARIABLES 
-      var id = $(this).attr("data-id");
-      var classCode = $(this).attr("classCode");
-  
-      var p = "";
-      p += "<p>Delete class " + classCode + " </p>";
-      //CLEARING THE PREFILLED DATA 
-      $("#title").empty();
-      //WRITING THE DATA ON MODEL 
-      $("#title").append(p);
-      document.getElementById("deleteClass").href = "/professor/delete/" + id + "/" + classCode;
-    });
-  </script>
+
+
+
+    <script>
+        $('#classTable').dataTable({
+            "lengthMenu": [5, 10, 15, 20, 25]
+        });
+
+        $("#classTable tbody tr").on('click', function (event) {
+            $("#classTable tbody tr").removeClass('row_selected');
+            $(this).addClass('row_selected');
+        });
+    </script>
+
+    <script>
+        // ON SELECTING ROW 
+        $(document).on('click', '#delete', function () {
+            //FINDING ELEMENTS OF ROWS AND STORING THEM IN VARIABLES 
+            var id = $(this).attr("data-id");
+            var classCode = $(this).attr("classCode");
+
+            var p = "";
+            p += "<p>Delete class " + classCode + " </p>";
+            //CLEARING THE PREFILLED DATA 
+            $("#title").empty();
+            //WRITING THE DATA ON MODEL 
+            $("#title").append(p);
+            document.getElementById("deleteClass").href = "/professor/delete/" + id + "/" + classCode;
+        });
+    </script>

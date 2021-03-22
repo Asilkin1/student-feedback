@@ -47,6 +47,20 @@ class Admin(Base):
         self.username = username
         self.password = password
         
+# Admin creates usernames for professor
+class AdminUsernames(Base):
+    __tablename__ = "admin_creates_usernames"
+
+    id = Column(Integer, primary_key=True)
+    username = Column(String)
+    professorName = Column(String)
+
+#----------------------------------------------------------------------
+    def __init__(self, username, professorName):
+        self.username = username
+        self.professorName = professorName
+        
+
         
 # Categories table
 class Categories(Base):
