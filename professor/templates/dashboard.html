@@ -6,12 +6,7 @@
     <p class="display-4">Dashboard</p>
     <div class="container col-">
     </div>
-    <div class="btn-toolbar mb-2 mb-md-0">
-      <div class="btn-group mr-2">
-        <!-- Put create class button -->
-        <a href="{{ url_for('professor_bp.professor') }}"><button class="btn btn-info btn-lg">Create Class</button></a>
-      </div>
-    </div>
+
   </div>
   <div>
     <!-- Put Chart -->
@@ -66,18 +61,7 @@
                           class="btn btn-outline-primary">View All Feedbacks</a>
                       </form>
                     </td>
-                    <td style="border: none;">
-                      <div>
-                        <a href="/professor/edit/{{row.entryId}}" class="btn btn-outline-success">Edit</a>
-                      </div>
-                    </td>
-                    <td style="border: none;">
-                      <button class="btn btn-outline-danger" id="delete" data-toggle="modal"
-                        classCode="{{row.classCode}}" data-id="{{row.entryId}}"
-                        data-target="#exampleModal">Delete</button>
-                    </td>
-
-
+  
                     <!-- Realtime data-->
                     <td style="border: none;">
                       <a href="{{url_for('professor_bp.get_chart', classCode=row.classCode)}}"
