@@ -6,7 +6,8 @@ Allow to post anonymouse feedback for college class performance using emojies as
 ### User roles:
 
 ### Professor
-- [x] Register / Login as Professor
+- [x] Register / Login as Professor  
+A simple form for registration/login
 - [x] Create a class with multiple sections
 - [x] Edit a class
 - [x] Delete a class
