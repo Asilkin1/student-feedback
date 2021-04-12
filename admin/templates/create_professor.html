@@ -18,191 +18,34 @@
     <form action="{{ url_for('admin_bp.createprofessor')}}" method="post">
         <!-- Split form into two columns -->
         <div class="row">
+            
             <!-- Left side -->
             <div class="col">
                 <!-- Unite label and the field into a group -->
+                
                 <div class="form-group">
-                    <label class="form-check-label" for="schoolName">
-                        School:
+                    <label class="form-check-label" for="username">
+                        Username:
                     </label>
-                    <input type="text" class="form-control" id="text" placeholder="Enter your school name"
-                        name="schoolName" required>
+                    <input type="text" class="form-control" id="text" placeholder="create username"
+                        name="username" required>
                 </div>
 
-                <!-- Department name field -->
                 <div class="form-group">
-                    <label class="form-check-label" for="departmentName">
-                        Department:
+                    <label class="form-check-label" for="professor">
+                        Professor:
                     </label>
-                    <input type="text" class="form-control" id="text" placeholder="Enter your department"
-                        name="departmentName">
-                </div>
-
-                 <!-- Type -->
-                 <div class="form-group">
-                    <label class="form-check-label" for="classMode">
-                        Mode:
-                    </label>
-                    <select name="classMode" class="form-control" for="classMode">
-                        <option selected disabled value="">Choose class mode</option>
-                        <option>Remote</option>
-                        <option>In-person</option>
-                        <option>Hybrid</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- Center class/section/mode -->
-            <div class="col">
-                <!-- Class ID field -->
-                <div class="form-group">
-                    <label class="form-check-label" for="className">
-                        Class Name:
-                    </label>
-                    <input type="text" class="form-control" id="text" placeholder="Enter your class name" name="className"
-                        required>
-                </div>
-
-                <!-- Section name field -->
-                <div class="form-group">
-                    <label class="form-check-label" for="sectionName">
-                        Section:
-                    </label>
-                    <input oninput="this.value = this.value.toUpperCase()" type="text" class="form-control" id="text" placeholder="Enter your section name"
-                        name="sectionName" maxlength="4" required>
-                </div>
-
-                <!-- <input type="number" id="tentacles" name="tentacles"
-                min="10" max="100"> -->
-                <div class="form-group">
-                    <label class="form-check-label" for="size">
-                        Class size:
-                    </label>
-                    <input type="number" class="form-control" min="13" max="26" name="size" required>
-                    <span class="validity"></span>
-                </div>
-            </div>
-
-            <!-- Right column -->
-            <div class="col">
-                <!-- Start time -->
-                <div class="form-group">
-                    <label class="form-check-label" for="start">
-                        Start time:
-                    </label>
-                    <input type="time" id="appt" class="form-control" min="07:00" max="19:00" name="start" required>
-                    <span class="validity"></span>
-                </div>
-
-                <!-- End time -->
-                <div class="form-group">
-                    <label class="form-check-label" for="end">
-                        End time:
-                    </label>
-                    <input type="time" id="appt" class="form-control" min="07:00" max="19:00" name="end" required>
-                    <span class="validity"></span>
-                </div>
-            </div>
-
-        </div>
-        <!-- Days picker -->
-        <label class="form-check-label">
-            Days:
-        </label>
-        <div class="row justify-content-center">
-            <!-- Days -->
-            <div class="form-group">
-
-                <div class="row justify-content-center">
-                    <!-- Monday -->
-                    <div class="col-" id="face_row">
-                        <input name="day" class="form-check-input" type="checkbox" value="M" id="1">
-                        <label class="form-check-label" for="1">
-                            MO
-                        </label>
-                    </div>
-                    <!-- Tuesday -->
-                    <div class="col-" id="face_row">
-                        <input name="day" class="form-check-input" type="checkbox" value="T" id="2">
-                        <label class="form-check-label" for="2">
-                            TU
-                        </label>
-                    </div>
-                    <!-- Wed -->
-                    <div class="col-" id="face_row" id="face_row">
-                        <input name="day" class="form-check-input" type="checkbox" value="W" id="3">
-                        <label class="form-check-label" for="3">
-                            WE
-                        </label>
-                    </div>
-                    <!-- Thursday -->
-                    <div class="col-" id="face_row" id="face_row">
-                        <input name="day" class="form-check-input" type="checkbox" value="H" id="4">
-                        <label class="form-check-label" for="4">
-                            TH
-                        </label>
-                    </div>
-                    <!-- Friday -->
-                    <div class="col-" id="face_row" id="face_row">
-                        <input name="day" class="form-check-input" type="checkbox" value="F" id="5">
-                        <label class="form-check-label" for="5">
-                            FR
-                        </label>
-                    </div>
+                    <input type="text" class="form-control" id="text" placeholder="for professor"
+                        name="professor" required>
                 </div>
             </div>
         </div>
-
-
-        <label class="form-check-label" for="5">
-            Enter category labels:
-        </label>
-        <div id="dynamic_field">
-            <div class="row justify-content-center">
-                          <td><input type="text" id="emojikeyboard" name="categories" placeholder="Enter a category name" class="form-control name_list" required/>
-                          <td><button type="button" name="add" id="add" class="btn btn-success">Add More</button></td>  
-            </div>
-        </div>
-
 
         <!-- Submit button -->
         <div class="form-group">
-            <button class="button btn-block" type="submit" name="submitButton" id="submitButton" value="dashboardSubmit">Generate Class
-                Code</button>
+            <button class="button btn-block" type="submit" name="submitButton" id="submitButton" value="dashboardSubmit">create</button>
         </div>
     </form>
 </div>
 
-<script src="https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
-
-<script>  
-
-    $(document).ready(function(){      
-        $("#emojikeyboard").emojioneArea({spellcheck     : false,
-    autocomplete   : false,
-    autocorrect    : false,
-    autocapitalize : false,});
-
-         var i=1;  
-         $('#add').click(function(){  
-              i++;  
-              $('#dynamic_field').append('<div id="div'+i+'" class="row justify-content-center"><tr id="row'+i+'"><td><input id="emojikeyboard'+i+'" type="text" name="categories" placeholder="Enter a category name" class="form-control name_list" required/></td><td><button type="button" name="remove" id="'+i+'" class="btn btn-danger btn_remove">X</button></td></tr></div>');  
-              $('#emojikeyboard'+i+'').emojioneArea({spellcheck     : false,
-    autocomplete   : false,
-    autocorrect    : false,
-    autocapitalize : false,});
-            });
-
-         $(document).on('click', '.btn_remove', function(){  
-              var button_id = $(this).attr("id");   
-              $('#div'+button_id+'').remove();  
-         });
-         $('#submitButton').click(function(e){            
-           $.ajax({  
-                url:"/professor", 
-                data:$("#dynamic_field").serialize()
-           });  
-      });    
-    });  
- </script>
 {% endblock %}

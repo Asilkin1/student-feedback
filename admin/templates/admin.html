@@ -9,20 +9,23 @@
         <div class="container col-">
         </div>
         <div class="btn-toolbar mb-2 mb-md-0">
+           
             <div class="btn-group mr-2">
                 <!-- Put create class button -->
                 <a href="{{ url_for('admin_bp.createprofessor')}}"><button class="btn btn-info btn-lg">Create
                         professor</button></a>
             </div>
+        </div>
+    </div>
 
-            <div class="btn-group mr-2">
-                 <!-- Bulk add -->
-                 <form action="/admin/bulkadd" method="post" enctype="multipart/form-data">
-                    <input class="custom-file-upload" type="file" name="fileupload" id="fileToUpload">
-                    <input type="submit" value="Upload File" name="submit">
-                </form>
-            </div>
-
+    <div class="row">
+        <div class="btn-group mr-2">
+            Drag and Drop a .csv file with the schedule
+             <!-- Bulk add -->
+             <form action="/admin/bulkadd" method="post" enctype="multipart/form-data">
+                <input class="custom-file-upload" type="file" name="fileupload" id="fileToUpload">
+                <input type="submit" value="Upload File" name="submit">
+            </form>
         </div>
     </div>
     <div>
