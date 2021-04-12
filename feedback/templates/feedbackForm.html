@@ -54,6 +54,18 @@
             </div>
         </div>
     </div>
+
+    <div class="row justify-content-center">
+        <h4>Your reward progress:</h4>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col">
+            <div class="progress">
+                <div class="progress-bar" style="width:{{ ((you) / size|int) * 100 }}%;" role="progressbar" aria-valuenow="{{ you }}" aria-valuemin="0"
+                    aria-valuemax="100"></div>
+            </div>
+        </div>
+    </div>
     {% endif %}
     <form action="{{ url_for('student_bp.student')}}" method="post">
         <!-- Mood section -->
