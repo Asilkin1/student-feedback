@@ -4,7 +4,7 @@ from CreateUserDatabase import *
 from encryption import *
 import re
 import bcrypt
-from cache import cache
+
 
 
 auth_bp = Blueprint('auth_bp', __name__,

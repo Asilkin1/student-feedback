@@ -1,6 +1,5 @@
 from flask import Flask,app
 from flask_session.__init__ import Session as flaskGlobalSession
-from cache import cache
 import logging
 
 # ------------BLUEPRINTS-------------------
@@ -30,5 +29,4 @@ if __name__ == '__main__':
     app.config['DEBUG'] = True
     weirdsession = flaskGlobalSession()
     weirdsession.init_app(app)
-    cache.init_app(app)
     app.run(threaded=True)

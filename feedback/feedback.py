@@ -4,7 +4,6 @@ from datetime import date, datetime, timedelta  # get date and time
 from encryption import *
 from CreateUserDatabase import *
 from sqlalchemy.sql import text
-from globalTime import utc2local
 
 student_bp = Blueprint('student_bp', __name__,
     template_folder='templates',

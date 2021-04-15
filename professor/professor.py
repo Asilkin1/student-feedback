@@ -7,13 +7,12 @@ from datetime import datetime
 from CreateUserDatabase import *
 import json
 from sqlalchemy import event
-from globalTime import utc2local
 from datetime import timedelta
 from threading import Thread
-from cache import cache
 from professor.logic import *  # REST API for professor routes
 random.seed()
 thread = None
+
 
 professor_bp = Blueprint('professor_bp', __name__,
     template_folder='templates',

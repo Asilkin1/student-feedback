@@ -6,7 +6,7 @@ from sqlalchemy.orm import relationship, backref
 from sqlalchemy.orm import sessionmaker
 from encryption import *
 from  datetime import datetime, date, timezone
-from globalTime import utc2local
+
 import os
 # db path OS dependant
 # Works on windows

@@ -1,4 +1,4 @@
-from cache import cache
+
 from CreateUserDatabase import *
 import time
 
@@ -9,7 +9,6 @@ def get_id(classCode):
     return result
 
 # Get all feedbacks for the past 5 seconds  
-@cache.cached(timeout=10, key_prefix='last_10_emoji_values')
 def get_emoji_cached(classCode):
     '''@classCode - current class
        :returns a list of emojis values e.g. [5,4,2,1,4,1,2,3,4,5]
@@ -43,7 +42,6 @@ def get_emoji_cached(classCode):
         emoji = 0
         time = 0
         id = 0
-    print('Cached function',accumulate)
     accumulate.reverse()
     timeAccumulate.reverse()
     idAccumulate.reverse()
@@ -64,7 +62,6 @@ def get_emoji(classCode):
         emoji = 0
     return emoji
 
-@cache.cached(timeout=1, key_prefix='last_student_voted')
 def get_student_code(classCode):
     '''Get student code'''
     # Return 0 if something goes wrong
