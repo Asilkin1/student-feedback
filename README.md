@@ -3,6 +3,12 @@
 ## Overview
 Allow to post anonymouse feedback for college class performance using emojies as a scale.
 
+### Installation
+```pip install -r requirements.txt```
+
+### SQLite Database
+Uses SQLite database to store professor logins, student codes, classes and class codes, as well as students' encrypted feedback.
+
 ### User roles:
 
 ### Professor
@@ -26,9 +32,9 @@ A simple form for registration/login
 TODO
 
 ### Features:
-## Anonymouse
+## Anonymity
 Student codes and student-generated responses stored securely in the database.
 ### Easy to use
-We created student response form as simple as possible in order to make sure that everyone can use it.
+We created the student response form as simple as possible in order to make sure that everyone can use it.
 ### Incentive system
-Depends on professor, a reward can be something that will stimulate students to consistently leave a feedback. 
+Depends on professor, a reward can be something that will motivate students to consistently leave a feedback. 
